@@ -8,7 +8,6 @@
 
 (defun main (&rest args)
   (declare (ignore args))
-
   (within-main-loop
     (let ((window (gtk-window-new :toplevel))
           (view (webkit.foreign:webkit-web-view-new)))
