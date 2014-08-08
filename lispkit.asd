@@ -4,4 +4,4 @@
   :description "Lispy browser"
   :licence "BSD"
   :components ((:file "lispkit"))
-  :depends-on (:drakma :cl-cffi-gtk))
+  :depends-on (:drakma :cl-cffi-gtk :cl-webkit))

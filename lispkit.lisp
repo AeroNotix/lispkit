@@ -1,6 +1,6 @@
 (defpackage lispkit
   (:use :gtk :gdk :gdk-pixbuf :gobject
-        :drakma
+        :drakma :cl-webkit
         :glib :gio :pango :cairo :common-lisp)
   (:export #:main))
 
@@ -10,9 +10,12 @@
   (declare (ignore args))
 
   (within-main-loop
-    (let ((window (gtk-window-new :toplevel)))
+    (let ((window (gtk-window-new :toplevel))
+          (view (webkit.foreign:webkit-web-view-new)))
       (g-signal-connect window "destroy"
                         (lambda (widget)
                           (declare (ignore widget))
                           (leave-gtk-main)))
+      (gtk-container-add window view)
+      (webkit.foreign:webkit-web-view-load-uri view "http://www.example.com")
       (gtk-widget-show-all window))))
