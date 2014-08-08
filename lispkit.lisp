@@ -14,6 +14,7 @@
       (g-signal-connect window "destroy"
                         (lambda (widget)
                           (declare (ignore widget))
+                          (gtk-widget-destroy view)
                           (leave-gtk-main)))
       (gtk-container-add window view)
       (webkit.foreign:webkit-web-view-load-uri view "http://www.example.com")
