@@ -18,4 +18,5 @@
                           (leave-gtk-main)))
       (gtk-container-add window view)
       (webkit.foreign:webkit-web-view-load-uri view "http://www.example.com")
+      (gtk-container-add window (make-instance 'gtk-scrolled-window))
       (gtk-widget-show-all window))))
