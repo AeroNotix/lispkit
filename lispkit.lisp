@@ -17,6 +17,7 @@
                           (gtk-widget-destroy view)
                           (leave-gtk-main)))
       (gtk-container-add window view)
-      (webkit.foreign:webkit-web-view-load-uri view "http://www.example.com")
       (gtk-container-add window (make-instance 'gtk-scrolled-window))
+      (webkit.foreign:webkit-web-view-load-uri
+       view "http://www.github.com/AeroNotix/lispkit")
       (gtk-widget-show-all window))))
