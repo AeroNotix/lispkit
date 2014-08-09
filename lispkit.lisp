@@ -7,6 +7,7 @@
 (in-package :lispkit)
 
 (defparameter *current-tab* nil)
+(defparameter *key-events* nil)
 
 (defun load-url (url &optional view)
   (webkit.foreign:webkit-web-view-load-uri
