@@ -7,16 +7,19 @@
 (in-package :lispkit)
 
 (defparameter *current-tab* nil)
-(defparameter *key-events* nil)
 
 (defun load-url (url &optional view)
   (webkit.foreign:webkit-web-view-load-uri
    (or view *current-tab*) url))
 
-(defun handle-key (window event)
-  (declare (ignore window))
-  (print event)
-  nil)
+(let ((key-events nil))
+  (defun events-as-string (events)
+    (print events))
+
+  (defun handle-key (window event)
+    (declare (ignore window))
+    (push event key-events)
+    (events-as-string (reverse key-events))))
 
 (defun main (&rest args)
   (declare (ignore args))
