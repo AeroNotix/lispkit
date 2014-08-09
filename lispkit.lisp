@@ -11,11 +11,6 @@
   (within-main-loop
     (let ((window (gtk-window-new :toplevel))
           (view (webkit.foreign:webkit-web-view-new)))
-      (g-signal-connect window "destroy"
-                        (lambda (widget)
-                          (declare (ignore widget))
-                          (gtk-widget-destroy view)
-                          (leave-gtk-main)))
       (gtk-container-add window view)
       (gtk-container-add window (make-instance 'gtk-scrolled-window))
       (webkit.foreign:webkit-web-view-load-uri
