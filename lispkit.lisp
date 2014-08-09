@@ -16,8 +16,9 @@
 (defun main (&rest args)
   (declare (ignore args))
   (within-main-loop
-    (let ((window (gtk-window-new :toplevel))
-          (view (webkit.foreign:webkit-web-view-new)))
+    (let ((window (make-instance 'gtk:gtk-window :title "lispkit!"))
+          (view (setq *current-tab*
+                      (webkit.foreign:webkit-web-view-new))))
       (gtk-container-add window view)
       (gtk-container-add window (make-instance 'gtk-scrolled-window))
       (webkit.foreign:webkit-web-view-load-uri
