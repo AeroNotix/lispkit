@@ -6,23 +6,12 @@
   (webkit.foreign:webkit-web-view-load-uri
    (or view *current-tab*) url))
 
-(defun event-as-string (event)
-  (with-gdk-event-slots (state string) event
-    (print (list state string))))
-
-(let ((key-events nil))
-
-  (defun all-events ()
-    key-events)
-
-  (defun events-as-string (events)
-    (mapcar #'event-as-string events))
-
-  (defun handle-key (window event)
-    (declare (ignore window))
-    (push event key-events)
-    (events-as-string key-events)
-    nil))
+(defun load-ui-from-file (path)
+  (if (probe-file path)
+      (let ((builder (gtk:gtk-builder-new)))
+        (gtk:gtk-builder-add-from-file builder path)
+        builder)
+      (error (format nil "non existent path: ~s" path))))
 
 (defun main (&rest args)
   (declare (ignore args))
