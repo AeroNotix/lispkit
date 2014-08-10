@@ -12,14 +12,22 @@
   (webkit.foreign:webkit-web-view-load-uri
    (or view *current-tab*) url))
 
+(defun event-as-string (event)
+  (with-gdk-event-slots (state string) event
+    (print (list state string))))
+
 (let ((key-events nil))
+
+  (defun all-events ()
+    key-events)
+
   (defun events-as-string (events)
-    (print events))
+    (mapcar #'event-as-string events))
 
   (defun handle-key (window event)
     (declare (ignore window))
     (push event key-events)
-    (events-as-string (reverse key-events))))
+    (events-as-string key-events)))
 
 (defun main (&rest args)
   (declare (ignore args))
