@@ -3,6 +3,7 @@
 (defparameter *insert-mode* nil)
 (defparameter *grabbing-keys* nil)
 (defparameter *key-event-handlers* nil)
+(defparameter *emacs-key-handler* nil)
 
 (defclass key-event-handler nil
   ((key-map     :initarg :key-map :initform (make-hash-table :test #'equal))
@@ -40,4 +41,5 @@
   (with-gdk-event-slots (state string) event
     (print (list (strip-mod2 state) string))))
 
-(push (make-instance 'key-event-handler) *key-event-handlers*)
+(setf *emacs-key-handler* (make-instance 'key-event-handler))
+(push *emacs-key-handler* *key-event-handlers*)
