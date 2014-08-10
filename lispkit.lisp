@@ -28,7 +28,7 @@
   (within-main-loop
     (let* ((ui     (load-ui-from-file "main.ui"))
            (window (gtk:gtk-builder-get-object ui "mainwindow"))
-           (frame  (gtk:gtk-builder-get-object ui "webkit-frame"))
+           (frame  (gtk:gtk-builder-get-object ui "scrolledwindow"))
            (view   (setq *current-tab*
                          (webkit.foreign:webkit-web-view-new))))
       (gtk-container-add frame view)
