@@ -37,9 +37,12 @@
               (format t "~a~%" key))
           (finish-output nil)))))
 
+(defun forward-event? ()
+  (or *insert-mode* *grabbing-keys*))
+
 (defun handle-key (window event)
   (declare (ignore window))
-  (if (or *insert-mode* *grabbing-keys*)
+  (if (forward-event?)
       (dolist (handler *key-event-handlers*)
         (handle-key-event handler event))
       nil))
