@@ -3,5 +3,7 @@
   :version "0.0.1"
   :description "Lispy browser"
   :licence "BSD"
-  :components ((:file "lispkit" :depends-on ("macros")))
+  :components ((:file "lispkit" :depends-on ("macros" "packages"))
+               (:file "macros"  :depends-on ("packages"))
+               (:file "packages"))
   :depends-on (:drakma :cl-cffi-gtk :cl-webkit))
