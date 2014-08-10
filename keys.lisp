@@ -9,7 +9,7 @@
 (defclass key-event-handler nil
   ((key-map     :initarg :key-map :initform (make-hash-table :test #'equal))
    (key-events  :initform nil)
-   (prefix-keys :initform nil)
+   (prefix-keys :initarg :prefix-keys :initform nil :accessor prefix-keys)
    (ungrab-keys :initform nil)))
 
 (defun strip-irrelevant-mods (keys)
@@ -49,7 +49,12 @@
         (handle-key-event handler key-str)))))
 
 (defun handle-key-event (handler key-str)
-  (print key-str))
+  (print (is-prefix-key? handler key-str)))
 
-(setf *emacs-key-handler* (make-instance 'key-event-handler))
+(defun is-prefix-key? (handler key-str)
+  (member key-str (prefix-keys handler) :test #'equal))
+
+(let ((prefix-keys '("C-x" "C-c")))
+  (setf *emacs-key-handler* (make-instance 'key-event-handler
+                                           :prefix-keys prefix-keys)))
 (push *emacs-key-handler* *key-event-handlers*)
