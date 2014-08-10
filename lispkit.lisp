@@ -23,6 +23,6 @@
                          (webkit.foreign:webkit-web-view-new))))
       (gtk-container-add frame view)
       (g-signal-connect window "key_press_event"
-                        #'handle-key)
+                        #'dispatch-keypress)
       (load-url "http://www.github.com/AeroNotix/lispkit")
       (gtk-widget-show-all window))))
