@@ -21,7 +21,8 @@
   (defun handle-key (window event)
     (declare (ignore window))
     (push event key-events)
-    (events-as-string key-events)))
+    (events-as-string key-events)
+    nil))
 
 (defun main (&rest args)
   (declare (ignore args))
