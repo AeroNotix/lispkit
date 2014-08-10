@@ -5,6 +5,7 @@
 (defparameter *key-event-handlers* nil)
 (defparameter *emacs-key-handler* nil)
 
+
 (defclass key-event-handler nil
   ((key-map     :initarg :key-map :initform (make-hash-table :test #'equal))
    (key-events  :initform nil)
