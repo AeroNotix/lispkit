@@ -1,6 +1,5 @@
 (in-package :lispkit)
 
-(defparameter *insert-mode* nil)
 (defparameter *grabbing-keys* nil)
 (defparameter *key-event-handlers* nil)
 (defparameter *emacs-key-handler* nil)
