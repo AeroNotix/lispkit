@@ -4,13 +4,24 @@
 (defparameter *grabbing-keys* nil)
 (defparameter *key-event-handlers* nil)
 (defparameter *emacs-key-handler* nil)
+(defparameter *emacs-map* (make-hash-table :test #'equal))
 
 
 (defclass key-event-handler nil
-  ((key-map     :initarg :key-map :initform (make-hash-table :test #'equal))
+  ((key-map     :initarg :key-map :accessor key-map :initform (make-hash-table :test #'equal))
    (key-events  :initform nil)
+   (recent-keys :initform nil :accessor recent-keys)
    (prefix-keys :initarg :prefix-keys :initform nil :accessor prefix-keys)
-   (ungrab-keys :initform nil)))
+   (ungrab-keys :initform nil :initarg :ungrab-keys :accessor ungrab-keys)))
+
+(defun define-key (map key function)
+  (when (functionp function)
+    (setf (gethash key map) function)))
+
+(defun something ()
+  (print "UP IN HERE, UP IN HERE"))
+
+(define-key *emacs-map* "C-x C-f" #'something)
 
 (defun strip-irrelevant-mods (keys)
   (remove-if
@@ -37,24 +48,48 @@
               (format nil "~{~a~^-~}-~a" mod-str key)
               (format nil "~a" key))))))
 
-(defun forward-event? ()
-  (or *insert-mode* *grabbing-keys*))
+(defun grabbing-keys? ()
+  *grabbing-keys*)
 
 (defun dispatch-keypress (window event)
   (declare (ignore window))
-  (push event lol)
   (let ((key-str (event-as-string event)))
     (when key-str
       (dolist (handler *key-event-handlers*)
-        (handle-key-event handler key-str)))))
+        (handle-key-event handler key-str))))
+  (grabbing-keys?))
+
+(defun execute-pending-commands (handler)
+  (let* ((full-str (format nil "~{~a~^ ~}" (reverse (recent-keys handler))))
+         (key-func (gethash full-str (key-map handler))))
+    (when (functionp key-func)
+      (funcall key-func)
+      (reset-key-state handler))))
+
+(defun reset-key-state (handler)
+  (setf *grabbing-keys* nil)
+  (setf (recent-keys handler) nil))
 
 (defun handle-key-event (handler key-str)
-  (print (is-prefix-key? handler key-str)))
+  (if (ungrab-key? handler key-str)
+      (reset-key-state handler)
+      (progn
+        (when (is-prefix-key? handler key-str)
+          (setf *grabbing-keys* t))
+        (when (grabbing-keys?)
+          (push key-str (recent-keys handler))
+          (execute-pending-commands handler)))))
+
+(defun ungrab-key? (handler key-str)
+  (member key-str (ungrab-keys handler) :test #'equal))
 
 (defun is-prefix-key? (handler key-str)
   (member key-str (prefix-keys handler) :test #'equal))
 
-(let ((prefix-keys '("C-x" "C-c")))
+(let ((prefix-keys '("C-x" "C-c"))
+      (ungrab-keys '("C-g")))
   (setf *emacs-key-handler* (make-instance 'key-event-handler
-                                           :prefix-keys prefix-keys)))
-(push *emacs-key-handler* *key-event-handlers*)
+                                           :key-map *emacs-map*
+                                           :prefix-keys prefix-keys
+                                           :ungrab-keys ungrab-keys))
+  (push *emacs-key-handler* *key-event-handlers*))
