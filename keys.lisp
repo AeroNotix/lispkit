@@ -17,9 +17,6 @@
   (when (functionp function)
     (setf (gethash key map) function)))
 
-(defun goto-google (window)
-  (load-url "https://google.com"))
-
 (define-key *emacs-map* "C-x C-f"     #'goto-google)
 (define-key *emacs-map* "C-x F5"      #'reload-page)
 (define-key *emacs-map* "C-x C-Left"  #'backwards-page)
