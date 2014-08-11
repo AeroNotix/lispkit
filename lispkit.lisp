@@ -2,10 +2,6 @@
 
 (defparameter *current-tab* nil)
 
-(defun load-url (url &optional view)
-  (webkit.foreign:webkit-web-view-load-uri
-   (or view *current-tab*) url))
-
 (defun load-ui-from-file (path)
   (if (probe-file path)
       (let ((builder (gtk:gtk-builder-new)))

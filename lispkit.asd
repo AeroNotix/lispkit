@@ -5,6 +5,7 @@
   :licence "BSD"
   :components ((:file "lispkit" :depends-on ("macros" "packages" "keys"))
                (:file "macros"  :depends-on ("packages"))
-               (:file "keys"    :depends-on ("packages"))
+               (:file "keys"    :depends-on ("packages" "browser"))
+               (:file "browser")
                (:file "packages"))
   :depends-on (:drakma :cl-cffi-gtk :cl-webkit))
