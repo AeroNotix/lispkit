@@ -17,10 +17,13 @@
   (when (functionp function)
     (setf (gethash key map) function)))
 
-(defun something ()
-  (print "UP IN HERE, UP IN HERE"))
+(defun goto-google (window)
+  (load-url "https://google.com"))
 
-(define-key *emacs-map* "C-x C-f" #'something)
+(define-key *emacs-map* "C-x C-f"     #'goto-google)
+(define-key *emacs-map* "C-x F5"      #'reload-page)
+(define-key *emacs-map* "C-x C-Left"  #'backwards-page)
+(define-key *emacs-map* "C-x C-Right" #'forwards-page)
 
 (defun strip-irrelevant-mods (keys)
   (remove-if
@@ -55,21 +58,21 @@
   (let ((key-str (event-as-string event)))
     (when key-str
       (dolist (handler *key-event-handlers*)
-        (handle-key-event handler key-str))))
+        (handle-key-event handler key-str window))))
   (grabbing-keys?))
 
-(defun execute-pending-commands (handler)
+(defun execute-pending-commands (handler window)
   (let* ((full-str (format nil "~{~a~^ ~}" (reverse (recent-keys handler))))
          (key-func (gethash full-str (key-map handler))))
     (when (functionp key-func)
-      (funcall key-func)
+      (funcall key-func window)
       (reset-key-state handler))))
 
 (defun reset-key-state (handler)
   (setf *grabbing-keys* nil)
   (setf (recent-keys handler) nil))
 
-(defun handle-key-event (handler key-str)
+(defun handle-key-event (handler key-str window)
   (if (ungrab-key? handler key-str)
       (reset-key-state handler)
       (progn
@@ -77,7 +80,7 @@
           (setf *grabbing-keys* t))
         (when (grabbing-keys?)
           (push key-str (recent-keys handler))
-          (execute-pending-commands handler)))))
+          (execute-pending-commands handler window)))))
 
 (defun ungrab-key? (handler key-str)
   (member key-str (ungrab-keys handler) :test #'equal))
