@@ -74,7 +74,7 @@
         (funcall key-func window)
         (reset-key-state handler)
         :handled)
-      :unhanled)))
+      :unhandled)))
 
 (defun reset-key-state (handler)
   (setf *grabbing-keys* nil)
