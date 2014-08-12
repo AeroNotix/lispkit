@@ -4,6 +4,7 @@
 (defparameter *key-event-handlers* nil)
 (defparameter *emacs-key-handler* nil)
 (defparameter *emacs-map* (make-hash-table :test #'equal))
+(defparameter *previous-event* nil)
 
 
 (defclass key-event-handler nil
@@ -26,9 +27,6 @@
    (lambda (elt) (member elt '(:mod2-mask :shift-mask)))
    keys))
 
-(defun keyval->string (keyval)
-  (string (code-char keyval)))
-
 (let ((mod-map '((:mod1-mask . "M")
                  (:control-mask . "C"))))
   (defun mod->string (mod)
@@ -37,31 +35,46 @@
 (defun mods->string (s)
   (mapcar #'mod->string (strip-irrelevant-mods s)))
 
+(defun duplicated-event? (event)
+  (when (and *previous-event* event)
+    (= (gdk:GDK-EVENT-KEY-TIME event)
+       (gdk:GDK-EVENT-KEY-TIME *previous-event*))))
+
 (defun event-as-string (event)
   (with-gdk-event-slots (state keyval) event
-    (if (< keyval 255)
-        (let ((key     (keyval->string keyval))
-              (mod-str (mods->string   state)))
-          (if (consp mod-str)
-              (format nil "~{~a~^-~}-~a" mod-str key)
-              (format nil "~a" key))))))
+    (let ((key     (keysym->keysym-name keyval))
+          (mod-str (mods->string   state)))
+      (unwind-protect
+           (when (and (not (duplicated-event? event))
+                      (not (modifier? keyval)))
+             (if (consp mod-str)
+                 (format nil "~{~a~^-~}-~a" mod-str key)
+                 (format nil "~a" key)))
+        (setq *previous-event* event)))))
 
 (defun grabbing-keys? () *grabbing-keys*)
 
+(defun if-any-handled? (responses)
+  (member :handled responses :test #'equal))
+
 (defun dispatch-keypress (window event)
-  (declare (ignore window))
-  (let ((key-str (event-as-string event)))
-    (when key-str
-      (dolist (handler *key-event-handlers*)
-        (handle-key-event handler key-str window))))
-  (grabbing-keys?))
+  (let* ((key-str (event-as-string event))
+         (handler-responses
+          (when key-str
+            (dolist (handler *key-event-handlers*)
+              (handle-key-event handler key-str window)))))
+    (if-any-handled? handler-responses)
+    nil))
 
 (defun execute-pending-commands (handler window)
   (let* ((full-str (format nil "~{~a~^ ~}" (reverse (recent-keys handler))))
          (key-func (gethash full-str (key-map handler))))
-    (when (functionp key-func)
-      (funcall key-func window)
-      (reset-key-state handler))))
+    (if (functionp key-func)
+      (progn
+        (funcall key-func window)
+        (reset-key-state handler)
+        :handled)
+      :unhanled)))
 
 (defun reset-key-state (handler)
   (setf *grabbing-keys* nil)

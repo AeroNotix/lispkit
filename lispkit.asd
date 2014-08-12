@@ -8,4 +8,4 @@
                (:file "keys"    :depends-on ("packages" "browser"))
                (:file "browser")
                (:file "packages"))
-  :depends-on (:cl-cffi-gtk :cl-webkit))
+  :depends-on (:cl-cffi-gtk :cl-webkit :cl-xkeysym))
