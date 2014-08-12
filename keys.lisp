@@ -46,8 +46,7 @@
               (format nil "~{~a~^-~}-~a" mod-str key)
               (format nil "~a" key))))))
 
-(defun grabbing-keys? ()
-  *grabbing-keys*)
+(defun grabbing-keys? () *grabbing-keys*)
 
 (defun dispatch-keypress (window event)
   (declare (ignore window))
