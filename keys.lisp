@@ -61,10 +61,9 @@
   (let* ((key-str (event-as-string event))
          (handler-responses
           (when key-str
-            (dolist (handler *key-event-handlers*)
-              (handle-key-event handler key-str window)))))
-    (if-any-handled? handler-responses)
-    nil))
+            (loop for handler in *key-event-handlers*
+               collect (handle-key-event handler key-str window)))))
+    (or (if-any-handled? handler-responses) *grabbing-keys*)))
 
 (defun execute-pending-commands (handler window)
   (let* ((full-str (format nil "~{~a~^ ~}" (reverse (recent-keys handler))))
