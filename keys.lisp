@@ -17,7 +17,6 @@
   (when (functionp function)
     (setf (gethash key map) function)))
 
-(define-key *emacs-map* "C-x C-f"     #'goto-google)
 (define-key *emacs-map* "C-x F5"      #'reload-page)
 (define-key *emacs-map* "C-x C-Left"  #'backwards-page)
 (define-key *emacs-map* "C-x C-Right" #'forwards-page)
