@@ -1,6 +1,5 @@
 (in-package :lispkit)
 
-(defparameter *grabbing-keys* nil)
 (defparameter *key-event-handlers* nil)
 (defparameter *emacs-key-handler* nil)
 (defparameter *emacs-map* (make-hash-table :test #'equal))
@@ -21,6 +20,7 @@
 (define-key *emacs-map* "C-x F5"      #'reload-page)
 (define-key *emacs-map* "C-x C-Left"  #'backwards-page)
 (define-key *emacs-map* "C-x C-Right" #'forwards-page)
+(define-key *emacs-map* "C-x C-f"     #'browse-url)
 
 (defun strip-irrelevant-mods (keys)
   (remove-if
@@ -40,6 +40,12 @@
     (= (gdk:GDK-EVENT-KEY-TIME event)
        (gdk:GDK-EVENT-KEY-TIME *previous-event*))))
 
+(defun parse-event (event)
+  (with-gdk-event-slots (state keyval) event
+    (let ((key     (keysym->keysym-name keyval))
+          (mod-str (mods->string   state)))
+      (values key mod-str))))
+
 (defun event-as-string (event)
   (with-gdk-event-slots (state keyval) event
     (let ((key     (keysym->keysym-name keyval))
@@ -52,42 +58,44 @@
                  (format nil "~a" key)))
         (setq *previous-event* event)))))
 
-(defun grabbing-keys? () *grabbing-keys*)
-
 (defun if-any-handled? (responses)
   (member :handled responses :test #'equal))
 
-(defun dispatch-keypress (window event)
-  (let* ((key-str (event-as-string event))
-         (handler-responses
-          (when key-str
-            (loop for handler in *key-event-handlers*
-               collect (handle-key-event handler key-str window)))))
-    (or (if-any-handled? handler-responses) *grabbing-keys*)))
+(defun new-key-dispatcher (browser)
+  (lambda (window event)
+    (declare (ignore window))
+    (let* ((key-str (event-as-string event))
+           (handler-responses
+            (when key-str
+              (loop for handler in *key-event-handlers*
+                 collect (handle-key-event handler key-str browser)))))
+      (or (if-any-handled? handler-responses)
+          (grabbing-keys? browser)))))
 
-(defun execute-pending-commands (handler window)
+(defun execute-pending-commands (handler browser)
   (let* ((full-str (format nil "~{~a~^ ~}" (reverse (recent-keys handler))))
          (key-func (gethash full-str (key-map handler))))
+    (print full-str)
     (if (functionp key-func)
       (progn
-        (funcall key-func window)
-        (reset-key-state handler)
+        (funcall key-func browser)
+        (reset-key-state handler browser)
         :handled)
       :unhandled)))
 
-(defun reset-key-state (handler)
-  (setf *grabbing-keys* nil)
+(defun reset-key-state (handler browser)
+  (setf (grabbing-keys? browser) nil)
   (setf (recent-keys handler) nil))
 
-(defun handle-key-event (handler key-str window)
+(defun handle-key-event (handler key-str browser)
   (if (ungrab-key? handler key-str)
-      (reset-key-state handler)
+      (reset-key-state handler browser)
       (progn
         (when (is-prefix-key? handler key-str)
-          (setf *grabbing-keys* t))
-        (when (grabbing-keys?)
+          (setf (grabbing-keys? browser) t))
+        (when (grabbing-keys? browser)
           (push key-str (recent-keys handler))
-          (execute-pending-commands handler window)))))
+          (execute-pending-commands handler browser)))))
 
 (defun ungrab-key? (handler key-str)
   (member key-str (ungrab-keys handler) :test #'equal))
