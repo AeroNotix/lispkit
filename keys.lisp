@@ -76,11 +76,11 @@
   (let* ((full-str (format nil "~{~a~^ ~}" (reverse (recent-keys handler))))
          (key-func (gethash full-str (key-map handler))))
     (if (functionp key-func)
-      (progn
-        (funcall key-func browser)
-        (reset-key-state handler browser)
-        :handled)
-      :unhandled)))
+        (progn
+          (funcall key-func browser)
+          (reset-key-state handler browser)
+          :handled)
+        :unhandled)))
 
 (defun reset-key-state (handler browser)
   (setf (grabbing-keys? browser) nil)
