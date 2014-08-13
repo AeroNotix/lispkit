@@ -75,7 +75,6 @@
 (defun execute-pending-commands (handler browser)
   (let* ((full-str (format nil "~{~a~^ ~}" (reverse (recent-keys handler))))
          (key-func (gethash full-str (key-map handler))))
-    (print full-str)
     (if (functionp key-func)
       (progn
         (funcall key-func browser)
