@@ -6,14 +6,21 @@
    (ui      :initarg :ui
             :initform (error "Cannot instantiate a browser without a UI object")
             :accessor ui)
+   (webview :accessor webview
+            :initarg :webview
+            :initform (error "Cannot instantiate a browser without a webview object"))
    (url-bar :initarg :url-bar)
    (grabbing-keys? :initform nil :accessor grabbing-keys?)))
+
+(defmacro with-webview (var browser &body body)
+  `(let ((,var (webview ,browser)))
+     ,@body))
 
 (defmethod initialize-instance :after ((browser browser) &key)
   (check-type (ui browser) gtk:gtk-builder))
 
-(defun new-browser (ui)
-  (make-instance 'browser :ui ui))
+(defun new-browser (ui webview)
+  (make-instance 'browser :ui ui :webview webview))
 
 (defun load-url (url &optional view)
   (webkit.foreign:webkit-web-view-load-uri

@@ -18,8 +18,7 @@
            (entry  (gtk:gtk-builder-get-object ui "entry_box"))
            (view   (setq *current-tab*
                          (webkit.foreign:webkit-web-view-new)))
-           (browser (new-browser ui)))
-      (print ui)
+           (browser (new-browser ui view)))
       (gtk-container-add frame view)
       (g-signal-connect window "key_press_event"
                         (new-key-dispatcher browser))
