@@ -50,3 +50,11 @@
                             (gtk-widget-hide entry-box)))))
     (gtk:gtk-widget-grab-focus entry-box)
     (gtk:gtk-widget-show entry-box)))
+
+(defun zoom (browser)
+  (with-webview wv browser
+    (webkit.foreign:webkit-web-view-zoom-in wv)))
+
+(defun unzoom (browser)
+  (with-webview wv browser
+    (webkit.foreign:webkit-web-view-zoom-out wv)))

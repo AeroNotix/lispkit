@@ -21,6 +21,9 @@
 (define-key *emacs-map* "C-x C-Left"  #'backwards-page)
 (define-key *emacs-map* "C-x C-Right" #'forwards-page)
 (define-key *emacs-map* "C-x C-f"     #'browse-url)
+(define-key *emacs-map* "C-x plus"    #'zoom)
+(define-key *emacs-map* "C-x minus"   #'unzoom)
+
 
 (defun strip-irrelevant-mods (keys)
   (remove-if
