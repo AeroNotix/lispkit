@@ -2,7 +2,7 @@
 
 
 (defclass browser ()
-  ((tabs    :initarg :tabs)
+  ((tabs    :initarg :tabs :accessor tabs)
    (ui      :initarg :ui
             :initform (error "Cannot instantiate a browser without a UI object")
             :accessor ui)
@@ -17,7 +17,8 @@
      ,@body))
 
 (defmethod initialize-instance :after ((browser browser) &key)
-  (check-type (ui browser) gtk:gtk-builder))
+  (check-type (ui browser) gtk:gtk-builder)
+  (mapcar (lambda (tab) (check-type tab gtk:gtk-builder)) (tabs browser)))
 
 (defun new-browser (ui webview)
   (make-instance 'browser :ui ui :webview webview))
