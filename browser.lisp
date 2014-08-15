@@ -21,7 +21,10 @@
   (mapcar (lambda (tab) (check-type tab gtk:gtk-builder)) (tabs browser)))
 
 (defun new-browser (ui webview)
-  (make-instance 'browser :ui ui :webview webview))
+  (let ((tabs (list webview)))
+    (make-instance 'browser
+                   :ui ui :webview webview
+                   :tabs tabs)))
 
 (defun load-url (url &optional view)
   (webkit.foreign:webkit-web-view-load-uri
@@ -47,6 +50,7 @@
                         (when (string= (parse-event event) "Return")
                           (let* ((buf (gtk:gtk-entry-buffer entry-box))
                                 (url (gtk:gtk-entry-buffer-get-text buf)))
+                            (apply-jumps url)
                             (load-url url)
                             (gtk-widget-hide entry-box)))))
     (gtk:gtk-widget-grab-focus entry-box)
