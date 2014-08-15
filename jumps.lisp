@@ -6,18 +6,23 @@
 (defun defjump (prefix url)
   (push `(,prefix . ,url) *jumps*))
 
-(defjump "g" "http://google.com/search?=%s")
-
-(defun prefix-of? (s1 s2)
-  (= (mismatch s1 s2) (length s2)))
+(defjump "g" "http://google.com/search?=~a")
 
 (defun lookup-jump (s)
-  (assoc s *jumps* :test #'prefix-of?))
+  (assoc s *jumps* :test #'string=))
 
 (defun extract-jump-str (s)
-  )
+  (split-sequence:split-sequence " " s :test #'string=))
+
+(defmacro multiple-value-destructuring-bind (lambda-list value-list &body body)
+  (let ((ignore (gensym)))
+    `(destructuring-bind (,@lambda-list &rest ,ignore) (multiple-value-list ,value-list)
+       (declare (ignore ,ignore))
+       ,@body)))
 
 (defun apply-jumps (s)
-  (let ((jump? (lookup-jump s)))
-    (when jump?
-      (print jump?))))
+  (multiple-value-destructuring-bind ((jump args)) (extract-jump-str s)
+    (let ((jump (lookup-jump jump)))
+      (when jump
+        (print (format nil (cdr jump) args))
+        t))))
