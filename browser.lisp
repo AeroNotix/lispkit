@@ -17,8 +17,7 @@
      ,@body))
 
 (defmethod initialize-instance :after ((browser browser) &key)
-  (check-type (ui browser) gtk:gtk-builder)
-  (mapcar (lambda (tab) (check-type tab gtk:gtk-builder)) (tabs browser)))
+  (check-type (ui browser) gtk:gtk-builder))
 
 (defun new-browser (ui webview)
   (let ((tabs (list webview)))
