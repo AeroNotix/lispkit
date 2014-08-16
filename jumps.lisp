@@ -21,7 +21,7 @@
        (declare (ignore ,ignore))
        ,@body)))
 
-(defun apply-jumps (s)
+(defun apply-jumps (s browser)
   (multiple-value-destructuring-bind ((jump args)) (extract-jump-str s)
     (let ((jump (lookup-jump jump)))
       (when jump

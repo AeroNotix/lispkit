@@ -25,20 +25,17 @@
                    :ui ui :webview webview
                    :tabs tabs)))
 
-(defun load-url (url &optional view)
-  (webkit.foreign:webkit-web-view-load-uri
-   (or view *current-tab*) url))
+(defun load-url (url browser)
+  (webkit.foreign:webkit-web-view-load-uri (webview browser) url))
 
 (defun reload-page (browser)
-  (webkit.foreign:webkit-web-view-reload *current-tab*))
+  (webkit.foreign:webkit-web-view-reload (webview browser)))
 
 (defun forwards-page (browser)
-  (declare (ignore browser))
-  (webkit.foreign:webkit-web-view-go-forward *current-tab*))
+  (webkit.foreign:webkit-web-view-go-forward (webview browser)))
 
 (defun backwards-page (browser)
-  (declare (ignore browser))
-  (webkit.foreign:webkit-web-view-go-back *current-tab*))
+  (webkit.foreign:webkit-web-view-go-back (webview browser)))
 
 (defun browse-url (browser)
   (let* ((ui (ui browser))
@@ -49,8 +46,7 @@
                         (when (string= (parse-event event) "Return")
                           (let* ((buf (gtk:gtk-entry-buffer entry-box))
                                  (url (gtk:gtk-entry-buffer-get-text buf)))
-                            (apply-jumps url)
-                            (load-url url)
+                            (or (apply-jumps url browser) (load-url url browser))
                             (gtk-widget-hide entry-box)))))
     (gtk:gtk-widget-grab-focus entry-box)
     (gtk:gtk-widget-show entry-box)))
