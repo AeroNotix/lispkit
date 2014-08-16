@@ -23,6 +23,9 @@
 (define-key *emacs-map* "C-x C-f"     #'browse-url)
 (define-key *emacs-map* "C-x plus"    #'zoom)
 (define-key *emacs-map* "C-x minus"   #'unzoom)
+(define-key *emacs-map* "C-x n"       #'next-tab)
+(define-key *emacs-map* "C-x p"       #'prev-tab)
+(define-key *emacs-map* "C-x k"       #'new-tab)
 
 
 (defun strip-irrelevant-mods (keys)

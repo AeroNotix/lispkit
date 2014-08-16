@@ -62,3 +62,12 @@
 (defun unzoom (browser)
   (with-webview wv browser
     (webkit.foreign:webkit-web-view-zoom-out wv)))
+
+(defun next-tab (browser)
+  (
+
+(defun prev-tab (browser)
+  )
+
+(defun new-tab (browser)
+  )
