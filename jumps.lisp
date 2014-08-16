@@ -16,7 +16,8 @@
 
 (defmacro multiple-value-destructuring-bind (lambda-list value-list &body body)
   (let ((ignore (gensym)))
-    `(destructuring-bind (,@lambda-list &rest ,ignore) (multiple-value-list ,value-list)
+    `(destructuring-bind (,@lambda-list &rest ,ignore)
+         (multiple-value-list ,value-list)
        (declare (ignore ,ignore))
        ,@body)))
 

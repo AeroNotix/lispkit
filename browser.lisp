@@ -48,7 +48,7 @@
                         (declare (ignore window))
                         (when (string= (parse-event event) "Return")
                           (let* ((buf (gtk:gtk-entry-buffer entry-box))
-                                (url (gtk:gtk-entry-buffer-get-text buf)))
+                                 (url (gtk:gtk-entry-buffer-get-text buf)))
                             (apply-jumps url)
                             (load-url url)
                             (gtk-widget-hide entry-box)))))
