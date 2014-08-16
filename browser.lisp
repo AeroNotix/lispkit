@@ -64,7 +64,7 @@
     (webkit.foreign:webkit-web-view-zoom-out wv)))
 
 (defun next-tab (browser)
-  (
+  )
 
 (defun prev-tab (browser)
   )
