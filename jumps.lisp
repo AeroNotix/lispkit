@@ -12,7 +12,7 @@
   (assoc s *jumps* :test #'string=))
 
 (defun extract-jump-str (s)
-  (split-sequence:split-sequence " " s :test #'string=))
+  (split-sequence " " s :test #'string=))
 
 (defmacro multiple-value-destructuring-bind (lambda-list value-list &body body)
   (let ((ignore (gensym)))
