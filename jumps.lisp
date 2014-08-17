@@ -3,13 +3,13 @@
 
 (defparameter *jumps* nil)
 
-(defun defjump (prefix url)
-  (push `(,prefix . ,url) *jumps*))
+(defmacro defjump (place prefix url)
+  `(push '(,prefix . ,url) ,place))
 
-(defjump "g" "http://google.com/search?=~a")
+(defjump *jumps* "g" "http://google.com/search?=~a")
 
-(defun lookup-jump (s)
-  (assoc s *jumps* :test #'string=))
+(defun lookup-jump (s &optional jumps)
+  (assoc s (or jumps *jumps*) :test #'string=))
 
 (defun extract-jump-str (s)
   (split-sequence " " s :test #'string=))
