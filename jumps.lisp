@@ -6,7 +6,7 @@
 (defun defjump (place prefix url)
   (setf (gethash prefix place) url))
 
-(defjump *jumps* "g" "http://google.com/search?=~a")
+(defjump *jumps* "g" "http://google.com/search?q=~a")
 
 (defun lookup-jump (s table)
   (gethash s table))
