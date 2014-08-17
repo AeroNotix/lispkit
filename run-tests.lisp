@@ -1,5 +1,7 @@
 (in-package   :cl-user)
-(ql:quickload :lispkit)
+
+(let ((*standard-output* (make-broadcast-stream)))
+  (ql:quickload :lispkit))
 (use-package  :lisp-unit)
 (in-package   :lispkit)
 
