@@ -2,15 +2,23 @@
 
 
 (defclass browser ()
-  ((tabs    :initarg :tabs :accessor tabs)
-   (ui      :initarg :ui
-            :initform (error "Cannot instantiate a browser without a UI object")
-            :accessor ui)
-   (webview :accessor webview
-            :initarg :webview
-            :initform (error "Cannot instantiate a browser without a webview object"))
-   (url-bar :initarg :url-bar)
-   (grabbing-keys? :initform nil :accessor grabbing-keys?)))
+  ((tabs
+    :initarg :tabs
+    :accessor tabs)
+   (ui
+    :initarg :ui
+    :initform (error "Cannot instantiate a browser without a UI object")
+    :accessor ui)
+   (webview
+    :accessor webview
+    :initarg :webview
+    :initform (error "Cannot instantiate a browser without a webview object"))
+   (url-bar
+    :initarg
+    :url-bar)
+   (grabbing-keys?
+    :initform nil
+    :accessor grabbing-keys?)))
 
 (defmacro with-webview (var browser &body body)
   `(let ((,var (webview ,browser)))
@@ -22,7 +30,8 @@
 (defun new-browser (ui webview)
   (let ((tabs (list webview)))
     (make-instance 'browser
-                   :ui ui :webview webview
+                   :ui ui
+                   :webview webview
                    :tabs tabs)))
 
 (defun load-url (url browser)

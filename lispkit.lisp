@@ -1,5 +1,6 @@
 (in-package :lispkit)
 
+
 (defun load-ui-from-file (path)
   (if (probe-file path)
       (let ((builder (gtk:gtk-builder-new)))
@@ -15,7 +16,7 @@
            (window (gtk:gtk-builder-get-object ui "mainwindow"))
            (frame  (gtk:gtk-builder-get-object ui "scrolledwindow"))
            (entry  (gtk:gtk-builder-get-object ui "entry_box"))
-           (view (webkit.foreign:webkit-web-view-new))
+           (view   (webkit.foreign:webkit-web-view-new))
            (browser (new-browser ui view)))
       (gtk-container-add frame view)
       (g-signal-connect window "key_press_event"
