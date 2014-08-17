@@ -13,6 +13,7 @@
                (:file "packages"))
   :depends-on (:cl-cffi-gtk
                :cl-webkit
+               :purl
                :cl-xkeysym
                :lisp-unit
                :split-sequence))
