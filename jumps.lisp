@@ -1,15 +1,15 @@
 (in-package :lispkit)
 
 
-(defparameter *jumps* nil)
+(defparameter *jumps* (make-hash-table :test #'equal))
 
-(defmacro defjump (place prefix url)
-  `(push '(,prefix . ,url) ,place))
+(defun defjump (place prefix url)
+  (setf (gethash prefix place) url))
 
 (defjump *jumps* "g" "http://google.com/search?=~a")
 
-(defun lookup-jump (s &optional jumps)
-  (assoc s (or jumps *jumps*) :test #'string=))
+(defun lookup-jump (s table)
+  (gethash s table))
 
 (defun extract-jump-str (s)
   (split-sequence " " s :test #'string=))
@@ -23,7 +23,7 @@
 
 (defun apply-jumps (s browser)
   (multiple-value-destructuring-bind ((jump args)) (extract-jump-str s)
-    (let ((jump (lookup-jump jump)))
-      (when jump
-        (print (format nil (cdr jump) args))
+    (let ((jump? (lookup-jump jump *jumps*)))
+      (when jump?
+        (load-url (format nil jump? args) browser)
         t))))
