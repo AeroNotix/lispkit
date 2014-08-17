@@ -33,3 +33,4 @@ Some videos
 
 * Control via SLIME: https://www.youtube.com/watch?v=9GJcct_FyVw
 * Keybinds: https://www.youtube.com/watch?v=NxiYnJ_JfRQ
+* Navigation: https://www.youtube.com/watch?v=wXQKZX96QDA
