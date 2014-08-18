@@ -9,12 +9,25 @@
                (:file "events"  :depends-on ("packages"))
                (:file "jumps"   :depends-on ("packages"))
                (:file "macros"  :depends-on ("packages"))
-               (:file "tests"   :depends-on ("packages"))
                (:file "packages"))
   :depends-on (:cl-cffi-gtk
                :cl-webkit
                :purl
                :cl-xkeysym
-               :lisp-unit
                :split-sequence
-               :asdf))
+               :asdf)
+  :in-order-to ((test-op (test-op :lispkit-test))))
+
+(defsystem lispkit-test
+  :version "0.0.1"
+  :description "Lispy browser"
+  :licence "BSD"
+  :components ((:module "test"
+                        :components
+                        ((:file "tests"))))
+  :depends-on (:lispkit :lisp-unit)
+  :perform (test-op (o s)
+                    ;; LISP-UNIT:RUN-ALL-TESTS is a macro, so it can't be called
+                    ;; like a function.
+                    (eval `(,(intern "RUN-ALL-TESTS" :lisp-unit)
+                            :lispkit-test))))
