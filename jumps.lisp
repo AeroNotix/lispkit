@@ -12,7 +12,8 @@
   (gethash s table))
 
 (defun extract-jump-str (s)
-  (split-sequence " " s :test #'string=))
+  (let ((splits (split-sequence #\Space s)))
+    (list (first splits) (format nil "~{~a~^ ~}" (rest splits)))))
 
 (defmacro multiple-value-destructuring-bind (lambda-list value-list &body body)
   (let ((ignore (gensym)))
