@@ -82,11 +82,15 @@
   (with-webview wv browser
     (webkit.foreign:webkit-web-view-zoom-out wv)))
 
+(defun move-tabs (browser op)
+  (let ((notebook (gtk:gtk-builder-get-object (ui browser) "webviewcontainer")))
+    (funcall op notebook)))
+
 (defun next-tab (browser)
-  )
+  (move-tabs browser #'gtk-notebook-next-page))
 
 (defun prev-tab (browser)
-  )
+  (move-tabs browser #'gtk-notebook-prev-page))
 
 (defun new-tab (browser)
   (create-new-tab browser))
