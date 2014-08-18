@@ -26,7 +26,6 @@
 
 (defgeneric create-new-tab (browser))
 
-
 (defmethod create-new-tab ((browser browser))
   (let* ((notebook   (gtk:gtk-builder-get-object (ui browser) "webviewcontainer"))
          (scrollview (gtk-scrolled-window-new))
