@@ -1,6 +1,9 @@
 (in-package :lispkit)
 
 
+(defparameter *default-page*
+  "http://www.github.com/AeroNotix/lispkit")
+
 (defun load-ui-from-file (path)
   (if (probe-file path)
       (let ((builder (gtk:gtk-builder-new)))
@@ -21,7 +24,7 @@
       (gtk-container-add frame view)
       (g-signal-connect window "key_press_event"
                         (new-key-dispatcher browser))
-      (load-url "http://www.github.com/AeroNotix/lispkit" browser)
+      (load-url *default-page* browser)
       (gtk-widget-hide entry)
       (dolist (widget (list window frame view))
         (gtk-widget-show widget)))))
