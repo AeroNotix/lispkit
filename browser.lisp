@@ -36,6 +36,7 @@
     (load-url *default-page* browser)
     (dolist (widget (list scrollview webview))
         (gtk-widget-show widget))))
+
 (defmethod initialize-instance :after ((browser browser) &key)
   (check-type (ui browser) gtk:gtk-builder))
 
