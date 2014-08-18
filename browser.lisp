@@ -24,6 +24,17 @@
   `(let ((,var (webview ,browser)))
      ,@body))
 
+(defgeneric create-new-tab (browser))
+
+
+(defmethod create-new-tab ((browser browser))
+  (let* ((notebook   (gtk:gtk-builder-get-object (ui browser) "webviewcontainer"))
+         (scrollview (gtk-scrolled-window-new))
+         (webview    (webkit.foreign:webkit-web-view-new)))
+    (gtk-container-add scrollview webview)
+    (gtk-notebook-append-page notebook scrollview (cffi:null-pointer))
+    (dolist (widget (list scrollview webview))
+        (gtk-widget-show widget))))
 (defmethod initialize-instance :after ((browser browser) &key)
   (check-type (ui browser) gtk:gtk-builder))
 
@@ -77,4 +88,4 @@
   )
 
 (defun new-tab (browser)
-  )
+  (create-new-tab browser))
