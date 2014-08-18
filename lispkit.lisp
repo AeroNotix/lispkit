@@ -14,13 +14,15 @@
 (defun main (&rest args)
   (declare (ignore args))
   (within-main-loop
-    (let* ((ui     (load-ui-from-file
-                    (asdf:system-relative-pathname :lispkit "main.ui")))
-           (window (gtk:gtk-builder-get-object ui "mainwindow"))
-           (frame  (gtk:gtk-builder-get-object ui "scrolledwindow"))
-           (entry  (gtk:gtk-builder-get-object ui "entry_box"))
-           (view   (webkit.foreign:webkit-web-view-new))
+    (let* ((ui      (load-ui-from-file
+                     (asdf:system-relative-pathname :lispkit "main.ui")))
+           (window  (gtk:gtk-builder-get-object ui "mainwindow"))
+           (frame   (gtk:gtk-builder-get-object ui "scrolledwindow"))
+           (entry   (gtk:gtk-builder-get-object ui "entry_box"))
+           (view    (webkit.foreign:webkit-web-view-new))
+           (nb      (gtk:gtk-builder-get-object ui "webviewcontainer"))
            (browser (new-browser ui view)))
+      (gtk-notebook-set-show-tabs nb nil)
       (gtk-container-add frame view)
       (g-signal-connect window "key_press_event"
                         (new-key-dispatcher browser))
