@@ -3,14 +3,15 @@
 (defun load-ui-from-file (path)
   (if (probe-file path)
       (let ((builder (gtk:gtk-builder-new)))
-        (gtk:gtk-builder-add-from-file builder path)
+        (gtk:gtk-builder-add-from-file builder (namestring path))
         builder)
       (error (format nil "non existent path: ~s" path))))
 
 (defun main (&rest args)
   (declare (ignore args))
   (within-main-loop
-    (let* ((ui     (load-ui-from-file "main.ui"))
+    (let* ((ui     (load-ui-from-file
+                    (asdf:system-relative-pathname :lispkit "main.ui")))
            (window (gtk:gtk-builder-get-object ui "mainwindow"))
            (frame  (gtk:gtk-builder-get-object ui "scrolledwindow"))
            (entry  (gtk:gtk-builder-get-object ui "entry_box"))

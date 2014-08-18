@@ -16,4 +16,5 @@
                :purl
                :cl-xkeysym
                :lisp-unit
-               :split-sequence))
+               :split-sequence
+               :asdf))
