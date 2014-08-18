@@ -2,7 +2,7 @@
 
 
 (defparameter *default-page*
-  "http://www.github.com/AeroNotix/lispkit")
+  "http://www.this-page-intentionally-left-blank.org/")
 
 (defun load-ui-from-file (path)
   (if (probe-file path)
