@@ -8,6 +8,8 @@
 
 (defjump *jumps* "g" "http://google.com/search?q=~a")
 (defjump *jumps* "gh" "https://github.com/search?&q=~a")
+(defjump *jumps* "y" "https://www.youtube.com/results?search_query=~a")
+
 
 (defun lookup-jump (s table)
   (gethash s table))
