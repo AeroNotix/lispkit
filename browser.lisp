@@ -32,6 +32,7 @@
          (webview    (webkit.foreign:webkit-web-view-new)))
     (gtk-container-add scrollview webview)
     (gtk-notebook-append-page notebook scrollview (cffi:null-pointer))
+    (setf (webview browser) webview)
     (load-url *default-page* browser)
     (dolist (widget (list scrollview webview))
         (gtk-widget-show widget))))
