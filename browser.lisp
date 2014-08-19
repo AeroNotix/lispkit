@@ -25,9 +25,10 @@
      ,@body))
 
 (defgeneric create-new-tab (browser))
+(defgeneric get-widget (browser widget-name))
 
 (defmethod create-new-tab ((browser browser))
-  (let* ((notebook   (gtk:gtk-builder-get-object (ui browser) "webviewcontainer"))
+  (let* ((notebook   (get-widget browser "webviewcontainer"))
          (scrollview (gtk-scrolled-window-new))
          (webview    (webkit.foreign:webkit-web-view-new)))
     (gtk-container-add scrollview webview)
@@ -36,6 +37,9 @@
     (load-url *default-page* browser)
     (dolist (widget (list scrollview webview))
         (gtk-widget-show widget))))
+
+(defmethod get-widget ((browser browser) widget-name)
+  (gtk:gtk-builder-get-object (ui browser) widget-name))
 
 (defmethod initialize-instance :after ((browser browser) &key)
   (check-type (ui browser) gtk:gtk-builder))
@@ -60,8 +64,7 @@
   (webkit.foreign:webkit-web-view-go-back (webview browser)))
 
 (defun browse-url (browser)
-  (let* ((ui (ui browser))
-         (entry-box (gtk:gtk-builder-get-object ui "entry_box")))
+  (let* ((entry-box (get-widget browser "entry_box")))
     (g-signal-connect entry-box "key_press_event"
                       (lambda (window event)
                         (declare (ignore window))
@@ -84,7 +87,7 @@
     (webkit.foreign:webkit-web-view-zoom-out wv)))
 
 (defun move-tabs (browser op)
-  (let ((notebook (gtk:gtk-builder-get-object (ui browser) "webviewcontainer")))
+  (let ((notebook (get-widget browser "webviewcontainer")))
     (funcall op notebook)))
 
 (defun next-tab (browser)
