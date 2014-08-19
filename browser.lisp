@@ -27,6 +27,12 @@
 (defgeneric create-new-tab (browser))
 (defgeneric get-widget (browser widget-name))
 
+
+(defun goto-last-tab (browser)
+  (let ((notebook (get-widget browser "webviewcontainer")))
+    (gtk-notebook-set-current-page
+     notebook (1- (gtk-notebook-get-n-pages notebook)))))
+
 (defmethod create-new-tab ((browser browser))
   (let* ((notebook   (get-widget browser "webviewcontainer"))
          (scrollview (gtk-scrolled-window-new))
@@ -37,6 +43,8 @@
     (load-url *default-page* browser)
     (dolist (widget (list scrollview webview))
         (gtk-widget-show widget))))
+    (goto-last-tab browser)
+    (values)))
 
 (defmethod get-widget ((browser browser) widget-name)
   (gtk:gtk-builder-get-object (ui browser) widget-name))
