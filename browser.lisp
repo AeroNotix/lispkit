@@ -42,7 +42,7 @@
     (setf (webview browser) webview)
     (load-url *default-page* browser)
     (dolist (widget (list scrollview webview))
-        (gtk-widget-show widget))))
+      (gtk-widget-show widget))
     (goto-last-tab browser)
     (values)))
 
