@@ -26,6 +26,8 @@
       (gtk-container-add frame view)
       (g-signal-connect window "key_press_event"
                         (new-key-dispatcher browser))
+      (g-signal-connect nb "switch-page"
+                        (new-page-listener browser))
       (load-url *default-page* browser)
       (gtk-widget-hide entry)
       (dolist (widget (list window frame view))

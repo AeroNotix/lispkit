@@ -25,7 +25,7 @@
   :components ((:module "test"
                         :components
                         ((:file "tests"))))
-  :depends-on (:lispkit :lisp-unit)
+  :depends-on (:lispkit :lisp-unit :alexandria)
   :perform (test-op (o s)
                     ;; LISP-UNIT:RUN-ALL-TESTS is a macro, so it can't be called
                     ;; like a function.

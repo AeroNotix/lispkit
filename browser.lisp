@@ -28,10 +28,20 @@
 (defgeneric get-widget (browser widget-name))
 
 
+(defun new-page-listener (browser)
+  (lambda (notebook page page-num)
+    (declare (ignore notebook page))
+    (setf (webview browser) (elt (tabs browser) page-num))))
+
 (defun goto-last-tab (browser)
   (let ((notebook (get-widget browser "webviewcontainer")))
     (gtk-notebook-set-current-page
      notebook (1- (gtk-notebook-get-n-pages notebook)))))
+
+(defmacro add-tab (browser tab)
+  (with-gensyms (br)
+    `(let ((,br ,browser))
+       (setf (tabs ,br) (append (tabs ,br) (list ,tab))))))
 
 (defmethod create-new-tab ((browser browser))
   (let* ((notebook   (get-widget browser "webviewcontainer"))
@@ -40,6 +50,7 @@
     (gtk-container-add scrollview webview)
     (gtk-notebook-append-page notebook scrollview (cffi:null-pointer))
     (setf (webview browser) webview)
+    (add-tab browser webview)
     (load-url *default-page* browser)
     (dolist (widget (list scrollview webview))
       (gtk-widget-show widget))
