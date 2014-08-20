@@ -82,9 +82,10 @@
 (defun backwards-page (browser)
   (webkit.foreign:webkit-web-view-go-back (webview browser)))
 
-(defmacro with-browser-input (browser (stop-key buf-contents) &body body)
-  (with-gensyms (window event buf entry-box)
-    `(let* ((,entry-box (get-widget ,browser "entry_box")))
+(defmacro with-browser-input (browser buf-contents &body body )
+  (with-gensyms (window event buf stop-key entry-box)
+    `(let* ((,entry-box (get-widget ,browser "entry_box"))
+            (,stop-key  "Return"))
        (g-signal-connect ,entry-box "key_press_event"
                          (lambda (,window ,event)
                            (declare (ignore ,window))
@@ -98,7 +99,7 @@
        (gtk:gtk-widget-show ,entry-box))))
 
 (defun browse-url (browser)
-  (with-browser-input browser ("Return" url)
+  (with-browser-input browser url
     (if (purl:url-p url)
         (load-url url browser)
         (apply-jumps url browser))))
