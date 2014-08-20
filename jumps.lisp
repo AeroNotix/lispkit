@@ -9,6 +9,7 @@
 (defjump *jumps* "g" "https://google.com/search?q=~a")
 (defjump *jumps* "gh" "https://github.com/search?&q=~a")
 (defjump *jumps* "y" "https://www.youtube.com/results?search_query=~a")
+(defjump *jumps* "r" "https://www.reddit.com/r/~a/")
 
 
 (defun lookup-jump (s table)
