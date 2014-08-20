@@ -82,20 +82,26 @@
 (defun backwards-page (browser)
   (webkit.foreign:webkit-web-view-go-back (webview browser)))
 
+(defmacro with-browser-input (browser (stop-key buf-contents) &body body)
+  (with-gensyms (window event buf entry-box)
+    `(let* ((,entry-box (get-widget ,browser "entry_box")))
+       (g-signal-connect ,entry-box "key_press_event"
+                         (lambda (,window ,event)
+                           (declare (ignore ,window))
+                           (when (string= (parse-event ,event) ,stop-key)
+                             (let* ((,buf (gtk:gtk-entry-buffer ,entry-box))
+                                    (,buf-contents
+                                     (gtk:gtk-entry-buffer-get-text ,buf)))
+                               ,@body
+                               (gtk-widget-hide ,entry-box)))))
+       (gtk:gtk-widget-grab-focus ,entry-box)
+       (gtk:gtk-widget-show ,entry-box))))
+
 (defun browse-url (browser)
-  (let* ((entry-box (get-widget browser "entry_box")))
-    (g-signal-connect entry-box "key_press_event"
-                      (lambda (window event)
-                        (declare (ignore window))
-                        (when (string= (parse-event event) "Return")
-                          (let* ((buf (gtk:gtk-entry-buffer entry-box))
-                                 (url (gtk:gtk-entry-buffer-get-text buf)))
-                            (if (purl:url-p url)
-                                (load-url url browser)
-                                (apply-jumps url browser))
-                            (gtk-widget-hide entry-box)))))
-    (gtk:gtk-widget-grab-focus entry-box)
-    (gtk:gtk-widget-show entry-box)))
+  (with-browser-input browser ("Return" url)
+    (if (purl:url-p url)
+        (load-url url browser)
+        (apply-jumps url browser))))
 
 (defun zoom (browser)
   (with-webview wv browser
