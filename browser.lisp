@@ -20,13 +20,41 @@
     :initform nil
     :accessor grabbing-keys?)))
 
+(defgeneric create-new-tab (browser))
+(defgeneric get-widget (browser widget-name))
+
 (defmacro with-webview (var browser &body body)
   `(let ((,var (webview ,browser)))
      ,@body))
 
-(defgeneric create-new-tab (browser))
-(defgeneric get-widget (browser widget-name))
+(defmacro with-browser-input (browser buf-contents &body body )
+  (with-gensyms (window event buf stop-key entry-box)
+    `(let* ((,entry-box (get-widget ,browser "entry_box"))
+            (,stop-key  "Return"))
+       (g-signal-connect ,entry-box "key_press_event"
+                         (lambda (,window ,event)
+                           (declare (ignore ,window))
+                           (when (string= (parse-event ,event) ,stop-key)
+                             (let* ((,buf (gtk:gtk-entry-buffer ,entry-box))
+                                    (,buf-contents
+                                     (gtk:gtk-entry-buffer-get-text ,buf)))
+                               ,@body
+                               (gtk-widget-hide ,entry-box)))))
+       (gtk:gtk-widget-grab-focus ,entry-box)
+       (gtk:gtk-widget-show ,entry-box))))
 
+(defmethod get-widget ((browser browser) widget-name)
+  (gtk:gtk-builder-get-object (ui browser) widget-name))
+
+(defmethod initialize-instance :after ((browser browser) &key)
+  (check-type (ui browser) gtk:gtk-builder))
+
+(defun new-browser (ui webview)
+  (let ((tabs (list webview)))
+    (make-instance 'browser
+                   :ui ui
+                   :webview webview
+                   :tabs tabs)))
 
 (defun new-page-listener (browser)
   (lambda (notebook page page-num)
@@ -57,58 +85,29 @@
     (goto-last-tab browser)
     (values)))
 
-(defmethod get-widget ((browser browser) widget-name)
-  (gtk:gtk-builder-get-object (ui browser) widget-name))
-
-(defmethod initialize-instance :after ((browser browser) &key)
-  (check-type (ui browser) gtk:gtk-builder))
-
-(defun new-browser (ui webview)
-  (let ((tabs (list webview)))
-    (make-instance 'browser
-                   :ui ui
-                   :webview webview
-                   :tabs tabs)))
-
 (defun load-url (url browser)
   (webkit.foreign:webkit-web-view-load-uri (webview browser) url))
 
-(defun reload-page (browser)
+(defcommand reload-page "Reload the current page." (browser)
   (webkit.foreign:webkit-web-view-reload (webview browser)))
 
-(defun forwards-page (browser)
+(defcommand forwards-page "Move forwards a page" (browser)
   (webkit.foreign:webkit-web-view-go-forward (webview browser)))
 
-(defun backwards-page (browser)
+(defcommand backwards-page "Move backwards a page." (browser)
   (webkit.foreign:webkit-web-view-go-back (webview browser)))
 
-(defmacro with-browser-input (browser buf-contents &body body )
-  (with-gensyms (window event buf stop-key entry-box)
-    `(let* ((,entry-box (get-widget ,browser "entry_box"))
-            (,stop-key  "Return"))
-       (g-signal-connect ,entry-box "key_press_event"
-                         (lambda (,window ,event)
-                           (declare (ignore ,window))
-                           (when (string= (parse-event ,event) ,stop-key)
-                             (let* ((,buf (gtk:gtk-entry-buffer ,entry-box))
-                                    (,buf-contents
-                                     (gtk:gtk-entry-buffer-get-text ,buf)))
-                               ,@body
-                               (gtk-widget-hide ,entry-box)))))
-       (gtk:gtk-widget-grab-focus ,entry-box)
-       (gtk:gtk-widget-show ,entry-box))))
-
-(defun browse-url (browser)
+(defcommand browse-url "Browse the the named URL." (browser)
   (with-browser-input browser url
     (if (purl:url-p url)
         (load-url url browser)
         (apply-jumps url browser))))
 
-(defun zoom (browser)
+(defcommand zoom "Zoom the browser view in." (browser)
   (with-webview wv browser
     (webkit.foreign:webkit-web-view-zoom-in wv)))
 
-(defun unzoom (browser)
+(defcommand unzoom "Unzoom the browser view." (browser)
   (with-webview wv browser
     (webkit.foreign:webkit-web-view-zoom-out wv)))
 
@@ -116,11 +115,11 @@
   (let ((notebook (get-widget browser "webviewcontainer")))
     (funcall op notebook)))
 
-(defun next-tab (browser)
+(defcommand next-tab "Move to the next tab." (browser)
   (move-tabs browser #'gtk-notebook-next-page))
 
-(defun prev-tab (browser)
+(defcommand prev-tab "Move to the next tab." (browser)
   (move-tabs browser #'gtk-notebook-prev-page))
 
-(defun new-tab (browser)
+(defcommand new-tab "Create a new tab." (browser)
   (create-new-tab browser))
