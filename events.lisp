@@ -1,5 +1,6 @@
 (in-package :lispkit)
 
+(defparameter *previous-event* nil)
 
 (defun strip-irrelevant-mods (keys)
   (remove-if
