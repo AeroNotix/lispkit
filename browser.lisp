@@ -15,6 +15,9 @@
     :initform (error "Cannot instantiate a browser without a webview object"))
    (url-bar
     :initarg :url-bar)
+   (grabbing-keys?
+    :initform nil
+    :accessor grabbing-keys?)
    (default-keymaps
     :initarg :default-keymaps
     :initform nil

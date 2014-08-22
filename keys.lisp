@@ -5,6 +5,14 @@
              :initform (make-hash-table :test #'equal)
              :accessor bindings)))
 
+(defun reset-key-state (browser)
+  (setf (keymaps browser) (default-keymaps browser))
+  (setf (grabbing-keys? browser) nil))
+
+(defmethod (setf keymaps) :after (keymaps (browser browser))
+  (unless (equal keymaps (default-keymaps browser))
+    (setf (grabbing-keys? browser) t)))
+
 (defun handle-key (browser key)
   (let ((binding (find-if #'identity
                           (mapcar (lambda (keymap)
@@ -18,7 +26,11 @@
        (setf (keymaps browser) binding))
       ((stringp binding)
        (run-named-command binding browser)
-       (setf (keymaps browser) (default-keymaps browser))))))
+       (reset-key-state browser))
+      ((grabbing-keys? browser) (reset-key-state browser))
+      (t (return-from handle-key nil)))
+    ;; If we reached this, we've handled the key in some way.
+    t))
 
 (defun make-key-dispatcher (browser)
   (lambda (window event)
