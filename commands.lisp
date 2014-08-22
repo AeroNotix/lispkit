@@ -8,12 +8,27 @@
    (implementation :initarg :impl :accessor impl)
    (documentation :initarg :doc :accessor doc)))
 
-(defmacro defcommand (name documentation arglist &body body)
-  `(make-instance 'command
-                  :name (symbol-name ',name)
-                  :impl #'(lambda ,arglist
-                            ,@body)
-                  :doc ,documentation))
+(define-condition command-documentation-warning (style-warning)
+  ((name :initarg :name :reader name))
+  (:report
+   (lambda (condition stream)
+     (format stream
+             "Command ~A doesn't have a documentation string"
+             (name condition)))))
+
+(defmacro defcommand (name arglist &body body)
+  (let ((documentation (if (stringp (first body))
+                           (first body)
+                           (warn (make-condition 'command-documentation-warning
+                                                 :name name))))
+        (body (if (stringp (first body))
+                  (rest body)
+                  body)))
+      `(make-instance 'command
+                   :name (symbol-name ',name)
+                   :impl #'(lambda ,arglist
+                             ,@body)
+                   :doc ,documentation)))
 
 (defmethod initialize-instance :after ((command command) &key)
   (with-slots (name) command
