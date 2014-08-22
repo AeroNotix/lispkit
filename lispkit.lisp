@@ -21,13 +21,13 @@
            (entry   (gtk:gtk-builder-get-object ui "entry_box"))
            (view    (webkit.foreign:webkit-web-view-new))
            (nb      (gtk:gtk-builder-get-object ui "webviewcontainer"))
-           (browser (new-browser ui view)))
+           (browser (make-browser ui view)))
       (gtk-notebook-set-show-tabs nb nil)
       (gtk-container-add frame view)
       (g-signal-connect window "key_press_event"
-                        (new-key-dispatcher browser))
+                        (make-key-dispatcher browser))
       (g-signal-connect nb "switch-page"
-                        (new-page-listener browser))
+                        (make-page-listener browser))
       (load-url *default-page* browser)
       (gtk-widget-hide entry)
       (dolist (widget (list window frame view))

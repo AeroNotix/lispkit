@@ -14,11 +14,18 @@
     :initarg :webview
     :initform (error "Cannot instantiate a browser without a webview object"))
    (url-bar
-    :initarg
-    :url-bar)
+    :initarg :url-bar)
    (grabbing-keys?
     :initform nil
-    :accessor grabbing-keys?)))
+    :accessor grabbing-keys?)
+   (default-keymaps
+    :initarg :default-keymaps
+    :initform nil
+    :accessor default-keymaps)
+   (keymaps
+    :initarg :keymaps
+    :initform nil
+    :accessor keymaps)))
 
 (defgeneric create-new-tab (browser))
 (defgeneric get-widget (browser widget-name))
@@ -49,14 +56,16 @@
 (defmethod initialize-instance :after ((browser browser) &key)
   (check-type (ui browser) gtk:gtk-builder))
 
-(defun new-browser (ui webview)
+(defun make-browser (ui webview &optional (keymaps (list *emacs-map*)))
   (let ((tabs (list webview)))
     (make-instance 'browser
                    :ui ui
                    :webview webview
-                   :tabs tabs)))
+                   :tabs tabs
+                   :default-keymaps keymaps
+                   :keymaps keymaps)))
 
-(defun new-page-listener (browser)
+(defun make-page-listener (browser)
   (lambda (notebook page page-num)
     (declare (ignore notebook page))
     (setf (webview browser) (elt (tabs browser) page-num))))

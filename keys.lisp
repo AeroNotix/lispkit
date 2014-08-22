@@ -1,82 +1,55 @@
 (in-package :lispkit)
 
-(defparameter *key-event-handlers* nil)
-(defparameter *emacs-key-handler* nil)
-(defparameter *emacs-map* (make-hash-table :test #'equal))
-(defparameter *previous-event* nil)
+(defclass keymap ()
+  ((bindings :initarg :bindings
+             :initform (make-hash-table :test #'equal)
+             :accessor bindings)))
 
+(defun reset-key-state (browser)
+  (setf (keymaps browser) (default-keymaps browser))
+  (setf (grabbing-keys? browser) nil))
 
-(defclass key-event-handler nil
-  ((key-map     :initarg :key-map :accessor key-map :initform (make-hash-table :test #'equal))
-   (key-events  :initform nil)
-   (recent-keys :initform nil :accessor recent-keys)
-   (prefix-keys :initarg :prefix-keys :initform nil :accessor prefix-keys)
-   (ungrab-keys :initform nil :initarg :ungrab-keys :accessor ungrab-keys)))
+(defmethod (setf keymaps) :after (keymaps (browser browser))
+  (unless (equal keymaps (default-keymaps browser))
+    (setf (grabbing-keys? browser) t)))
 
-(defun define-key (map key function-name)
-  (when (stringp function-name)
-    (setf (gethash key map) function-name)))
+(defun handle-key (browser key)
+  (let ((binding (find-if #'identity
+                          (mapcar (lambda (keymap)
+                                    (gethash key (bindings keymap)))
+                                  (keymaps browser)))))
+    (cond
+      ((typep binding 'keymap)
+       (setf (keymaps browser) (list binding)))
+      ((consp binding)
+       ;; We assume it's a list of keymaps
+       (setf (keymaps browser) binding))
+      ((stringp binding)
+       (run-named-command binding browser)
+       (reset-key-state browser))
+      ((grabbing-keys? browser) (reset-key-state browser))
+      (t (return-from handle-key nil)))
+    ;; If we reached this, we've handled the key in some way.
+    t))
 
-(define-key *emacs-map* "C-x F5"      "reload-page")
-(define-key *emacs-map* "C-x C-Left"  "backwards-page")
-(define-key *emacs-map* "C-x C-Right" "forwards-page")
-(define-key *emacs-map* "C-x C-f"     "browse-url")
-(define-key *emacs-map* "C-x plus"    "zoom")
-(define-key *emacs-map* "C-x minus"   "unzoom")
-(define-key *emacs-map* "C-x n"       "next-tab")
-(define-key *emacs-map* "C-x p"       "prev-tab")
-(define-key *emacs-map* "C-x k"       "new-tab")
-
-
-(defun if-any-handled? (responses)
-  (member :handled responses :test #'equal))
-
-(defun new-key-dispatcher (browser)
+(defun make-key-dispatcher (browser)
   (lambda (window event)
     (declare (ignore window))
-    (let* ((key-str (event-as-string event))
-           (handler-responses
-            (when key-str
-              (loop for handler in *key-event-handlers*
-                 collect (handle-key-event handler key-str browser)))))
-      (or (if-any-handled? handler-responses)
-          (grabbing-keys? browser)))))
+    (handle-key browser (event-as-string event))))
 
-(defun execute-pending-commands (handler browser)
-  (let* ((full-str  (format nil "~{~a~^ ~}" (reverse (recent-keys handler))))
-         (func-name (gethash full-str (key-map handler))))
-    (finish-output nil)
-    (if (stringp func-name)
-        (progn
-          (run-named-command func-name browser)
-          (reset-key-state handler browser)
-          :handled)
-        :unhandled)))
+(defun define-key (map key function-name)
+  (setf (gethash key (bindings map)) function-name))
 
-(defun reset-key-state (handler browser)
-  (setf (grabbing-keys? browser) nil)
-  (setf (recent-keys handler) nil))
+(defvar *emacs-map* (make-instance 'keymap))
+(defvar *emacs-c-x-map* (make-instance 'keymap))
 
-(defun handle-key-event (handler key-str browser)
-  (if (ungrab-key? handler key-str)
-      (reset-key-state handler browser)
-      (progn
-        (when (is-prefix-key? handler key-str)
-          (setf (grabbing-keys? browser) t))
-        (when (grabbing-keys? browser)
-          (push key-str (recent-keys handler))
-          (execute-pending-commands handler browser)))))
-
-(defun ungrab-key? (handler key-str)
-  (member key-str (ungrab-keys handler) :test #'equal))
-
-(defun is-prefix-key? (handler key-str)
-  (member key-str (prefix-keys handler) :test #'equal))
-
-(let ((prefix-keys '("C-x" "C-c"))
-      (ungrab-keys '("C-g")))
-  (setf *emacs-key-handler* (make-instance 'key-event-handler
-                                           :key-map *emacs-map*
-                                           :prefix-keys prefix-keys
-                                           :ungrab-keys ungrab-keys))
-  (push *emacs-key-handler* *key-event-handlers*))
+(define-key *emacs-map* "C-x" *emacs-c-x-map*)
+(define-key *emacs-c-x-map* "F5"      "reload-page")
+(define-key *emacs-c-x-map* "C-Left"  "backwards-page")
+(define-key *emacs-c-x-map* "C-Right" "forwards-page")
+(define-key *emacs-c-x-map* "C-f"     "browse-url")
+(define-key *emacs-c-x-map* "plus"    "zoom")
+(define-key *emacs-c-x-map* "minus"   "unzoom")
+(define-key *emacs-c-x-map* "n"       "next-tab")
+(define-key *emacs-c-x-map* "p"       "prev-tab")
+(define-key *emacs-c-x-map* "k"       "new-tab")
