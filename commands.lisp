@@ -8,12 +8,17 @@
    (implementation :initarg :impl :accessor impl)
    (documentation :initarg :doc :accessor doc)))
 
-(defmacro defcommand (name documentation arglist &body body)
-  `(make-instance 'command
-                  :name (symbol-name ',name)
-                  :impl #'(lambda ,arglist
-                            ,@body)
-                  :doc ,documentation))
+(defmacro defcommand (name arglist &body body)
+  (let ((documentation (if (stringp (first body))
+                           (first body)))
+        (body (if (stringp (first body))
+                  (rest body)
+                  body)))
+      `(make-instance 'command
+                   :name (symbol-name ',name)
+                   :impl #'(lambda ,arglist
+                             ,@body)
+                   :doc ,documentation)))
 
 (defmethod initialize-instance :after ((command command) &key)
   (with-slots (name) command

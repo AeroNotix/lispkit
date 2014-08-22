@@ -88,26 +88,32 @@
 (defun load-url (url browser)
   (webkit.foreign:webkit-web-view-load-uri (webview browser) url))
 
-(defcommand reload-page "Reload the current page." (browser)
+(defcommand reload-page (browser)
+  "Reload the current page."
   (webkit.foreign:webkit-web-view-reload (webview browser)))
 
-(defcommand forwards-page "Move forwards a page" (browser)
+(defcommand forwards-page (browser)
+  "Move forwards a page"
   (webkit.foreign:webkit-web-view-go-forward (webview browser)))
 
-(defcommand backwards-page "Move backwards a page." (browser)
+(defcommand backwards-page (browser)
+  "Move backwards a page."
   (webkit.foreign:webkit-web-view-go-back (webview browser)))
 
-(defcommand browse-url "Browse the the named URL." (browser)
+(defcommand browse-url (browser)
+  "Browse the the named URL."
   (with-browser-input browser url
     (if (purl:url-p url)
         (load-url url browser)
         (apply-jumps url browser))))
 
-(defcommand zoom "Zoom the browser view in." (browser)
+(defcommand zoom (browser)
+  "Zoom the browser view in."
   (with-webview wv browser
     (webkit.foreign:webkit-web-view-zoom-in wv)))
 
-(defcommand unzoom "Unzoom the browser view." (browser)
+(defcommand unzoom (browser)
+  "Unzoom the browser view."
   (with-webview wv browser
     (webkit.foreign:webkit-web-view-zoom-out wv)))
 
@@ -115,11 +121,14 @@
   (let ((notebook (get-widget browser "webviewcontainer")))
     (funcall op notebook)))
 
-(defcommand next-tab "Move to the next tab." (browser)
+(defcommand next-tab (browser)
+  "Move to the next tab."
   (move-tabs browser #'gtk-notebook-next-page))
 
-(defcommand prev-tab "Move to the next tab." (browser)
+(defcommand prev-tab (browser)
+  "Move to the next tab."
   (move-tabs browser #'gtk-notebook-prev-page))
 
-(defcommand new-tab "Create a new tab." (browser)
+(defcommand new-tab (browser)
+  "Create a new tab."
   (create-new-tab browser))
