@@ -11,13 +11,13 @@
                (:file "macros"  :depends-on ("packages"))
                (:file "commands" :depends-on ("packages"))
                (:file "packages"))
-  :depends-on (:cl-cffi-gtk
+  :depends-on (:asdf
+               :cl-cffi-gtk
                :cl-webkit
-               :purl
                :cl-xkeysym
                :djula
-               :split-sequence
-               :asdf)
+               :purl
+               :split-sequence)
   :in-order-to ((test-op (test-op :lispkit-test))))
 
 (defsystem lispkit-test
