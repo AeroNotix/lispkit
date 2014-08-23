@@ -5,6 +5,16 @@
              :initform (make-hash-table :test #'equal)
              :accessor bindings)))
 
+(defun keymap->keydesc* (name entry)
+  (if (typep entry 'keymap)
+      (list name (keymap->keydesc entry))
+      (list name entry (doc (first (command-p entry))))))
+
+(defun keymap->keydesc (entry)
+  (loop for key being the hash-keys of (bindings entry)
+          using (hash-value value)
+        collect (keymap->keydesc* key value)))
+
 (defun reset-key-state (browser)
   (setf (keymaps browser) (default-keymaps browser))
   (setf (grabbing-keys? browser) nil))
@@ -53,3 +63,4 @@
 (define-key *emacs-c-x-map* "n"       "next-tab")
 (define-key *emacs-c-x-map* "p"       "prev-tab")
 (define-key *emacs-c-x-map* "k"       "new-tab")
+(define-key *emacs-c-x-map* "h"       "open-manual")

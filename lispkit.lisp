@@ -4,6 +4,9 @@
 (defparameter *default-page*
   "http://www.this-page-intentionally-left-blank.org/")
 
+(djula:add-template-directory (asdf:system-relative-pathname :lispkit "templates/"))
+(defparameter +helppage+ (djula:compile-template* "helppage.dtl"))
+
 (defun load-ui-from-file (path)
   (if (probe-file path)
       (let ((builder (gtk:gtk-builder-new)))

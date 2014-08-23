@@ -141,3 +141,9 @@
 (defcommand new-tab (browser)
   "Create a new tab."
   (create-new-tab browser))
+
+(defcommand open-manual (browser)
+  "Open a help page describing all commands."
+  (let* ((keydescs (apply #'keymap->keydesc (default-keymaps browser)))
+         (html     (djula:render-template* +HELPPAGE+ nil :keymaps keydescs)))
+    (webkit.foreign:webkit-web-view-load-html (webview browser) html "")))

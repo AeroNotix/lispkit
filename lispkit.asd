@@ -15,6 +15,7 @@
                :cl-webkit
                :purl
                :cl-xkeysym
+               :djula
                :split-sequence
                :asdf)
   :in-order-to ((test-op (test-op :lispkit-test))))
