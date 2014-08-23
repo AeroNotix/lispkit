@@ -1,6 +1,6 @@
 (in-package :lispkit)
 
-
+;; TODO make this a hash-table
 (defparameter *available-commands* nil)
 
 (defclass command ()
