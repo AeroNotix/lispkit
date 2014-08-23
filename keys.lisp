@@ -10,10 +10,14 @@
       (list name (keymap->keydesc entry))
       (list name entry (doc (first (command-p entry))))))
 
-(defun keymap->keydesc (entry)
-  (loop for key being the hash-keys of (bindings entry)
-          using (hash-value value)
-        collect (keymap->keydesc* key value)))
+(defun keymap->keydesc (&rest entries)
+  (apply
+   #'append
+   (mapcar #'(lambda (entry)
+               (loop for key being the hash-keys of (bindings entry)
+                       using (hash-value value)
+                     collect (keymap->keydesc* key value)))
+           entries)))
 
 (defun reset-key-state (browser)
   (setf (keymaps browser) (default-keymaps browser))
