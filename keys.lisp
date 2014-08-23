@@ -51,9 +51,12 @@
   (setf (gethash key (bindings map)) function-name))
 
 (defvar *emacs-map* (make-instance 'keymap))
+(defvar *help-map*  (make-instance 'keymap))
 (defvar *emacs-c-x-map* (make-instance 'keymap))
+(defvar *help-c-h-map*  (make-instance 'keymap))
 
 (define-key *emacs-map* "C-x" *emacs-c-x-map*)
+(define-key *help-map*  "C-h" *help-c-h-map*)
 (define-key *emacs-c-x-map* "F5"      "reload-page")
 (define-key *emacs-c-x-map* "C-Left"  "backwards-page")
 (define-key *emacs-c-x-map* "C-Right" "forwards-page")
@@ -63,4 +66,4 @@
 (define-key *emacs-c-x-map* "n"       "next-tab")
 (define-key *emacs-c-x-map* "p"       "prev-tab")
 (define-key *emacs-c-x-map* "k"       "new-tab")
-(define-key *emacs-c-x-map* "h"       "open-manual")
+(define-key *help-c-h-map*  "m"       "open-manual")
