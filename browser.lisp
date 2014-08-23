@@ -142,6 +142,14 @@
   "Create a new tab."
   (create-new-tab browser))
 
+(defun close-current-page (notebook)
+  (let ((current-tab (gtk-notebook-get-current-page notebook)))
+    (gtk-notebook-remove-page notebook current-tab)))
+
+(defcommand close-tab (browser)
+  "Closes the current tab."
+  (close-current-page (get-widget browser "webviewcontainer")))
+
 (defcommand open-manual (browser)
   "Open a help page describing all commands."
   (create-new-tab browser)
