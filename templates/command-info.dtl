@@ -1,0 +1,6 @@
+<html>
+  <body>
+    <h3>{{ command-name }}</h3>
+    <p>{{ command-desc }}</p>
+  </body>
+</html>

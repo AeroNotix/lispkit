@@ -71,3 +71,4 @@
 (define-key *emacs-c-x-map* "p"       "prev-tab")
 (define-key *emacs-c-x-map* "k"       "new-tab")
 (define-key *help-c-h-map*  "m"       "open-manual")
+(define-key *help-c-h-map*  "f"       "describe-command")
