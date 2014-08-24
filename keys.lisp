@@ -83,6 +83,7 @@
 (define-key *emacs-c-x-map* "k" "new-tab")
 (define-key *emacs-c-x-map* "w" "close-tab")
 (define-key *emacs-c-x-map* "s" "i-search")
+(define-key *emacs-c-x-map* "p" "reload-config")
 
 (define-key *help-c-h-map*  "m" "open-manual")
 (define-key *help-c-h-map*  "f" "describe-command")
