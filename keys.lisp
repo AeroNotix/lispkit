@@ -5,6 +5,9 @@
              :initform (make-hash-table :test #'equal)
              :accessor bindings)))
 
+(defun make-keymap ()
+  (make-instance 'keymap))
+
 (defun keymap->keydesc* (name entry)
   (if (typep entry 'keymap)
       (list name (keymap->keydesc entry))
@@ -54,10 +57,10 @@
 (defun define-key (map key function-name)
   (setf (gethash key (bindings map)) function-name))
 
-(defvar *emacs-map* (make-instance 'keymap))
-(defvar *help-map*  (make-instance 'keymap))
-(defvar *emacs-c-x-map* (make-instance 'keymap))
-(defvar *help-c-h-map*  (make-instance 'keymap))
+(defvar *emacs-map* (make-keymap))
+(defvar *help-map*  (make-keymap))
+(defvar *emacs-c-x-map* (make-keymap))
+(defvar *help-c-h-map*  (make-keymap))
 
 (define-key *emacs-map* "C-x" *emacs-c-x-map*)
 (define-key *help-map*  "C-h" *help-c-h-map*)
