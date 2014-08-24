@@ -2,6 +2,7 @@
 
 ;; TODO make this a hash-table
 (defparameter *available-commands* nil)
+(defparameter *cancel-functions*   nil)
 
 (defclass command ()
   ((name :initarg :name :accessor name)
@@ -29,6 +30,10 @@
                    :impl #'(lambda ,arglist
                              ,@body)
                    :doc ,documentation)))
+(defmacro defcancel (name arglist &body body)
+  `(progn
+     (defun ,name ,arglist ,@body)
+     (push #',name *cancel-functions*)))
 
 (defmethod initialize-instance :after ((command command) &key)
   (with-slots (name) command
