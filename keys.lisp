@@ -61,7 +61,10 @@
 (defvar *help-map*  (make-keymap))
 (defvar *emacs-c-x-map* (make-keymap))
 (defvar *help-c-h-map*  (make-keymap))
+(defvar *top-map* (make-keymap))
 
+(define-key *top-map* "C-s" "search-next")
+(define-key *top-map* "C-r" "search-previous")
 (define-key *emacs-map* "C-x" *emacs-c-x-map*)
 (define-key *help-map*  "C-h" *help-c-h-map*)
 (define-key *emacs-c-x-map* "F5"      "reload-page")
@@ -74,5 +77,6 @@
 (define-key *emacs-c-x-map* "p"       "prev-tab")
 (define-key *emacs-c-x-map* "k"       "new-tab")
 (define-key *emacs-c-x-map* "w"       "close-tab")
+(define-key *emacs-c-x-map* "s"       "i-search")
 (define-key *help-c-h-map*  "m"       "open-manual")
 (define-key *help-c-h-map*  "f"       "describe-command")

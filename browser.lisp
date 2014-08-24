@@ -56,7 +56,7 @@
 (defmethod initialize-instance :after ((browser browser) &key)
   (check-type (ui browser) gtk:gtk-builder))
 
-(defun make-browser (ui webview &optional (keymaps (list *emacs-map* *help-map*)))
+(defun make-browser (ui webview &optional (keymaps (list *emacs-map* *help-map* *top-map*)))
   (let ((tabs (list webview)))
     (make-instance 'browser
                    :ui ui
@@ -172,3 +172,18 @@
                                                  :command-name command-name
                                                  :command-desc (doc command))))
       (webkit.foreign:webkit-web-view-load-html (webview browser) html ""))))
+
+(defcommand i-search (browser) "Executes a search on the current webview."
+  (with-browser-input browser search-term
+    (let ((fc (webkit.foreign:webkit-web-view-get-find-controller (webview browser))))
+      (webkit.foreign:webkit-find-controller-search fc search-term 1 1))))
+
+(defun search-with-direction (browser op)
+  (let ((fc (webkit.foreign:webkit-web-view-get-find-controller (webview browser))))
+    (funcall op fc)))
+
+(defcommand search-next (browser) "Finds the next instance of the search term."
+  (search-with-direction browser #'webkit.foreign:webkit-find-controller-search-next))
+
+(defcommand search-previous (browser) "Finds the previous instance of the search term."
+  (search-with-direction browser #'webkit.foreign:webkit-find-controller-search-previous))
