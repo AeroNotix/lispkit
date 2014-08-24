@@ -15,6 +15,16 @@
         builder)
       (error (format nil "non existent path: ~s" path))))
 
+(defun get-rc-file ()
+  (let* ((user-rc (probe-file (merge-pathnames (user-homedir-pathname) #p".lispkitrc")))
+         (conf-rc (probe-file (merge-pathnames #P".config/lispkit/config" (user-homedir-pathname))))
+         (etc-rc  (probe-file #p"/etc/lispkit")))
+    (or user-rc conf-rc etc-rc)))
+
+(defun load-rc-file ()
+  (let* ((rc (get-rc-file)))
+    (load rc)))
+
 (defun main (&rest args)
   (declare (ignore args))
   (within-main-loop
@@ -34,5 +44,7 @@
                         (make-page-listener browser))
       (load-url *default-page* browser)
       (gtk-widget-hide entry)
+      ;; TODO - Add error handling to this.
+      (load-rc-file)
       (dolist (widget (list window frame view))
         (gtk-widget-show widget)))))
