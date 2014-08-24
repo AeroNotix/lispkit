@@ -80,6 +80,9 @@
     `(let ((,br ,browser))
        (setf (tabs ,br) (append (tabs ,br) (list ,tab))))))
 
+(defun close-tab-at (browser i)
+  (gtk-widget-destroy (elt (tabs browser) i)))
+
 (defmethod create-new-tab ((browser browser))
   (let* ((notebook   (get-widget browser "webviewcontainer"))
          (scrollview (gtk-scrolled-window-new))
@@ -153,6 +156,7 @@
          (current-tab (gtk-notebook-get-current-page notebook))
          (tabs (remove-nth (tabs browser) current-tab)))
     (gtk-notebook-remove-page notebook current-tab)
+    (close-tab-at browser current-tab)
     (setf (tabs browser) tabs)))
 
 (defcommand open-manual (browser)
