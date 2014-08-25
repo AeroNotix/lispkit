@@ -25,11 +25,14 @@
         (body (if (stringp (first body))
                   (rest body)
                   body)))
-      `(make-instance 'command
-                   :name (symbol-name ',name)
-                   :impl #'(lambda ,arglist
-                             ,@body)
-                   :doc ,documentation)))
+    `(progn
+       (defun ,name ,arglist
+         ,@body)
+       (make-instance 'command
+                      :name (symbol-name ',name)
+                      :impl #',name
+                      :doc ,documentation))))
+
 (defmacro defcancel (name arglist &body body)
   `(progn
      (defun ,name ,arglist ,@body)
