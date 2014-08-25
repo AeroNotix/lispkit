@@ -199,4 +199,3 @@
   (let ((entry-box (get-widget browser "entry_box")))
     (gtk-widget-hide entry-box)
     (reset-key-state browser)))
-
