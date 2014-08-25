@@ -1,7 +1,6 @@
 (in-package :lispkit)
 
-;; TODO make this a hash-table
-(defparameter *available-commands* nil)
+(defparameter *available-commands* (make-hash-table :test #'equalp))
 (defparameter *cancel-functions*   nil)
 
 (defclass command ()
@@ -39,23 +38,19 @@
      (push #',name *cancel-functions*)))
 
 (defmethod initialize-instance :after ((command command) &key)
-  (with-slots (name) command
-    (setq *available-commands*
-          (remove-if #'(lambda (other-command)
-                         (equalp name (name other-command))) *available-commands*)))
-  (push command *available-commands*))
+  (setf (gethash (name command) *available-commands*) command))
 
 (defun command-match (name? command)
   (with-slots (name) command
     (equalp name name?)))
 
 (defun command-p (name)
-  (member name *available-commands* :test #'command-match))
+  (gethash name *available-commands*))
 
 (defun run-named-command (name browser)
   (let ((command (command-p name)))
     (when command
-      (with-slots (implementation) (first command)
+      (with-slots (implementation) command
         (funcall implementation browser)))))
 
 (defun get-rc-file ()
