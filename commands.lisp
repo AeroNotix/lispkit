@@ -56,8 +56,13 @@
         (funcall implementation browser)))))
 
 (defun get-rc-file ()
-  (let* ((user-rc (probe-file (merge-pathnames (user-homedir-pathname) #p".lispkitrc")))
-         (conf-rc (probe-file (merge-pathnames #P".config/lispkit/config" (user-homedir-pathname))))
+  (let* ((xdg-config-dir
+           (let ((dir (uiop:getenv "XDG_CONFIG_HOME")))
+             (if (or (not dir) (string= dir ""))
+                 (merge-pathnames  #p".config/" (user-homedir-pathname))
+                 dir)))
+         (user-rc (probe-file (merge-pathnames (user-homedir-pathname) #p".lispkitrc")))
+         (conf-rc (probe-file (merge-pathnames #P"lispkit/config" xdg-config-dir)))
          (etc-rc  (probe-file #p"/etc/lispkit")))
     (or user-rc conf-rc etc-rc)))
 
