@@ -193,7 +193,9 @@
   (search-with-direction browser #'webkit.foreign:webkit-find-controller-search-previous))
 
 (defcommand cancel (browser) "Cancels any pending commands or contextual UI elements."
-  (mapcar #'(lambda (fn) (funcall fn browser)) *cancel-functions*))
+  (maphash #'(lambda (name fn)
+               (declare (ignore name))
+               (funcall fn browser)) *cancel-functions*))
 
 (defcancel hide-input-bar (browser)
   (let ((entry-box (get-widget browser "entry_box")))

@@ -1,7 +1,7 @@
 (in-package :lispkit)
 
 (defparameter *available-commands* (make-hash-table :test #'equalp))
-(defparameter *cancel-functions*   nil)
+(defparameter *cancel-functions* (make-hash-table))
 
 (defclass command ()
   ((name :initarg :name :accessor name)
@@ -35,7 +35,7 @@
 (defmacro defcancel (name arglist &body body)
   `(progn
      (defun ,name ,arglist ,@body)
-     (push #',name *cancel-functions*)))
+     (setf (gethash ',name *cancel-functions*) #',name)))
 
 (defmethod initialize-instance :after ((command command) &key)
   (setf (gethash (name command) *available-commands*) command))
