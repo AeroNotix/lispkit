@@ -70,6 +70,19 @@
     (declare (ignore notebook page))
     (setf (webview browser) (elt (tabs browser) page-num))))
 
+(defun make-webview ()
+  (let ((ctx (make-default-context)))
+    (cl-webkit.foreign:webkit-web-view-new-with-context ctx)))
+
+(defun make-default-context ()
+  (let* ((ctx (cl-webkit.foreign:webkit-web-context-get-default))
+         (cm  (cl-webkit.foreign:webkit-web-context-get-cookie-manager ctx)))
+    (cl-webkit.foreign:webkit-cookie-manager-set-accept-policy
+     cm *cookie-accept-policy*)
+    (cl-webkit.foreign:webkit-cookie-manager-set-persistent-storage
+     cm (namestring (merge-pathnames "cookiez" *cookie-path-dir*)) *cookie-type*)
+    ctx))
+
 (defun goto-last-tab (browser)
   (let ((notebook (get-widget browser "webviewcontainer")))
     (gtk-notebook-set-current-page
@@ -86,7 +99,7 @@
 (defmethod create-new-tab ((browser browser))
   (let* ((notebook   (get-widget browser "webviewcontainer"))
          (scrollview (gtk-scrolled-window-new))
-         (webview    (webkit.foreign:webkit-web-view-new)))
+         (webview    (make-webview)))
     (gtk-container-add scrollview webview)
     (gtk-notebook-append-page notebook scrollview (cffi:null-pointer))
     (setf (webview browser) webview)

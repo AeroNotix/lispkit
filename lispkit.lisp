@@ -23,7 +23,7 @@
            (window  (gtk:gtk-builder-get-object ui "mainwindow"))
            (frame   (gtk:gtk-builder-get-object ui "scrolledwindow"))
            (entry   (gtk:gtk-builder-get-object ui "entry_box"))
-           (view    (webkit.foreign:webkit-web-view-new))
+           (view    (make-webview))
            (nb      (gtk:gtk-builder-get-object ui "webviewcontainer"))
            (browser (make-browser ui view)))
       (gtk-notebook-set-show-tabs nb nil)
