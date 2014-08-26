@@ -11,6 +11,7 @@
                (:file "macros"  :depends-on ("packages"))
                (:file "commands" :depends-on ("packages" "user"))
                (:file "user" :depends-on ("packages"))
+               (:file "settings")
                (:file "packages"))
   :depends-on (:asdf
                :cl-cffi-gtk
