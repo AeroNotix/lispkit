@@ -4,11 +4,11 @@
   :description "Lispy browser"
   :licence "BSD"
   :components ((:file "lispkit" :depends-on ("macros" "packages" "keys"))
-               (:file "keys"    :depends-on ("packages" "browser" "events" "commands"))
+               (:file "keys" :depends-on ("packages" "browser" "events" "commands"))
                (:file "browser" :depends-on ("packages" "events" "jumps" "commands" "settings"))
-               (:file "events"  :depends-on ("packages"))
-               (:file "jumps"   :depends-on ("packages"))
-               (:file "macros"  :depends-on ("packages"))
+               (:file "events" :depends-on ("packages"))
+               (:file "jumps" :depends-on ("packages"))
+               (:file "macros" :depends-on ("packages"))
                (:file "commands" :depends-on ("packages" "user"))
                (:file "user" :depends-on ("packages"))
                (:file "settings")
