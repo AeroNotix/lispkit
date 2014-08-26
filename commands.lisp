@@ -55,7 +55,7 @@
 
 (defun load-rc-file ()
   (let* ((rc (get-rc-file)))
-    (load rc)))
+    (when rc (load rc))))
 
 (defcommand reload-config (browser)
   (declare (ignore browser))
