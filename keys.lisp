@@ -11,7 +11,7 @@
 (defun keymap->keydesc* (name entry)
   (if (typep entry 'keymap)
       (list name (keymap->keydesc entry))
-      (list name entry (doc (first (command-p entry))))))
+      (list name entry (doc (command-p entry)))))
 
 (defun keymap->keydesc (&rest entries)
   (apply
