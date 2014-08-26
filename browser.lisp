@@ -157,9 +157,9 @@
   (create-new-tab browser))
 
 (defun remove-nth (list n)
-  (if (> n (length list))
+  (if (or (> n (length list)) (< n 0))
       list
-      (remove-if (constantly t) list :start (max (1- n) 0) :end n)))
+      (remove-if (constantly t) list :start (max (1- n) 0) :count 1)))
 
 (defcommand close-tab (browser)
   "Closes the current tab."
