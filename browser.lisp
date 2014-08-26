@@ -72,14 +72,14 @@
 
 (defun make-webview ()
   (let ((ctx (make-default-context)))
-    (cl-webkit.foreign:webkit-web-view-new-with-context ctx)))
+    (cl-webkit2:webkit-web-view-new-with-context ctx)))
 
 (defun make-default-context ()
-  (let* ((ctx (cl-webkit.foreign:webkit-web-context-get-default))
-         (cm  (cl-webkit.foreign:webkit-web-context-get-cookie-manager ctx)))
-    (cl-webkit.foreign:webkit-cookie-manager-set-accept-policy
+  (let* ((ctx (cl-webkit2:webkit-web-context-get-default))
+         (cm  (cl-webkit2:webkit-web-context-get-cookie-manager ctx)))
+    (cl-webkit2:webkit-cookie-manager-set-accept-policy
      cm *cookie-accept-policy*)
-    (cl-webkit.foreign:webkit-cookie-manager-set-persistent-storage
+    (cl-webkit2:webkit-cookie-manager-set-persistent-storage
      cm (namestring (merge-pathnames "cookiez" *cookie-path-dir*)) *cookie-type*)
     ctx))
 
@@ -109,19 +109,19 @@
     (values)))
 
 (defun load-url (url browser)
-  (webkit.foreign:webkit-web-view-load-uri (webview browser) url))
+  (webkit2:webkit-web-view-load-uri (webview browser) url))
 
 (defcommand reload-page (browser)
   "Reload the current page."
-  (webkit.foreign:webkit-web-view-reload (webview browser)))
+  (webkit2:webkit-web-view-reload (webview browser)))
 
 (defcommand forwards-page (browser)
   "Move forwards a page"
-  (webkit.foreign:webkit-web-view-go-forward (webview browser)))
+  (webkit2:webkit-web-view-go-forward (webview browser)))
 
 (defcommand backwards-page (browser)
   "Move backwards a page."
-  (webkit.foreign:webkit-web-view-go-back (webview browser)))
+  (webkit2:webkit-web-view-go-back (webview browser)))
 
 (defcommand browse-url (browser)
   "Browse the the named URL."
@@ -130,15 +130,15 @@
         (load-url url browser)
         (apply-jumps url browser))))
 
-(defcommand zoom (browser)
-  "Zoom the browser view in."
-  (with-webview wv browser
-    (webkit.foreign:webkit-web-view-zoom-in wv)))
+;; (defcommand zoom (browser)
+;;   "Zoom the browser view in."
+;;   (with-webview wv browser
+;;     (webkit2:webkit-web-view-zoom-in wv)))
 
-(defcommand unzoom (browser)
-  "Unzoom the browser view."
-  (with-webview wv browser
-    (webkit.foreign:webkit-web-view-zoom-out wv)))
+;; (defcommand unzoom (browser)
+;;   "Unzoom the browser view."
+;;   (with-webview wv browser
+;;     (webkit2:webkit-web-view-zoom-out wv)))
 
 (defun move-tabs (browser op)
   (let ((notebook (get-widget browser "webviewcontainer")))
@@ -175,7 +175,7 @@
   (create-new-tab browser)
   (let* ((keydescs (apply #'keymap->keydesc (default-keymaps browser)))
          (html     (djula:render-template* +helppage+ nil :keymaps keydescs)))
-    (webkit.foreign:webkit-web-view-load-html (webview browser) html "")))
+    (webkit2:webkit-web-view-load-html (webview browser) html "")))
 
 (defcommand describe-command (browser)
   "Describes what a command does."
@@ -186,22 +186,22 @@
                                                  nil
                                                  :command-name command-name
                                                  :command-desc (doc command))))
-      (webkit.foreign:webkit-web-view-load-html (webview browser) html ""))))
+      (webkit2:webkit-web-view-load-html (webview browser) html ""))))
 
 (defcommand i-search (browser) "Executes a search on the current webview."
   (with-browser-input browser search-term
-    (let ((fc (webkit.foreign:webkit-web-view-get-find-controller (webview browser))))
-      (webkit.foreign:webkit-find-controller-search fc search-term 1 1))))
+    (let ((fc (webkit2:webkit-web-get-find-controller (webview browser))))
+      (webkit2:webkit-find-controller-search fc search-term 1 1))))
 
 (defun search-with-direction (browser op)
-  (let ((fc (webkit.foreign:webkit-web-view-get-find-controller (webview browser))))
+  (let ((fc (webkit2::webkit-web-view-get-find-controller (webview browser))))
     (funcall op fc)))
 
 (defcommand search-next (browser) "Finds the next instance of the search term."
-  (search-with-direction browser #'webkit.foreign:webkit-find-controller-search-next))
+  (search-with-direction browser #'webkit2:webkit-find-controller-search-next))
 
 (defcommand search-previous (browser) "Finds the previous instance of the search term."
-  (search-with-direction browser #'webkit.foreign:webkit-find-controller-search-previous))
+  (search-with-direction browser #'webkit2:webkit-find-controller-search-previous))
 
 (defcommand cancel (browser) "Cancels any pending commands or contextual UI elements."
   (maphash #'(lambda (name fn)

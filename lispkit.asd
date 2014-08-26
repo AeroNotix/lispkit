@@ -15,7 +15,7 @@
                (:file "packages"))
   :depends-on (:asdf
                :cl-cffi-gtk
-               :cl-webkit
+               :cl-webkit2
                :cl-xkeysym
                :djula
                :purl
