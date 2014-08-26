@@ -88,10 +88,8 @@
     (gtk-notebook-set-current-page
      notebook (1- (gtk-notebook-get-n-pages notebook)))))
 
-(defmacro add-tab (browser tab)
-  (with-gensyms (br)
-    `(let ((,br ,browser))
-       (setf (tabs ,br) (append (tabs ,br) (list ,tab))))))
+(defun add-tab (browser tab)
+  (setf (tabs browser) (append (tabs browser) (list tab))))
 
 (defun close-tab-at (browser i)
   (gtk-widget-destroy (elt (tabs browser) i)))
