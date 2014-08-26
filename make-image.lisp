@@ -3,9 +3,7 @@
 (ql:quickload :lispkit)
 
 #+sbcl
-(sb-ext:save-lisp-and-die "lispkit"
-                          :toplevel #'lispkit:main
-                          :executable t)
+(sb-ext:save-lisp-and-die "lispkit" :toplevel #'lispkit:do-main :executable t)
 
 #+clisp
 (ext:saveinitmem "lispkit" :init-function (lambda ()
