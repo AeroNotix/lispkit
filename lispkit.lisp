@@ -46,4 +46,4 @@
 (defun do-main (&rest args)
   (declare (ignore args))
   (main t)
-  (gtk-main))
+  (join-gtk-main))
