@@ -16,6 +16,9 @@
       (error (format nil "non existent path: ~s" path))))
 
 (defun main (&optional (destroy? nil))
+  "Main exists separately from do-main so that during development we
+  can easily separate killing the main gtk loop from stopping and
+  starting applications within that main loop"
   (within-main-loop
     (let* ((ui      (load-ui-from-file
                      (asdf:system-relative-pathname :lispkit "main.ui")))
@@ -44,6 +47,7 @@
         (gtk-widget-show widget)))))
 
 (defun do-main (&rest args)
+  "The main entry point when running as an executable."
   (declare (ignore args))
   (main t)
   (join-gtk-main))
