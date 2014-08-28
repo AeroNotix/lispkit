@@ -8,3 +8,4 @@
 /scripts/pkg/*
 *.xz
 /scripts/src/lispkit
+/lispkit.tar.gz
