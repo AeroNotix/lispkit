@@ -1,21 +1,23 @@
 # Author: <aaron.l.france@gmail.com>
 # Maintainer:  <aaron.l.france@gmail.com>
 pkgname=lispkit-browser
-pkgver=1
+pkgver=2
 pkgrel=1
 epoch=
 pkgdesc="LispKit: A lispy, keyboard-driven browser written in Common Lisp."
 arch=('x86_64')
 url="https://github.com/AeroNotix/lispkit"
 license=('BSD')
-provides=('lispkit-browser')
-source=('http://zerolength.com/bin/lispkit')
-md5sums=('9da5483999eb588f3b80792b977f4a81')
-options=(!strip debug)
+provides=('lispkit')
+source=('http://zerolength.com/bin/lispkit.tar.gz')
+md5sums=('34bd3a3679d0e61d1f897b95f718b240')
 
+build() {
+  tar xvzf lispkit.tar.gz
+}
 
 package() {
-  install -Dm755 lispkit "${pkgdir}/usr/bin/lispkit"
+  install -Dm775 lispkit "${pkgdir}/usr/bin/lispkit"
 }
 
 # vim:set ts=2 sw=2 et:
