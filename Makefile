@@ -10,3 +10,8 @@ all:
 
 test:
 	@$(LISP) $($(LISP)_TEST_OPTS)
+
+tar: lispkit.tar.gz
+
+lispkit.tar.gz: lispkit
+	tar zcvf lispkit.tar.gz lispkit main.ui templates/
