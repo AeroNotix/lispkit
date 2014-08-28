@@ -15,13 +15,12 @@
         builder)
       (error (format nil "non existent path: ~a" path))))
 
-(defun main (&optional (destroy? nil))
+(defun main (&optional (destroy? nil) (ui-file (asdf:system-relative-pathname :lispkit "main.ui")))
   "Main exists separately from do-main so that during development we
   can easily separate killing the main gtk loop from stopping and
   starting applications within that main loop"
   (within-main-loop
-    (let* ((ui      (load-ui-from-file
-                     (asdf:system-relative-pathname :lispkit "main.ui")))
+    (let* ((ui      (load-ui-from-file ui-file))
            (window  (gtk:gtk-builder-get-object ui "mainwindow"))
            (frame   (gtk:gtk-builder-get-object ui "scrolledwindow"))
            (entry   (gtk:gtk-builder-get-object ui "entry_box"))
@@ -50,5 +49,5 @@
   "The main entry point when running as an executable. This should not
    be run directly but only indirectly when an image has been built."
   (declare (ignore args))
-  (main t)
+  (main t #P"/usr/share/lispkit/main.ui")
   (join-gtk-main))
