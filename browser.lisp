@@ -189,7 +189,7 @@
   "Describes what a command does."
   (create-new-tab browser)
   (with-browser-input browser command-name
-    (when-let* ((command (first (command-p command-name)))
+    (when-let* ((command (command-p command-name))
                 (html    (djula:render-template* +command-info+
                                                  nil
                                                  :command-name command-name
