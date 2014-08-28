@@ -13,7 +13,7 @@
       (let ((builder (gtk:gtk-builder-new)))
         (gtk:gtk-builder-add-from-file builder (namestring path))
         builder)
-      (error (format nil "non existent path: ~s" path))))
+      (error (format nil "non existent path: ~a" path))))
 
 (defun main (&optional (destroy? nil))
   "Main exists separately from do-main so that during development we
