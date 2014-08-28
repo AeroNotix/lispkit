@@ -196,6 +196,12 @@
                                                  :command-desc (doc command))))
       (webkit2:webkit-web-view-load-html (webview browser) html ""))))
 
+(defcommand run-command (browser)
+  "Runs a named command."
+  (with-browser-input browser command-name
+    (when-let* ((command (first (command-p command-name))))
+      (funcall (impl command) browser))))
+
 (defcommand i-search (browser) "Executes a search on the current webview."
   (with-browser-input browser search-term
     (let ((fc (webkit2:webkit-web-get-find-controller (webview browser))))

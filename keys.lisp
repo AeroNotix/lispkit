@@ -72,6 +72,7 @@
 (define-key *top-map* "C-SunPageDown" "prev-tab")
 (define-key *top-map* "F5" "reload-page")
 (define-key *top-map* "C-g" "cancel")
+(define-key *top-map* "M-x" "run-command")
 
 (define-key *emacs-c-x-map* "C-Left" "backwards-page")
 (define-key *emacs-c-x-map* "C-Right" "forwards-page")
