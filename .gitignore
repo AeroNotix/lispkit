@@ -3,3 +3,8 @@
 *.fasl
 *.lisp-temp
 /lispkit
+/scripts/lispkit
+/scripts/src/*
+/scripts/pkg/*
+*.xz
+/scripts/src/lispkit
