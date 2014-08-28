@@ -70,9 +70,15 @@
     (declare (ignore notebook page))
     (setf (webview browser) (elt (tabs browser) page-num))))
 
+(defun log-errors (wv user-data)
+  (declare (ignore wv user-data))
+  (format *error-output* "Error in webview.")
+  t)
+
 (defun make-webview ()
-  (let ((ctx (make-default-context)))
-    (cl-webkit2:webkit-web-view-new-with-context ctx)))
+  (let* ((ctx (make-default-context))
+         (wv (cl-webkit2:webkit-web-view-new-with-context ctx)))
+    (g-signal-connect wv "web-process-crashed" #'log-errors)))
 
 (defun make-default-context ()
   (let* ((ctx (cl-webkit2:webkit-web-context-get-default))
