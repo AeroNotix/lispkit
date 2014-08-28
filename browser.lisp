@@ -130,6 +130,8 @@
         (load-url url browser)
         (apply-jumps url browser))))
 
+;; TODO: Use the new API for these.
+;;
 ;; (defcommand zoom (browser)
 ;;   "Zoom the browser view in."
 ;;   (with-webview wv browser
