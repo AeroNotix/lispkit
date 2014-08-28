@@ -11,7 +11,10 @@
 (defun keymap->keydesc* (name entry)
   (if (typep entry 'keymap)
       (list name (keymap->keydesc entry))
-      (list name entry (doc (command-p entry)))))
+      (list name entry (let ((command (command-p entry)))
+                         (if command
+                             (doc command)
+                             (format nil "Command is not valid: ~a" entry))))))
 
 (defun keymap->keydesc (&rest entries)
   (apply
