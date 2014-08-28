@@ -78,7 +78,7 @@
 (defun make-webview ()
   (let* ((ctx (make-default-context))
          (wv (cl-webkit2:webkit-web-view-new-with-context ctx)))
-    (g-signal-connect wv "web-process-crashed" #'log-errors)))
+    wv))
 
 (defun make-default-context ()
   (let* ((ctx (cl-webkit2:webkit-web-context-get-default))
