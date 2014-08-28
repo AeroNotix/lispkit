@@ -47,7 +47,8 @@
         (gtk-widget-show widget)))))
 
 (defun do-main (&rest args)
-  "The main entry point when running as an executable."
+  "The main entry point when running as an executable. This should not
+   be run directly but only indirectly when an image has been built."
   (declare (ignore args))
   (main t)
   (join-gtk-main))
