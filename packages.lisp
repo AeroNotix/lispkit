@@ -11,4 +11,5 @@
            #:define-key
            #:make-keymap
            #:keymaps
-           #:handle-key))
+           #:handle-key
+           #:defcommand))

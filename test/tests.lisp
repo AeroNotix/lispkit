@@ -28,3 +28,17 @@
         (assert-equal (keymaps browser) (list third-map))
         (handle-key browser "oops")
         (assert-equal (keymaps browser) (list top-map)))))
+
+(defparameter pressed? nil)
+(defcommand foobar (_)
+  "Sets pressed? to t so we can ensure that this function was activated."
+  (declare (ignore _))
+  (setf pressed? t))
+
+(define-test key-map-functional-call
+    (let* ((top-map (make-keymap))
+           (browser (make-browser (make-ui-builder) (make-webview) (list top-map))))
+      (assert-false pressed?)
+      (define-key top-map "C-x" "foobar")
+      (handle-key browser "C-x")
+      (assert-true pressed?)))
