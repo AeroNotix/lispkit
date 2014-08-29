@@ -56,6 +56,9 @@
 (defmethod initialize-instance :after ((browser browser) &key)
   (check-type (ui browser) gtk:gtk-builder))
 
+(defun make-ui-builder ()
+  (gtk:gtk-builder-new))
+
 (defun make-browser (ui webview &optional (keymaps (list *emacs-map* *help-map* *top-map*)))
   (let ((tabs (list webview)))
     (make-instance 'browser

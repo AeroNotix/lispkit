@@ -4,4 +4,7 @@
         :split-sequence :alexandria)
   (:export #:do-main
            #:defjump
-           #:lookup-jump))
+           #:lookup-jump
+           #:make-browser
+           #:make-webview
+           #:make-ui-builder))

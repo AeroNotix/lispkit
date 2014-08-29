@@ -10,3 +10,7 @@
     (defjump jumps prefix url)
     (assert-equal 1 (hash-table-count jumps))
     (assert-equal url (lookup-jump prefix jumps))))
+
+(define-test make-simple-browser
+    (let ((browser (make-browser (make-ui-builder) (make-webview))))
+      browser))
