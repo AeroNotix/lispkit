@@ -1,8 +1,9 @@
 <html>
+  <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
   <body>
     <h3>LispKit cheatsheet</h3>
-    <table border=1>
-      <tr align=center>
+    <table class="table table-striped table-bordered table-hover table-condensed">
+      <tr>
         <td>Keybind</td>
         <td>Command</td>
         <td>Function</td>
