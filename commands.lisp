@@ -58,5 +58,6 @@
     (when rc (load rc))))
 
 (defcommand reload-config (browser)
+  "Reloads the configuration file."
   (declare (ignore browser))
   (load-rc-file))
