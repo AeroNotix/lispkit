@@ -241,3 +241,6 @@
 (defcancel finish-searching (browser)
   (let ((fc (webkit2:webkit-web-view-get-find-controller (webview browser))))
     (webkit2:webkit-find-controller-search-finish fc)))
+
+(defcancel stop-loading (browser)
+  (webkit2:webkit-web-view-stop-loading (webview browser)))
