@@ -33,7 +33,7 @@ sbcl --noinform --quit --eval \
 Status
 ------
 
-Very early work
+Very early work, but somewhat usable.
 
 Some videos
 
