@@ -237,3 +237,7 @@
   (let ((entry-box (get-widget browser "entry_box")))
     (gtk-widget-hide entry-box)
     (reset-key-state browser)))
+
+(defcancel finish-searching (browser)
+  (let ((fc (webkit2:webkit-web-view-get-find-controller (webview browser))))
+    (webkit2:webkit-find-controller-search-finish fc)))
