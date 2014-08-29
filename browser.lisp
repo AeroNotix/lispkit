@@ -215,11 +215,11 @@
 
 (defcommand i-search (browser) "Executes a search on the current webview."
   (with-browser-input browser search-term
-    (let ((fc (webkit2:webkit-web-get-find-controller (webview browser))))
+    (let ((fc (webkit2:webkit-web-view-get-find-controller (webview browser))))
       (webkit2:webkit-find-controller-search fc search-term 1 1))))
 
 (defun search-with-direction (browser op)
-  (let ((fc (webkit2::webkit-web-view-get-find-controller (webview browser))))
+  (let ((fc (webkit2:webkit-web-view-get-find-controller (webview browser))))
     (funcall op fc)))
 
 (defcommand search-next (browser) "Finds the next instance of the search term."
