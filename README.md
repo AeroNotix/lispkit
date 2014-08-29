@@ -9,11 +9,12 @@ Installation
 
 Ensure you have Quicklisp available locally.
 
-System deps
------------
+Requirements
+------------
 
 * libwebkitgtk
 * gtk2
+* sqlite (if you change the cookie backend, default does not require this)
 * A CL implementation (tested with SBCL so far)
 
 ```shell
