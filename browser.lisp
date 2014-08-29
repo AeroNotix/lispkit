@@ -121,6 +121,17 @@
   "Reload the current page."
   (webkit2:webkit-web-view-reload (webview browser)))
 
+(defcommand clear-cache (browser)
+  "Clears the browser's cache."
+  (declare (ignore browser))
+  (let ((ctx (webkit2:webkit-web-context-get-default)))
+    (webkit2:webkit-web-context-clear-cache ctx)))
+
+(defcommand reload-page-clear-cache (browser)
+  "Reload the page after clearing its cache."
+  (clear-cache browser)
+  (reload-page browser))
+
 (defcommand forwards-page (browser)
   "Move forwards a page"
   (webkit2:webkit-web-view-go-forward (webview browser)))

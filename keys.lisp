@@ -80,6 +80,7 @@
 (define-key *top-map* "C-SunPageUp" "next-tab")
 (define-key *top-map* "C-SunPageDown" "prev-tab")
 (define-key *top-map* "F5" "reload-page")
+(define-key *top-map* "C-F5" "reload-page-clear-cache")
 (define-key *top-map* "C-g" "cancel")
 (define-key *top-map* "M-x" "run-command")
 
