@@ -7,4 +7,8 @@
            #:lookup-jump
            #:make-browser
            #:make-webview
-           #:make-ui-builder))
+           #:make-ui-builder
+           #:define-key
+           #:make-keymap
+           #:keymaps
+           #:handle-key))
