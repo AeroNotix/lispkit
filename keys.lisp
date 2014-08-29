@@ -5,25 +5,31 @@
              :initform (make-hash-table :test #'equal)
              :accessor bindings)))
 
+(defclass keybind ()
+  ((key :initarg :key :accessor key)
+   (name :initarg :name :accessor name)
+   (command :initarg :command :accessor command)))
+
 (defun make-keymap ()
   (make-instance 'keymap))
 
-(defun keymap->keydesc* (name entry)
+(defun keymap->keydesc* (top-key name entry)
   (if (typep entry 'keymap)
-      (list name (keymap->keydesc entry))
-      (list name entry (let ((command (command-p entry)))
-                         (if command
-                             (doc command)
-                             (format nil "Command is not valid: ~a" entry))))))
+      (keymap->keydesc entry name)
+      (let ((key (if top-key
+                         (format nil "~a ~a" top-key name)
+                         name)))
+        (make-instance 'keybind :key key
+                       :name entry
+                       :command (if-let ((command (command-p entry)))
+                                  (doc command)
+                                  (format nil "Command is not valid: ~a" entry))))))
 
-(defun keymap->keydesc (&rest entries)
-  (apply
-   #'append
-   (mapcar #'(lambda (entry)
-               (loop for key being the hash-keys of (bindings entry)
-                       using (hash-value value)
-                     collect (keymap->keydesc* key value)))
-           entries)))
+(defun keymap->keydesc (entry &optional (top-key nil))
+  (flatten
+   (loop for key being the hash-keys of (bindings entry)
+      using (hash-value value)
+      collect (keymap->keydesc* top-key key value))))
 
 (defun reset-key-state (browser)
   (setf (keymaps browser) (default-keymaps browser))

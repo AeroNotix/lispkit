@@ -181,7 +181,7 @@
 (defcommand open-manual (browser)
   "Open a help page describing all commands."
   (create-new-tab browser)
-  (let* ((keydescs (apply #'keymap->keydesc (default-keymaps browser)))
+  (let* ((keydescs (mapcar #'keymap->keydesc (default-keymaps browser)))
          (html     (djula:render-template* +helppage+ nil :keymaps keydescs)))
     (webkit2:webkit-web-view-load-html (webview browser) html "")))
 

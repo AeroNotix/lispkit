@@ -1,14 +1,20 @@
 <html>
   <body>
-    <u><h3>LispKit cheatsheet</h3></u>
+    <h3>LispKit cheatsheet</h3>
+    <table border=1>
+      <tr align=center>
+        <td>Keybind</td>
+        <td>Command</td>
+        <td>Function</td>
+      </tr>
       {% for keymap in keymaps %}
-        <li>{{ keymap.0 }} map</li>
-        <ul>
-          {% for entry in keymap.1 %}
-            <li>{{ keymap.0 }} {{ entry.0 }} is bound to {{ entry.1 }}</li>
-          {% endfor %}
-        </ul>
+        {% for entry in keymap %}
+          <tr>
+            <td>{{ entry.key }}</td>
+            <td>{{entry.name}}</td>
+            <td>{{ entry.command }}</td>
+          </tr>
+        {% endfor %}
       {% endfor %}
-    </ul>
   </body>
 </html>
