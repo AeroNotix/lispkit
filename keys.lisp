@@ -85,6 +85,7 @@
 (define-key *top-map* "M-x" "run-command")
 (define-key *top-map* "C-plus" "zoom")
 (define-key *top-map* "C-minus" "unzoom")
+(define-key *top-map* "C-colon" "eval-in-page")
 
 (define-key *emacs-c-x-map* "C-Left" "backwards-page")
 (define-key *emacs-c-x-map* "C-Right" "forwards-page")

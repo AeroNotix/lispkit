@@ -218,6 +218,14 @@
     (when-let ((command (command-p command-name)))
       (funcall (impl command) browser))))
 
+(defcommand eval-in-page (browser)
+  "Evaluates parenscript expressions in the context of the current browser."
+  (with-browser-input browser expr
+    (let ((expr (read-from-string expr))
+          (wv (webview browser))
+          (np (cffi:null-pointer)))
+      (webkit2:webkit-web-view-run-javascript wv (eval `(ps:ps ,expr)) np np np))))
+
 (defcommand i-search (browser) "Executes a search on the current webview."
   (with-browser-input browser search-term
     (let ((fc (webkit2:webkit-web-view-get-find-controller (webview browser))))

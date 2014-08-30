@@ -18,6 +18,7 @@
                :cl-webkit2
                :cl-xkeysym
                :djula
+               :parenscript
                :purl
                :split-sequence)
   :in-order-to ((test-op (test-op :lispkit-test))))
