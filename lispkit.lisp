@@ -42,6 +42,7 @@
       (gtk-widget-hide entry)
       ;; TODO - Add error handling to this.
       (load-rc-file)
+      (gtk-window-maximize window)
       (dolist (widget (list window frame view))
         (gtk-widget-show widget)))))
 
