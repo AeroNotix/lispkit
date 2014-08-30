@@ -150,17 +150,19 @@
         (load-url url browser)
         (apply-jumps url browser))))
 
-;; TODO: Use the new API for these.
-;;
-;; (defcommand zoom (browser)
-;;   "Zoom the browser view in."
-;;   (with-webview wv browser
-;;     (webkit2:webkit-web-view-zoom-in wv)))
+(defun apply-zoom (browser amount)
+  (let* ((wv (webview browser))
+         (zoom-level (webkit2:webkit-web-view-get-zoom-level wv)))
+    (print zoom-level)
+    (webkit2:webkit-web-view-set-zoom-level wv (+ zoom-level amount))))
 
-;; (defcommand unzoom (browser)
-;;   "Unzoom the browser view."
-;;   (with-webview wv browser
-;;     (webkit2:webkit-web-view-zoom-out wv)))
+(defcommand zoom (browser)
+  "Zoom the browser view in."
+  (apply-zoom browser 0.1))
+
+(defcommand unzoom (browser)
+  "Unzoom the browser view."
+  (apply-zoom browser -0.1))
 
 (defun move-tabs (browser op)
   (let ((notebook (get-widget browser "webviewcontainer")))
