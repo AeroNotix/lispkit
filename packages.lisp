@@ -3,6 +3,7 @@
         :cl-webkit2 :glib :gio :pango :cairo :common-lisp
         :split-sequence :alexandria)
   (:export #:do-main
+           #:main
            #:defjump
            #:lookup-jump
            #:make-browser
