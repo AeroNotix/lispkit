@@ -215,7 +215,7 @@
 (defcommand run-command (browser)
   "Runs a named command."
   (with-browser-input browser command-name
-    (when-let* ((command (first (command-p command-name))))
+    (when-let ((command (command-p command-name)))
       (funcall (impl command) browser))))
 
 (defcommand i-search (browser) "Executes a search on the current webview."
