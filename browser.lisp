@@ -254,13 +254,16 @@
                (funcall fn browser)) *cancel-functions*))
 
 (defcancel hide-input-bar (browser)
+  "Hide the input bar if it's open."
   (let ((entry-box (get-widget browser "entry_box")))
     (gtk-widget-hide entry-box)
     (reset-key-state browser)))
 
 (defcancel finish-searching (browser)
+  "Finish searching. Basically unhighlights every match."
   (let ((fc (webkit2:webkit-web-view-get-find-controller (webview browser))))
     (webkit2:webkit-find-controller-search-finish fc)))
 
 (defcancel stop-loading (browser)
+  "Stop any loading operation going on."
   (webkit2:webkit-web-view-stop-loading (webview browser)))
