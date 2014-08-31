@@ -8,19 +8,30 @@
    (implementation :initarg :impl :accessor impl)
    (documentation :initarg :doc :accessor doc)))
 
-(define-condition command-documentation-warning (style-warning)
-  ((name :initarg :name :reader name))
+(define-condition documentation-style-warning (style-warning)
+  ((name :initarg :name :reader name)
+   (subject-type :initarg :subject-type :reader subject-type))
   (:report
    (lambda (condition stream)
      (format stream
-             "Command ~A doesn't have a documentation string"
+             "~:(~A~) ~A doesn't have a documentation string"
+             (subject-type condition)
              (name condition)))))
+
+(define-condition command-documentation-style-warning
+    (documentation-style-warning)
+  ((subject-type :initform 'command)))
+
+(define-condition cancel-documentation-style-warning
+    (documentation-style-warning)
+  ((subject-type :initform 'cancel)))
 
 (defmacro defcommand (name arglist &body body)
   (let ((documentation (if (stringp (first body))
                            (first body)
-                           (warn (make-condition 'command-documentation-warning
-                                                 :name name))))
+                           (warn (make-condition
+                                  'command-documentation-style-warning
+                                  :name name))))
         (body (if (stringp (first body))
                   (rest body)
                   body)))
@@ -33,6 +44,9 @@
                       :doc ,documentation))))
 
 (defmacro defcancel (name arglist &body body)
+  (unless (stringp (first body))
+    (warn (make-condition 'cancel-documentation-style-warning
+                          :name name)))
   `(progn
      (defun ,name ,arglist ,@body)
      (setf (gethash ',name *cancel-functions*) #',name)))
