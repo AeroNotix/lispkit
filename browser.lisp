@@ -80,7 +80,7 @@
 
 (defun make-webview ()
   (let* ((ctx (make-default-context))
-         (wv (cl-webkit2:webkit-web-view-new-with-context ctx)))
+         (wv (make-instance 'webkit2:webkit-web-view :context ctx)))
     wv))
 
 (defun make-default-context ()
@@ -152,9 +152,9 @@
 
 (defun apply-zoom (browser amount)
   (let* ((wv (webview browser))
-         (zoom-level (webkit2:webkit-web-view-get-zoom-level wv)))
+         (zoom-level (webkit2:webkit-web-view-zoom-level wv)))
     (print zoom-level)
-    (webkit2:webkit-web-view-set-zoom-level wv (+ zoom-level amount))))
+    (setf (webkit2:webkit-web-view-zoom-level wv) (+ zoom-level amount))))
 
 (defcommand zoom (browser)
   "Zoom the browser view in."
