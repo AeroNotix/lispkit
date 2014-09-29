@@ -154,10 +154,10 @@
 (defcommand browse-url (browser)
   "Browse the the named URL."
   (with-browser-input browser url
-    (let ((url (ensure-url-has-scheme url)))
-      (if (purl:url-p url)
-          (load-url url browser)
-          (apply-jumps url browser)))))
+    (or (and (purl:url-p url) (load-url url browser))
+        (and (purl:url-p (ensure-url-has-scheme url))
+             (load-url (ensure-url-has-scheme url) browser))
+        (apply-jumps url browser))))
 
 (defun apply-zoom (browser amount)
   (let* ((wv (webview browser))
