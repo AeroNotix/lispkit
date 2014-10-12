@@ -267,3 +267,8 @@
 (defcancel stop-loading (browser)
   "Stop any loading operation going on."
   (webkit2:webkit-web-view-stop-loading (webview browser)))
+
+(defcommand quit (browser)
+  "Quits the browser."
+  (declare (ignore browser))
+  (leave-gtk-main))
