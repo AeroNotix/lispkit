@@ -69,6 +69,7 @@
 (defvar *emacs-map* (make-keymap))
 (defvar *help-map* (make-keymap))
 (defvar *emacs-c-x-map* (make-keymap))
+(defvar *emacs-c-c-map* (make-keymap))
 (defvar *help-c-h-map* (make-keymap))
 (defvar *top-map* (make-keymap))
 
@@ -87,6 +88,9 @@
 (define-key *top-map* "C-minus" "unzoom")
 (define-key *top-map* "C-colon" "eval-in-page")
 
+(define-key *emacs-c-c-map* "C-x" "quit")
+
+(define-key *emacs-c-x-map* "C-c" *emacs-c-c-map*)
 (define-key *emacs-c-x-map* "C-Left" "backwards-page")
 (define-key *emacs-c-x-map* "C-Right" "forwards-page")
 (define-key *emacs-c-x-map* "C-f" "browse-url")
