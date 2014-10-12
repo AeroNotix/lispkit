@@ -2,7 +2,7 @@
 # Maintainer:  <aaron.l.france@gmail.com>
 pkgname=lispkit-browser
 pkgver=2
-pkgrel=3
+pkgrel=4
 pkgdesc="LispKit: A lispy, keyboard-driven browser written in Common Lisp."
 arch=('x86_64')
 url="https://github.com/AeroNotix/lispkit"
