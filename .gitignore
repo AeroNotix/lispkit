@@ -11,3 +11,5 @@
 /lispkit.tar.gz
 /scripts/main.ui
 *.gz
+/pkg/
+/src/
