@@ -8,18 +8,18 @@ arch=('x86_64')
 url="https://github.com/AeroNotix/lispkit"
 license=('BSD')
 provides=('lispkit')
+options=('!strip')
 source=('http://zerolength.com/bin/lispkit.tar.gz')
-md5sums=('90bc868ea6e412489fdab4c99ef3261e')
+md5sums=(':md5sum')
+depends=('webkitgtk')
+
 
 build() {
   tar xvzf lispkit.tar.gz
 }
 
 package() {
-  install -Dm775 lispkit   "${pkgdir}/usr/bin/lispkit"
-  install -Dm644 main.ui   "${pkgdir}/usr/share/lispkit/main.ui"
-  install -d "${pkgdir}/usr/share/lispkit/templates/"
-  install templates/* -m644 -t "${pkgdir}/usr/share/lispkit/templates/"
+  install -Dm775 lispkit "${pkgdir}/usr/bin/lispkit"
 }
 
 # vim:set ts=2 sw=2 et:
