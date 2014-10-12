@@ -90,16 +90,16 @@
 
 (define-key *emacs-c-c-map* "C-x" "quit")
 
-(define-key *emacs-c-x-map* "C-c" *emacs-c-c-map*)
 (define-key *emacs-c-x-map* "C-Left" "backwards-page")
 (define-key *emacs-c-x-map* "C-Right" "forwards-page")
+(define-key *emacs-c-x-map* "C-c" *emacs-c-c-map*)
 (define-key *emacs-c-x-map* "C-f" "browse-url")
+(define-key *emacs-c-x-map* "k" "new-tab")
 (define-key *emacs-c-x-map* "n" "next-tab")
 (define-key *emacs-c-x-map* "p" "prev-tab")
-(define-key *emacs-c-x-map* "k" "new-tab")
-(define-key *emacs-c-x-map* "w" "close-tab")
-(define-key *emacs-c-x-map* "s" "i-search")
 (define-key *emacs-c-x-map* "r" "reload-config")
+(define-key *emacs-c-x-map* "s" "i-search")
+(define-key *emacs-c-x-map* "w" "close-tab")
 
 (define-key *help-c-h-map*  "m" "open-manual")
 (define-key *help-c-h-map*  "f" "describe-command")
