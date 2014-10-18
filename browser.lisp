@@ -155,9 +155,10 @@
   "Browse the the named URL."
   (with-browser-input browser url
     (or (and (purl:url-p url) (load-url url browser))
+        (and (jump-p url)
+         (apply-jumps url browser))
         (and (purl:url-p (ensure-url-has-scheme url))
-             (load-url (ensure-url-has-scheme url) browser))
-        (apply-jumps url browser))))
+             (load-url (ensure-url-has-scheme url) browser)))))
 
 (defun apply-zoom (browser amount)
   (let* ((wv (webview browser))

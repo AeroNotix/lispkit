@@ -15,6 +15,9 @@
 (defun lookup-jump (s table)
   (gethash s table))
 
+(defun jump-p (url)
+  (lookup-jump (subseq url 0 (position #\Space url)) *jumps*))
+
 (defun extract-jump-str (s)
   (let ((splits (split-sequence #\Space s)))
     (list (first splits) (format nil "~{~a~^ ~}" (rest splits)))))
