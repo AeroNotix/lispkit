@@ -69,6 +69,7 @@
 (defvar *emacs-map* (make-keymap))
 (defvar *help-map* (make-keymap))
 (defvar *emacs-c-x-map* (make-keymap))
+(defvar *emacs-c-x-i-map* (make-keymap))
 (defvar *emacs-c-c-map* (make-keymap))
 (defvar *help-c-h-map* (make-keymap))
 (defvar *top-map* (make-keymap))
@@ -100,6 +101,12 @@
 (define-key *emacs-c-x-map* "r" "reload-config")
 (define-key *emacs-c-x-map* "s" "i-search")
 (define-key *emacs-c-x-map* "w" "close-tab")
+(define-key *emacs-c-x-map* "i" *emacs-c-x-i-map*)
+
+(define-key *emacs-c-x-i-map* "o" "inspector-open")
+(define-key *emacs-c-x-i-map* "c" "inspector-close")
+(define-key *emacs-c-x-i-map* "a" "inspector-attach")
+(define-key *emacs-c-x-i-map* "d" "inspector-detach")
 
 (define-key *help-c-h-map*  "m" "open-manual")
 (define-key *help-c-h-map*  "f" "describe-command")
