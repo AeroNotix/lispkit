@@ -24,3 +24,15 @@
 (defcommand inspector-detach (browser)
   "Detaches the webkit inspector tools."
   (webkit2:webkit-web-inspector-detach (inspector-get browser)))
+
+(defcommand inspector-toggle (browser)
+  "Toggles the state of webkit inspector tools."
+  (if (gtk-widget-is-visible (webkit2:webkit-web-inspector-get-web-view (inspector-get browser)))
+      (run-named-command "inspector-close" browser)
+      (run-named-command "inspector-open" browser)))
+
+(defcommand inspector-toggle-attachment (browser)
+  "Toggles the attachment state of webkit inspector tools."
+  (if (webkit2:webkit-web-inspector-is-attached (inspector-get browser))
+      (run-named-command "inspector-detach" browser)
+      (run-named-command "inspector-attach" browser)))
