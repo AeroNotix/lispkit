@@ -40,6 +40,7 @@
                             (leave-gtk-main))))
       (load-url *default-page* browser)
       (gtk-widget-hide entry)
+      (ensure-cookies-folder-exists *cookie-path-dir*)
       ;; TODO - Add error handling to this.
       (load-rc-file)
       (gtk-window-maximize window)
