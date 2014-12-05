@@ -19,7 +19,7 @@ Requirements
 
 * libwebkit2gtk
 * gtk2
-* sqlite (if you change the cookie backend, default does not require this)
+* SQLite (if you change the cookie backend, default does not require this)
 * A CL implementation (tested with SBCL so far)
 
 ```shell
