@@ -1,5 +1,6 @@
 lispkit
 =======
+
 [![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/AeroNotix/lispkit?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 ![Imgur](http://i.imgur.com/iWNSIWa.png)
@@ -16,7 +17,7 @@ Ensure you have [Quicklisp](http://quicklisp.org) available locally.
 Requirements
 ------------
 
-* libwebkitgtk
+* libwebkit2gtk
 * gtk2
 * sqlite (if you change the cookie backend, default does not require this)
 * A CL implementation (tested with SBCL so far)
