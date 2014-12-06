@@ -118,6 +118,7 @@
     (values)))
 
 (defun load-url (url browser)
+  "Load the url in the current webview of the browser."
   (webkit2:webkit-web-view-load-uri (webview browser) url))
 
 (defcommand reload-page (browser)
@@ -143,12 +144,21 @@
   "Move backwards a page."
   (webkit2:webkit-web-view-go-back (webview browser)))
 
+(defun ensure-url-has-scheme (url)
+  "Ensure that the URL is fully qualified, including the scheme (http://,
+  ftp://, etc)."
+  (if (search "://" url)
+      url
+      (format nil "http://~A" url)))
+
 (defcommand browse-url (browser)
   "Browse the the named URL."
   (with-browser-input browser url
-    (if (purl:url-p url)
-        (load-url url browser)
-        (apply-jumps url browser))))
+    (or (and (purl:url-p url) (load-url url browser))
+        (and (jump-p url)
+         (apply-jumps url browser))
+        (and (purl:url-p (ensure-url-has-scheme url))
+             (load-url (ensure-url-has-scheme url) browser)))))
 
 (defun apply-zoom (browser amount)
   (let* ((wv (webview browser))
