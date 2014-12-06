@@ -37,7 +37,7 @@ Status
 
 Very early work, but somewhat usable.
 
-Some videos
+Some videos:
 
 * Control via SLIME: https://www.youtube.com/watch?v=9GJcct_FyVw
 * Keybinds: https://www.youtube.com/watch?v=NxiYnJ_JfRQ
