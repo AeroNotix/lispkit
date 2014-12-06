@@ -22,6 +22,9 @@ Requirements
 * SQLite (if you change the cookie backend, default does not require this)
 * A Common Lisp implementation (tested with SBCL so far)
 
+How to
+------
+
 ```shell
 cd $QUICKLISP_HOME/local-projects
 git clone https://github.com/AeroNotix/cl-xkeysym.git
