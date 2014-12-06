@@ -8,6 +8,7 @@
                (:file "user")
                (:file "settings")
                (:file "commands")
+               (:file "commands/inspector")
                (:file "macros")
                (:file "jumps")
                (:file "events")
