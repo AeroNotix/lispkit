@@ -8,9 +8,8 @@
   "Open the webkit inspector tools."
   (let* ((web-view (webview browser))
          (inspector (webkit2:webkit-web-view-get-inspector web-view))
-         (enable-developer-extras (slot-value (webkit2:webkit-web-view-get-settings web-view) 'webkit2::enable-developer-extras)))
-    (unless enable-developer-extras
-      (setf enable-developer-extras t))
+         (enable-developer-extras ))
+    (setf (slot-value (webkit2:webkit-web-view-get-settings web-view) 'webkit2::enable-developer-extras) t)
     (webkit2:webkit-web-inspector-show inspector)))
 
 (defcommand inspector-close (browser)
