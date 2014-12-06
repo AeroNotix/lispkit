@@ -20,7 +20,7 @@ Requirements
 * libwebkit2gtk
 * gtk2
 * SQLite (if you change the cookie backend, default does not require this)
-* A CL implementation (tested with SBCL so far)
+* A Common Lisp implementation (tested with SBCL so far)
 
 ```shell
 cd $QUICKLISP_HOME/local-projects
