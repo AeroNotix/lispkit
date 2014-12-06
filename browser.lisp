@@ -192,7 +192,9 @@
          (tabs (remove-nth (tabs browser) current-tab)))
     (gtk-notebook-remove-page notebook current-tab)
     (close-tab-at browser current-tab)
-    (setf (tabs browser) tabs)))
+    (setf (tabs browser) tabs)
+    (when (not (tabs browser))
+      (quit nil))))
 
 (defcommand open-manual (browser)
   "Open a help page describing all commands."
