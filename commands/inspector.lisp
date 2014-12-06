@@ -1,5 +1,6 @@
 (in-package :lispkit)
 
+
 (defun inspector-get (browser)
   "Gets the webkit inspector of a browser instance."
   (webkit2:webkit-web-view-get-inspector (webview browser)))
