@@ -11,7 +11,8 @@ A lisp web browser using WebKit
 Installation
 ------------
 
-Ensure you have [Quicklisp](http://quicklisp.org) available locally.
+Ensure you have [Quicklisp](http://quicklisp.org) available
+locally. There is a tutorial regarding installtion on that page.
 
 Requirements
 ------------
