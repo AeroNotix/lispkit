@@ -12,7 +12,7 @@ Installation
 ------------
 
 Ensure you have [Quicklisp](http://quicklisp.org) available
-locally. There is a tutorial regarding installtion on that page.
+locally. There is a tutorial regarding installation on that page.
 
 Requirements
 ------------
