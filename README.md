@@ -17,6 +17,11 @@ locally. There is a tutorial regarding installation on that page.
 Requirements
 ------------
 
+* Linux, this is a soft-requirement as I haven't tested at all on Mac.
+Windows support is not on the roadmap at all.
+  * Probably needs some work on cl-webkit2 to get the libraries found.
+  * Probably needs some work on the underlying gtk libraries too.
+  * Help wanted!
 * libwebkit2gtk
 * gtk2
 * SQLite (if you change the cookie backend, default does not require this)
