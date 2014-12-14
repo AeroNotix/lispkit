@@ -13,3 +13,4 @@
 *.gz
 /pkg/
 /src/
+*.deb
