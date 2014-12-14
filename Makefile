@@ -1,4 +1,5 @@
 LISP ?= sbcl
+DEBUILD = /tmp/lispkit
 APP_NAME = lispkit
 PKG_NAME = lispkit-browser
 DEPLOY_HOST = zerolength.com
@@ -20,6 +21,9 @@ all: $(APP_NAME)
 deploy: $(APP_NAME).tar.gz
 	rsync -a $< $(SCP_DEPLOY)
 
+deb-package: $(APP_NAME)_debian.tar.gz
+	fpm -s tar -t deb $<
+
 aur-package: deploy
 	sed -i 's/:md5sum/$(shell md5sum $(APP_NAME).tar.gz | cut -d' ' -f1)/g' $(PKGBUILD_FILE) && \
 		makepkg -sf && \
@@ -33,7 +37,12 @@ $(APP_NAME): $(SOURCES)
 test:
 	@$(LISP) $($(LISP)_TEST_OPTS)
 
-tar: lispkit.tar.gz
+tar: $(APP_NAME).tar.gz
 
 $(APP_NAME).tar.gz: lispkit
-	tar zcvf lispkit.tar.gz lispkit
+	tar zcvf $@ lispkit
+
+$(APP_NAME)_debian.tar.gz: lispkit
+	mkdir -p ./opt/sbin/
+	cp lispkit ./opt/sbin/
+	tar zcvf $@ -C ./opt/sbin/ lispkit
