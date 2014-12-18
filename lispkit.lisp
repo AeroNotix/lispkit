@@ -27,8 +27,11 @@
            (window  (gtk:gtk-builder-get-object ui "mainwindow"))
            (frame   (gtk:gtk-builder-get-object ui "scrolledwindow"))
            (entry   (gtk:gtk-builder-get-object ui "entry_box"))
+           (ib      (gtk:gtk-builder-get-object ui "infobar1"))
+           (c-area  (gtk:gtk-info-bar-get-content-area ib))
            (view    (make-webview))
            (nb      (gtk:gtk-builder-get-object ui "webviewcontainer"))
+           (lbl     (gtk:gtk-builder-get-object ui "message-area"))
            (browser (make-browser ui view)))
       (gtk-notebook-set-show-tabs nb nil)
       (gtk-container-add frame view)
@@ -48,7 +51,8 @@
       ;; TODO - Add error handling to this.
       (load-rc-file)
       (gtk-window-maximize window)
-      (dolist (widget (list window frame view))
+      (gtk:gtk-container-add c-area lbl)
+      (dolist (widget (list window frame view ib lbl))
         (gtk-widget-show widget)))))
 
 (defun do-main (&rest args)
