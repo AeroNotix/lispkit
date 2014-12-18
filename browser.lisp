@@ -118,7 +118,9 @@
     (values)))
 
 (defun load-url (url browser)
-  (webkit2:webkit-web-view-load-uri (webview browser) url))
+  (let ((lbl (get-widget browser "message-area"  )))
+    (webkit2:webkit-web-view-load-uri (webview browser) url)
+    (gtk:gtk-label-set-text lbl url)))
 
 (defcommand reload-page (browser)
   "Reload the current page."
