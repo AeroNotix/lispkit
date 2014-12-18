@@ -15,6 +15,9 @@
     (gtk:gtk-builder-add-from-string builder contents)
     builder))
 
+
+(defparameter *default-browser* nil)
+
 (defun main (&optional (destroy? nil))
   "Main exists separately from do-main so that during development we
   can easily separate killing the main gtk loop from stopping and
@@ -39,6 +42,7 @@
                             (declare (ignore widget))
                             (leave-gtk-main))))
       (load-url *default-page* browser)
+      (setf *default-browser* browser)
       (gtk-widget-hide entry)
       (ensure-cookies-folder-exists *cookie-path-dir*)
       ;; TODO - Add error handling to this.
