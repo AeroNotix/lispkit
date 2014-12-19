@@ -44,7 +44,7 @@
                            (when (string= (parse-event ,event) ,stop-key)
                              (let* ((,buf (gtk:gtk-entry-buffer ,entry-box))
                                     (,buf-contents
-                                     (gtk:gtk-entry-buffer-get-text ,buf)))
+                                     (gtk:gtk-entry-buffer-text ,buf)))
                                ,@body
                                (gtk-widget-hide ,entry-box)))))
        (gtk:gtk-widget-grab-focus ,entry-box)
