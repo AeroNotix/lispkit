@@ -202,7 +202,12 @@
   "Open a help page describing all commands."
   (create-new-tab browser)
   (let* ((keydescs (mapcar #'keymap->keydesc (default-keymaps browser)))
-         (html     (djula:render-template* +helppage+ nil :keymaps keydescs)))
+         (commands (loop for command being the hash-values in *available-commands*
+                         collect (list :name (name command)
+                                       :documentation (doc command))))
+         (html     (djula:render-template* +helppage+ nil
+                                           :keymaps keydescs
+                                           :commands commands)))
     (webkit2:webkit-web-view-load-html (webview browser) html "")))
 
 (defcommand describe-command (browser)

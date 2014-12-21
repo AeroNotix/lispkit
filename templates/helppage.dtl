@@ -1,7 +1,8 @@
 <html>
   <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
   <body>
-    <h3>LispKit cheatsheet</h3>
+    <h1>LispKit cheatsheet</h1>
+    <h2>Key bindings</h2>
     <table class="table table-striped table-bordered table-hover table-condensed">
       <tr>
         <td>Keybind</td>
@@ -17,5 +18,19 @@
           </tr>
         {% endfor %}
       {% endfor %}
+    </table>
+    <h2>Commands</h2>
+    <table class="table table-striped table-bordered table-hover table-condensed">
+      <tr>
+        <td>Command</td>
+        <td>Function</td>
+      </tr>
+      {% for command in commands %}
+        <tr>
+          <td>{{ command.name }}</td>
+          <td>{{ command.documentation }}</td>
+        </tr>
+      {% endfor %}
+    </table>
   </body>
 </html>
