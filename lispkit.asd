@@ -17,6 +17,7 @@
                (:file "keys")
                (:file "lispkit"))
   :depends-on (:asdf
+               :alexandria
                :cl-cffi-gtk
                :cl-ppcre
                :cl-webkit2

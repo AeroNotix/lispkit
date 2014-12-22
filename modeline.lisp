@@ -11,10 +11,9 @@
     (lparallel.queue:pop-queue queue)))
 
 (defun render-modeline (lbl modeline-state)
-  (let* ((url (gethash :url modeline-state)))
-    (when (and url)
-      (let ((rendered-modeline (cl-ppcre:regex-replace-all "~url" *modeline-format* url)))
-        (gtk:gtk-label-set-text lbl (format nil "~A" rendered-modeline))))))
+  (when-let* ((url (gethash :url modeline-state)))
+    (let ((rendered-modeline (cl-ppcre:regex-replace-all "~url" *modeline-format* url)))
+      (gtk:gtk-label-set-text lbl (format nil "~A" rendered-modeline)))))
 
 (defun start-modeloop (lbl)
   (let ((queue    (lparallel.queue:make-queue))
