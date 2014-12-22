@@ -24,11 +24,10 @@
        (loop
           while (not *modeline-quit*)
           do
-            (progn
-              (when-let ((msg (try-pop-queue queue)))
-                (setf (gethash (first msg) ml-state) (second msg)))
-              (sleep *modeline-tick-seconds*)
-              (render-modeline lbl ml-state)))))
+            (when-let ((msg (try-pop-queue queue)))
+              (setf (gethash (first msg) ml-state) (second msg)))
+            (sleep *modeline-tick-seconds*)
+            (render-modeline lbl ml-state))))
     queue))
 
 (defun stop-modeline ()
