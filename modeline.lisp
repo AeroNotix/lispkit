@@ -4,18 +4,22 @@
 (defparameter *modeline-tick-seconds* 0.1)
 (defparameter *modeline-quit* nil)
 (defparameter *modeline-format* "~url")
-
+(defparameter *modeline-expander*
+  (lambda (browser modeline-state)
+    (declare (ignore modeline-state))
+    (let* ((lbl (get-widget browser "message-area"))
+           (url (current-uri browser))
+           (rendered-modeline (cl-ppcre:regex-replace-all "~url" *modeline-format* url)))
+      (gtk:gtk-label-set-text lbl (format nil "~A" rendered-modeline)))))
 
 (defun try-pop-queue (queue)
   (when (lparallel.queue:peek-queue queue)
     (lparallel.queue:pop-queue queue)))
 
 (defun render-modeline (lbl modeline-state)
-  (when-let* ((url (gethash :url modeline-state)))
-    (let ((rendered-modeline (cl-ppcre:regex-replace-all "~url" *modeline-format* url)))
-      (gtk:gtk-label-set-text lbl (format nil "~A" rendered-modeline)))))
+  (funcall *modeline-expander* lbl modeline-state))
 
-(defun start-modeloop (lbl)
+(defun start-modeloop (browser)
   (let ((queue    (lparallel.queue:make-queue))
         (ml-state (make-hash-table :test #'equalp)))
     (bordeaux-threads:make-thread
@@ -26,7 +30,7 @@
             (when-let ((msg (try-pop-queue queue)))
               (setf (gethash (first msg) ml-state) (second msg)))
             (sleep *modeline-tick-seconds*)
-            (render-modeline lbl ml-state))))
+            (render-modeline browser ml-state))))
     queue))
 
 (defun stop-modeline ()
