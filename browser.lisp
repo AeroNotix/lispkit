@@ -9,6 +9,10 @@
     :initarg :ui
     :initform (error "Cannot instantiate a browser without a UI object")
     :accessor ui)
+   (modeline
+    :initarg :modeline
+    :initform (error "Cannot instantiate a browser without a modeline")
+    :accessor modeline)
    (webview
     :accessor webview
     :initarg :webview
@@ -60,13 +64,21 @@
   (gtk:gtk-builder-new))
 
 (defun make-browser (ui webview &optional (keymaps (list *emacs-map* *help-map* *top-map*)))
-  (let ((tabs (list webview)))
+  (let* ((tabs (list webview))
+         (lbl  (gtk:gtk-builder-get-object ui "message-area"))
+         (ml   (start-modeloop lbl)))
     (make-instance 'browser
                    :ui ui
+                   :modeline ml
                    :webview webview
                    :tabs tabs
                    :default-keymaps keymaps
                    :keymaps keymaps)))
+
+(defun push-modeline (place thing browser)
+  (let ((q   (modeline browser))
+        (msg (list place thing)))
+    (lparallel.queue:push-queue msg q)))
 
 (defun make-page-listener (browser)
   (lambda (notebook page page-num)
@@ -120,7 +132,7 @@
 (defun load-url (url browser)
   (let ((lbl (get-widget browser "message-area"  )))
     (webkit2:webkit-web-view-load-uri (webview browser) url)
-    (gtk:gtk-label-set-text lbl url)))
+    (push-modeline :url url browser)))
 
 (defcommand reload-page (browser)
   "Reload the current page."
