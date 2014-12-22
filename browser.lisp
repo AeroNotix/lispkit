@@ -9,6 +9,8 @@
     :initarg :ui
     :initform (error "Cannot instantiate a browser without a UI object")
     :accessor ui)
+   (modeline
+    :accessor modeline)
    (webview
     :accessor webview
     :initarg :webview

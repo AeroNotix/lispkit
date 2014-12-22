@@ -31,7 +31,7 @@
               (setf (gethash (first msg) ml-state) (second msg)))
             (sleep *modeline-tick-seconds*)
             (render-modeline browser ml-state))))
-    queue))
+    (setf (modeline browser) queue)))
 
 (defun stop-modeline ()
   (setf *modeline-quit* t))
