@@ -34,12 +34,8 @@ How to
 ------
 
 ```shell
-cd $QUICKLISP_HOME/local-projects
-git clone https://github.com/AeroNotix/cl-xkeysym.git
-git clone https://github.com/AeroNotix/lispkit.git
-git clone https://github.com/joachifm/cl-webkit
-sbcl --noinform --quit --eval \
-    "(ql:quickload :lispkit)"
+make local
+./lispkit
 ```
 
 Status
