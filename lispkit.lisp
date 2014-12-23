@@ -33,7 +33,7 @@
            (nb      (gtk:gtk-builder-get-object ui "webviewcontainer"))
            (lbl     (gtk:gtk-builder-get-object ui "message-area"))
            (browser (make-browser ui view)))
-      (gtk-notebook-set-show-tabs nb nil)
+      (setf (gtk:gtk-notebook-show-tabs nb) nil)
       (gtk-container-add frame view)
       (g-signal-connect window "key_press_event"
                         (make-key-dispatcher browser))
