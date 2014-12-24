@@ -69,28 +69,28 @@ $(QL_LOCAL)/setup.lisp:
 local-quicklisp: $(QL_LOCAL)/setup.lisp
 
 deps: $(QL_LOCAL)/setup.lisp clones
-	sbcl $(LOCAL_OPTS) $(QL_OPTS)								\
-             --eval '(push "$(PWD)/" asdf:*central-registry*)'	\
-             --eval '(ql:quickload :lispkit)'					\
+	sbcl $(LOCAL_OPTS) $(QL_OPTS) \
+             --eval '(push "$(PWD)/" asdf:*central-registry*)' \
+             --eval '(ql:quickload :lispkit)' \
              --eval '(quit)'
 	touch $@
 
 install-buildapp: bin $(QL_LOCAL)/setup.lisp
-	cd $(shell sbcl $(LOCAL_OPTS) $(QL_OPTS)										\
-				--eval '(ql:quickload :buildapp :silent t)'							\
-				--eval '(format t "~A~%" (asdf:system-source-directory :buildapp))'	\
+	cd $(shell sbcl $(LOCAL_OPTS) $(QL_OPTS) \
+				--eval '(ql:quickload :buildapp :silent t)' \
+				--eval '(format t "~A~%" (asdf:system-source-directory :buildapp))' \
 				--eval '(quit)') && \
 	$(MAKE) DESTDIR=$(PWD) install
 
 buildapp: install-buildapp $(QL_LOCAL)/setup.lisp deps clones
-	buildapp --logfile /tmp/build.log				\
-			--sbcl sbcl								\
-			--asdf-path .							\
-			--asdf-tree $(QL_LOCAL)/local-projects	\
-			--asdf-tree $(QL_LOCAL)/dists			\
-			--asdf-path .							\
-			--load-system $(APP_NAME)				\
-			--entry $(APP_NAME):do-main				\
+	buildapp --logfile /tmp/build.log \
+			--sbcl sbcl \
+			--asdf-path . \
+			--asdf-tree $(QL_LOCAL)/local-projects \
+			--asdf-tree $(QL_LOCAL)/dists \
+			--asdf-path . \
+			--load-system $(APP_NAME) \
+			--entry $(APP_NAME):do-main \
 			--output lispkit
 
 test:
