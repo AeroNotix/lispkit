@@ -34,7 +34,7 @@ How to
 ------
 
 ```shell
-make local
+make
 ./lispkit
 ```
 

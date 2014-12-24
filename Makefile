@@ -24,7 +24,7 @@ sbcl_TEST_OPTS=--noinform --disable-debugger --quit --load ./run-tests.lisp
 
 .PHONY: all test
 
-all: $(APP_NAME)
+all: local
 
 bin:
 	mkdir bin
