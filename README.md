@@ -11,12 +11,6 @@ Chat.svg)](https://gitter.im/AeroNotix/lispkit?utm_source=badge&utm_medium=badge
 A lisp web browser using WebKit
 -------------------------------
 
-Installation
-------------
-
-Ensure you have [Quicklisp](http://quicklisp.org) available
-locally. There is a tutorial regarding installation on that page.
-
 Requirements
 ------------
 
