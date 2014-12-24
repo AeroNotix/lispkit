@@ -14,3 +14,7 @@
 /pkg/
 /src/
 *.deb
+quicklisp.lisp
+/deps
+/.quicklocal/
+/bin/
