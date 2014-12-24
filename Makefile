@@ -98,10 +98,10 @@ test:
 
 tar: $(APP_NAME).tar.gz
 
-$(APP_NAME).tar.gz: lispkit
+$(APP_NAME).tar.gz: local
 	tar zcvf $@ lispkit
 
-$(APP_NAME)_debian.tar.gz: lispkit
+$(APP_NAME)_debian.tar.gz: local
 	mkdir -p ./opt/sbin/
 	cp lispkit ./opt/sbin/
 	tar zcvf $@ -C ./opt/sbin/ lispkit
