@@ -145,12 +145,15 @@
   "Move backwards a page."
   (webkit2:webkit-web-view-go-back (webview browser)))
 
+(defparameter *default-scheme* "https://")
+
 (defcommand browse-url (browser)
   "Browse the the named URL."
   (with-browser-input browser url
-    (if (purl:url-p url)
-        (load-url url browser)
-        (apply-jumps url browser))))
+    (or (apply-jumps url browser)
+        (if (purl:url-p url)
+            (load-url url browser)
+            (load-url (format nil "~A~A" *default-scheme* url) browser)))))
 
 (defun apply-zoom (browser amount)
   (let* ((wv (webview browser))
