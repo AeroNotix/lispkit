@@ -8,7 +8,7 @@ DEBUILD_ROOT = /tmp/lispkit
 DEPLOY_HOST = zerolength.com
 DEPLOY_DIR = /srv/http/bin
 SCP_DEPLOY = $(DEPLOY_HOST):$(DEPLOY_DIR)
-SOURCES := $(wildcard *.lisp)
+SOURCES := $(wildcard *.lisp) $(wildcard *.asd)
 PKGBUILD_FILE = PKGBUILD
 PKGVER=$(shell grep -oP 'pkgver=\K([0-9]+)' $(PKGBUILD_FILE))
 PKGREL=$(shell grep -oP 'pkgrel=\K([0-9]+)' $(PKGBUILD_FILE))
@@ -79,7 +79,7 @@ bin/buildapp: bin $(QL_LOCAL)/setup.lisp
 				--eval '(quit)') && \
 	$(MAKE) DESTDIR=$(PWD) install
 
-$(APP_OUT): bin/buildapp $(QL_LOCAL)/setup.lisp clones install-deps
+$(APP_OUT): $(SOURCES) bin/buildapp $(QL_LOCAL)/setup.lisp clones install-deps
 	buildapp --logfile /tmp/build.log \
 			--sbcl sbcl \
 			--asdf-path . \
