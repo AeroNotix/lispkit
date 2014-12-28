@@ -4,6 +4,7 @@
 (defparameter *modeline-tick-seconds* 0.1)
 (defparameter *modeline-quit* nil)
 (defparameter *modeline-format* "~url")
+(defparameter *modeline-workers* nil)
 (defparameter *modeline-expander*
   (lambda (browser modeline-state)
     (declare (ignore modeline-state))
@@ -22,16 +23,18 @@
 (defun start-modeloop (browser)
   (let ((queue    (lparallel.queue:make-queue))
         (ml-state (make-hash-table :test #'equalp)))
-    (bordeaux-threads:make-thread
-     (lambda ()
-       (loop
-          while (not *modeline-quit*)
-          do
-            (when-let ((msg (try-pop-queue queue)))
-              (setf (gethash (first msg) ml-state) (second msg)))
-            (sleep *modeline-tick-seconds*)
-            (render-modeline browser ml-state))))
+    (push (bordeaux-threads:make-thread
+           (lambda ()
+             (loop
+                while (not *modeline-quit*)
+                do
+                  (when-let ((msg (try-pop-queue queue)))
+                    (setf (gethash (first msg) ml-state) (second msg)))
+                  (sleep *modeline-tick-seconds*)
+                  (render-modeline browser ml-state))))
+          *modeline-workers*)
     (setf (modeline browser) queue)))
 
 (defun stop-modeline ()
-  (setf *modeline-quit* t))
+  (setf *modeline-quit* t)
+  (mapcar #'bordeaux-threads:join-thread *modeline-workers*))
