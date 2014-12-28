@@ -164,7 +164,7 @@
 
 (defcommand current-uri (browser)
   "Find the current URI."
-  (webkit2:webkit-web-view-get-uri (webview browser)))
+  (webkit-web-view-uri (webview browser)))
 
 (defun apply-zoom (browser amount)
   (let* ((wv (webview browser))
