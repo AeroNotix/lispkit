@@ -11,7 +11,7 @@ provides=('lispkit')
 options=('!strip')
 source=('http://zerolength.com/bin/lispkit.tar.gz')
 md5sums=(':md5sum')
-depends=('webkitgtk')
+depends=('webkit2gtk')
 
 
 build() {
