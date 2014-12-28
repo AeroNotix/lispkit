@@ -18,3 +18,5 @@ quicklisp.lisp
 /deps
 /.quicklocal/
 /bin/
+/install-deps
+/clones
