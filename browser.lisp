@@ -17,6 +17,9 @@
     :initform (error "Cannot instantiate a browser without a webview object"))
    (url-bar
     :initarg :url-bar)
+   (history
+    :initarg :history
+    :accessor history)
    (grabbing-keys?
     :initform nil
     :accessor grabbing-keys?)
@@ -56,7 +59,13 @@
   (gtk:gtk-builder-get-object (ui browser) widget-name))
 
 (defmethod initialize-instance :after ((browser browser) &key)
-  (check-type (ui browser) gtk:gtk-builder))
+  (let ((history (create-history)))
+    (hydrate history)
+    (setf (history browser) history)
+    (check-type (ui browser) gtk:gtk-builder)))
+
+(defun save-history (browser)
+  (dehydrate (history browser)))
 
 (defun make-ui-builder ()
   (gtk:gtk-builder-new))
@@ -127,7 +136,8 @@
     (values)))
 
 (defun load-url (url browser)
-  (webkit2:webkit-web-view-load-uri (webview browser) url))
+  (webkit2:webkit-web-view-load-uri (webview browser) url)
+  (add-entry (history browser) url))
 
 (defcommand reload-page (browser)
   "Reload the current page."

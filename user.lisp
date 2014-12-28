@@ -13,3 +13,17 @@
          (conf-rc (probe-file (merge-pathnames #P"lispkit/config" xdg-config-dir)))
          (etc-rc  (probe-file #p"/etc/lispkit")))
     (or user-rc conf-rc etc-rc)))
+
+(defun get-history-file ()
+  (let* ((xdg-config-dir (get-xdg-config-dir))
+         (user-history
+          (merge-pathnames (user-homedir-pathname) #p".lispkithistory"))
+         (conf-history
+          (merge-pathnames #P"lispkit/history" xdg-config-dir)))
+    (or
+     (or (probe-file user-history)
+         (probe-file conf-history))
+     (progn
+       (with-open-file (stream conf-history :direction :probe
+                               :if-does-not-exist :create))
+       (probe-file conf-history)))))

@@ -32,6 +32,7 @@
     (g-signal-connect window "destroy"
                       (lambda (widget)
                         (declare (ignore widget))
+                        (save-history browser)
                         (stop-modeline browser)
                         (leave-gtk-main)))))
 

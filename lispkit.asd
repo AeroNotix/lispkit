@@ -6,6 +6,7 @@
   :serial t
   :components ((:file "packages")
                (:file "user")
+               (:file "history")
                (:file "settings")
                (:file "commands")
                (:file "commands/inspector")

@@ -16,15 +16,12 @@
   "Main exists separately from do-main so that during development we
   can easily separate killing the main gtk loop from stopping and
   starting applications within that main loop"
+  (load-rc-file)
   (within-main-loop
     (let ((browser (ui-build-browser destroy?)))
-      (load-url *default-page* browser)
-      (setf *default-browser* browser)
-      (ensure-cookies-folder-exists *cookie-path-dir*)
       (setup-link-hints)
       ;; TODO - Add error handling to this.
       (load-rc-file))))
-
 
 (defun do-main (&rest args)
   "The main entry point when running as an executable. This should not
