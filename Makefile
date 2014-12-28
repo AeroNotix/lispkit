@@ -1,6 +1,7 @@
 LISP ?= sbcl
 DEBUILD = /tmp/lispkit
 APP_NAME = lispkit
+APP_OUT = $(PWD)/lispkit
 PKG_NAME = lispkit-browser
 BUILDAPP = ./bin/buildapp
 DEBUILD_ROOT = /tmp/lispkit
@@ -20,19 +21,20 @@ sbcl_BUILD_OPTS=--load ./make-image.lisp
 sbcl_BUILD_OPTS-local=$(LOCAL_OPTS) $(QL_OPTS) --load ./make-image.lisp
 clisp_BUILD_OPTS=-on-error exit < ./make-image.lisp
 sbcl_TEST_OPTS=--noinform --disable-debugger --quit --load ./run-tests.lisp
+.DEFAULT_GOAL=$(APP_OUT)
 
-
-.PHONY: all test
-
-all: local
+.PHONY: deploy clean deb-package aur-package test
 
 bin:
 	mkdir bin
 
-local: local-quicklisp clones deps buildapp
+clean:
+	@-yes | rm -r $(QL_LOCAL)
+	@-rm $(APP_NAME)
+	@-rm deps
 
-clones: $(QL_LOCAL)/local-projects/cl-xkeysym \
-		$(QL_LOCAL)/local-projects/cl-webkit;
+clones: $(QL_LOCAL)/local-projects/cl-xkeysym $(QL_LOCAL)/local-projects/cl-webkit
+	touch $@
 
 $(QL_LOCAL)/local-projects/cl-xkeysym:
 	git clone https://github.com/AeroNotix/cl-xkeysym.git $@
@@ -53,12 +55,6 @@ aur-package: deploy
 		burp $(AURBALL) && \
 		git checkout $(PKGBUILD_FILE)
 
-$(APP_NAME): $(SOURCES)
-	@$(LISP) $($(LISP)_BUILD_OPTS)
-
-$(APP_NAME)-local: $(SOURCES)
-	@$(LISP) $($(LISP)_BUILD_OPTS-local)
-
 $(QL_LOCAL)/setup.lisp:
 	curl -O $(QUICKLISP_SCRIPT)
 	sbcl $(LOCAL_OPTS) \
@@ -66,23 +62,24 @@ $(QL_LOCAL)/setup.lisp:
 		--eval '(quicklisp-quickstart:install :path "$(QL_LOCAL)")' \
 		--eval '(quit)'
 
-local-quicklisp: $(QL_LOCAL)/setup.lisp
-
-deps: $(QL_LOCAL)/setup.lisp clones
+deps:
 	sbcl $(LOCAL_OPTS) $(QL_OPTS) \
              --eval '(push "$(PWD)/" asdf:*central-registry*)' \
              --eval '(ql:quickload :lispkit)' \
              --eval '(quit)'
 	touch $@
 
-install-buildapp: bin $(QL_LOCAL)/setup.lisp
+install-deps: $(QL_LOCAL)/setup.lisp clones deps
+	touch $@
+
+bin/buildapp: bin $(QL_LOCAL)/setup.lisp
 	cd $(shell sbcl $(LOCAL_OPTS) $(QL_OPTS) \
 				--eval '(ql:quickload :buildapp :silent t)' \
 				--eval '(format t "~A~%" (asdf:system-source-directory :buildapp))' \
 				--eval '(quit)') && \
 	$(MAKE) DESTDIR=$(PWD) install
 
-buildapp: install-buildapp $(QL_LOCAL)/setup.lisp deps clones
+$(APP_OUT): bin/buildapp $(QL_LOCAL)/setup.lisp clones install-deps
 	buildapp --logfile /tmp/build.log \
 			--sbcl sbcl \
 			--asdf-path . \
@@ -91,7 +88,7 @@ buildapp: install-buildapp $(QL_LOCAL)/setup.lisp deps clones
 			--asdf-path . \
 			--load-system $(APP_NAME) \
 			--entry $(APP_NAME):do-main \
-			--output lispkit
+			--output $(APP_OUT)
 
 test:
 	@$(LISP) $($(LISP)_TEST_OPTS)
