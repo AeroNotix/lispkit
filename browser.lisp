@@ -9,6 +9,8 @@
     :initarg :ui
     :initform (error "Cannot instantiate a browser without a UI object")
     :accessor ui)
+   (modeline
+    :accessor modeline)
    (webview
     :accessor webview
     :initarg :webview
@@ -60,13 +62,20 @@
   (gtk:gtk-builder-new))
 
 (defun make-browser (ui webview &optional (keymaps (list *emacs-map* *help-map* *top-map*)))
-  (let ((tabs (list webview)))
-    (make-instance 'browser
-                   :ui ui
-                   :webview webview
-                   :tabs tabs
-                   :default-keymaps keymaps
-                   :keymaps keymaps)))
+  (let* ((tabs (list webview))
+         (browser (make-instance 'browser
+                                 :ui ui
+                                 :webview webview
+                                 :tabs tabs
+                                 :default-keymaps keymaps
+                                 :keymaps keymaps)))
+    (start-modeloop browser)
+    browser))
+
+(defun push-modeline (place thing browser)
+  (let ((q   (modeline browser))
+        (msg (list place thing)))
+    (lparallel.queue:push-queue msg q)))
 
 (defun make-page-listener (browser)
   (lambda (notebook page page-num)
@@ -118,9 +127,7 @@
     (values)))
 
 (defun load-url (url browser)
-  (let ((lbl (get-widget browser "message-area"  )))
-    (webkit2:webkit-web-view-load-uri (webview browser) url)
-    (gtk:gtk-label-set-text lbl url)))
+  (webkit2:webkit-web-view-load-uri (webview browser) url))
 
 (defcommand reload-page (browser)
   "Reload the current page."
@@ -154,6 +161,10 @@
         (if (purl:url-p url)
             (load-url url browser)
             (load-url (format nil "~A~A" *default-scheme* url) browser)))))
+
+(defcommand current-uri (browser)
+  "Find the current URI."
+  (webkit-web-view-uri (webview browser)))
 
 (defun apply-zoom (browser amount)
   (let* ((wv (webview browser))

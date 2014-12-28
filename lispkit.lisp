@@ -43,6 +43,7 @@
         (g-signal-connect window "destroy"
                           (lambda (widget)
                             (declare (ignore widget))
+                            (stop-modeline)
                             (leave-gtk-main))))
       (load-url *default-page* browser)
       (setf *default-browser* browser)

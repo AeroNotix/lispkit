@@ -10,19 +10,23 @@
                (:file "commands")
                (:file "commands/inspector")
                (:file "macros")
+               (:file "modeline")
                (:file "jumps")
                (:file "events")
                (:file "browser")
                (:file "keys")
                (:file "lispkit"))
   :depends-on (:asdf
+               :alexandria
                :cl-cffi-gtk
+               :cl-ppcre
                :cl-webkit2
                :cl-xkeysym
                :djula
                :parenscript
                :purl
-               :split-sequence)
+               :split-sequence
+               :lparallel)
   :in-order-to ((test-op (test-op :lispkit-test))))
 
 (defsystem lispkit-test
