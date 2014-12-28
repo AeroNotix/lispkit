@@ -23,7 +23,7 @@ clisp_BUILD_OPTS=-on-error exit < ./make-image.lisp
 sbcl_TEST_OPTS=--noinform --disable-debugger --quit --load ./run-tests.lisp
 .DEFAULT_GOAL=$(APP_OUT)
 
-
+.PHONY: deploy clean deb-package aur-package test
 
 bin:
 	mkdir bin
