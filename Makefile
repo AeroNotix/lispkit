@@ -26,7 +26,7 @@ sbcl_TEST_OPTS=--noinform --disable-debugger --quit --load ./run-tests.lisp
 .PHONY: deploy clean deb-package aur-package test
 
 bin:
-	mkdir bin
+	@mkdir bin
 
 clean:
 	@-yes | rm -r $(QL_LOCAL)
@@ -34,7 +34,7 @@ clean:
 	@-rm deps
 
 clones: $(QL_LOCAL)/local-projects/cl-xkeysym $(QL_LOCAL)/local-projects/cl-webkit
-	touch $@
+	@touch $@
 
 $(QL_LOCAL)/local-projects/cl-xkeysym:
 	git clone https://github.com/AeroNotix/cl-xkeysym.git $@
@@ -43,44 +43,44 @@ $(QL_LOCAL)/local-projects/cl-webkit:
 	git clone https://github.com/joachifm/cl-webkit $@
 
 deploy: $(APP_NAME).tar.gz
-	rsync -a $< $(SCP_DEPLOY)
+	@rsync -a $< $(SCP_DEPLOY)
 
 deb-package: $(APP_NAME)_debian.tar.gz
-	fpm -s tar -t deb $<
+	@fpm -s tar -t deb $<
 
 aur-package: deploy
-	sed -i 's/:md5sum/$(shell md5sum $(APP_NAME).tar.gz | cut -d' ' -f1)/g' $(PKGBUILD_FILE) && \
+	@sed -i 's/:md5sum/$(shell md5sum $(APP_NAME).tar.gz | cut -d' ' -f1)/g' $(PKGBUILD_FILE) && \
 		makepkg -sf && \
 		mkaurball -f && \
 		burp $(AURBALL) && \
 		git checkout $(PKGBUILD_FILE)
 
 $(QL_LOCAL)/setup.lisp:
-	curl -O $(QUICKLISP_SCRIPT)
-	sbcl $(LOCAL_OPTS) \
+	@curl -O $(QUICKLISP_SCRIPT)
+	@sbcl $(LOCAL_OPTS) \
 		--load quicklisp.lisp \
 		--eval '(quicklisp-quickstart:install :path "$(QL_LOCAL)")' \
 		--eval '(quit)'
 
 deps:
-	sbcl $(LOCAL_OPTS) $(QL_OPTS) \
+	@sbcl $(LOCAL_OPTS) $(QL_OPTS) \
              --eval '(push "$(PWD)/" asdf:*central-registry*)' \
              --eval '(ql:quickload :lispkit)' \
              --eval '(quit)'
-	touch $@
+	@touch $@
 
 install-deps: $(QL_LOCAL)/setup.lisp clones deps
-	touch $@
+	@touch $@
 
 bin/buildapp: bin $(QL_LOCAL)/setup.lisp
-	cd $(shell sbcl $(LOCAL_OPTS) $(QL_OPTS) \
+	@cd $(shell sbcl $(LOCAL_OPTS) $(QL_OPTS) \
 				--eval '(ql:quickload :buildapp :silent t)' \
 				--eval '(format t "~A~%" (asdf:system-source-directory :buildapp))' \
 				--eval '(quit)') && \
 	$(MAKE) DESTDIR=$(PWD) install
 
 $(APP_OUT): $(SOURCES) bin/buildapp $(QL_LOCAL)/setup.lisp clones install-deps
-	buildapp --logfile /tmp/build.log \
+	@buildapp --logfile /tmp/build.log \
 			--sbcl sbcl \
 			--asdf-path . \
 			--asdf-tree $(QL_LOCAL)/local-projects \
@@ -95,10 +95,10 @@ test:
 
 tar: $(APP_NAME).tar.gz
 
-$(APP_NAME).tar.gz: local
-	tar zcvf $@ lispkit
+$(APP_NAME).tar.gz: $(APP_OUT)
+	@tar zcvf $@ lispkit
 
-$(APP_NAME)_debian.tar.gz: local
-	mkdir -p ./opt/sbin/
-	cp lispkit ./opt/sbin/
-	tar zcvf $@ -C ./opt/sbin/ lispkit
+$(APP_NAME)_debian.tar.gz: $(APP_OUT)
+	@mkdir -p ./opt/sbin/
+	@cp lispkit ./opt/sbin/
+	@tar zcvf $@ -C ./opt/sbin/ lispkit
