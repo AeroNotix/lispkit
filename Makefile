@@ -88,6 +88,7 @@ $(APP_OUT): $(SOURCES) bin/buildapp $(QL_LOCAL)/setup.lisp clones install-deps
 			--asdf-path . \
 			--load-system $(APP_NAME) \
 			--entry $(APP_NAME):do-main \
+			--compress-core \
 			--output $(APP_OUT)
 
 test:
