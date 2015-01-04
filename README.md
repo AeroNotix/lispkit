@@ -23,6 +23,7 @@ Windows support is not on the roadmap at all.
 * gtk2
 * SQLite (if you change the cookie backend, default does not require this)
 * A Common Lisp implementation (tested with SBCL so far)
+* Make
 
 How to
 ------
