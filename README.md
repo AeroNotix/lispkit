@@ -49,3 +49,5 @@ Getting Help
 ------------
 
 Join #lispkit on freenode for help
+
+There is a mailing list for development discussions and issues reporting: lispkit-dev at googlegroups dot com
