@@ -1,7 +1,7 @@
 LISP ?= sbcl
 DEBUILD = /tmp/lispkit
 APP_NAME = lispkit
-APP_OUT = $(PWD)/lispkit
+APP_OUT = $(shell pwd)/lispkit
 PKG_NAME = lispkit-browser
 BUILDAPP = ./bin/buildapp
 DEBUILD_ROOT = /tmp/lispkit
@@ -21,9 +21,11 @@ sbcl_BUILD_OPTS=--load ./make-image.lisp
 sbcl_BUILD_OPTS-local=$(LOCAL_OPTS) $(QL_OPTS) --load ./make-image.lisp
 clisp_BUILD_OPTS=-on-error exit < ./make-image.lisp
 sbcl_TEST_OPTS=--noinform --disable-debugger --quit --load ./run-tests.lisp
-.DEFAULT_GOAL=$(APP_OUT)
+
 
 .PHONY: deploy clean deb-package aur-package test printvars
+
+all: $(APP_OUT)
 
 bin:
 	@mkdir bin
