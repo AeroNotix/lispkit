@@ -23,7 +23,7 @@ clisp_BUILD_OPTS=-on-error exit < ./make-image.lisp
 sbcl_TEST_OPTS=--noinform --disable-debugger --quit --load ./run-tests.lisp
 .DEFAULT_GOAL=$(APP_OUT)
 
-.PHONY: deploy clean deb-package aur-package test
+.PHONY: deploy clean deb-package aur-package test printvars
 
 bin:
 	@mkdir bin
@@ -103,3 +103,6 @@ $(APP_NAME)_debian.tar.gz: $(APP_OUT)
 	@mkdir -p ./opt/sbin/
 	@cp lispkit ./opt/sbin/
 	@tar zcvf $@ -C ./opt/sbin/ lispkit
+
+printvars:
+	@$(foreach V,$(sort $(.VARIABLES)), $(if $(filter-out environment% default automatic, $(origin $V)),$(warning $V=$($V) ($(value $V)))))
