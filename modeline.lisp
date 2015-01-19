@@ -20,7 +20,9 @@
 (defun render-modeline (lbl modeline-state)
   (funcall *modeline-expander* lbl modeline-state))
 
-(defun start-modeloop (browser)
+(defcommand start-modeline (browser)
+  "Starts and displays the modeline"
+  (gtk:gtk-widget-show (get-widget browser "infobar1"))
   (let ((queue    (lparallel.queue:make-queue))
         (ml-state (make-hash-table :test #'equalp)))
     (push (bordeaux-threads:make-thread
@@ -35,6 +37,8 @@
           *modeline-workers*)
     (setf (modeline browser) queue)))
 
-(defun stop-modeline ()
+(defcommand stop-modeline (browser)
+  "Stops and destroys the modeline"
   (setf *modeline-quit* t)
+  (gtk:gtk-widget-hide (get-widget browser "infobar1"))
   (mapcar #'bordeaux-threads:join-thread *modeline-workers*))

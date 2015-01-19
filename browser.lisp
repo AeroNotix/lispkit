@@ -69,7 +69,7 @@
                                  :tabs tabs
                                  :default-keymaps keymaps
                                  :keymaps keymaps)))
-    (start-modeloop browser)
+    (start-modeline browser)
     browser))
 
 (defun push-modeline (place thing browser)
