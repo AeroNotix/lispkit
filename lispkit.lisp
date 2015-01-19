@@ -48,13 +48,13 @@
       (load-url *default-page* browser)
       (setf *default-browser* browser)
       (gtk-widget-hide entry)
-      (ensure-cookies-folder-exists *cookie-path-dir*)
-      ;; TODO - Add error handling to this.
-      (load-rc-file)
-      (gtk-window-maximize window)
       (gtk:gtk-container-add c-area lbl)
       (dolist (widget (list window frame view ib lbl))
-        (gtk-widget-show widget)))))
+        (gtk-widget-show widget))
+      (gtk-window-maximize window)
+      (ensure-cookies-folder-exists *cookie-path-dir*)
+      ;; TODO - Add error handling to this.
+      (load-rc-file))))
 
 (defun do-main (&rest args)
   "The main entry point when running as an executable. This should not
