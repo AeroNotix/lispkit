@@ -4,10 +4,10 @@
   "Alias of document.querySelectorAll"
   (chain context (query-selector-all selector)))
 
-(defun filter (function array)
-  "Reimplementation of Array.prototype.filter"
-  (loop for el in array
-       when (funcall function el)
+(defun remove-if (predicate sequence)
+  "Small reimplementation of remove-if"
+  (loop for el in sequence
+       when (funcall predicate el)
        collect el))
 
 (defun is-in-viewport (el)
@@ -23,7 +23,7 @@
 
 (defun find-links (window document)
   "Finds all the links within the viewport"
-  (filter #'is-in-viewport (qsa document "a")))
+  (remove-if #'is-in-viewport (qsa document "a")))
 
 (defun add-hints (links)
   "Adds hints on links"
