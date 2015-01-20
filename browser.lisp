@@ -299,14 +299,13 @@
   (declare (ignore browser))
   (leave-gtk-main))
 
-(defparameter *link-hints-ps* (concatenate
-			       'string
-			       ";(function(){"
-			       (ps:ps-compile-file
-				(asdf:system-relative-pathname :lispkit "scripts/link-hints.ps"))
-			       "}());"))
+(defparameter *link-hints-ps*
+  (ps:ps-compile-file
+   (asdf:system-relative-pathname :lispkit "scripts/link-hints.ps")))
 
 (defcommand link-hints (browser)
   "Starts the link hints."
   (eval-in-page-js browser *link-hints-ps*)
-  (eval-in-page-js browser (ps:ps (chain *lispkit-link-hints* (go)))))
+  (eval-in-page-js browser (ps:ps
+			     (in-package :lispkit.link-hints)
+			     (run))))

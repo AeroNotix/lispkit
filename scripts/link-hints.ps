@@ -1,15 +1,4 @@
-(in-package #:lispkit.link-hints)
-
-(defmacro defjspackage (name)
-  "Defines a package a la Lisp, except it uses JS namespaces."
-  `(setf (getprop window ',name) (or (getprop window ',name) (create))))
-
-(defmacro jspackage-export (package name value)
-  "Defines an exported value in a package."
-  `(setf (getprop (getprop window ',package) ,name) ,value))
-
-(defjspackage *lispkit-link-hints*)
-(jspackage-export *lispkit-link-hints* 'go #'go)
+(in-package :lispkit.link-hints)
 
 (defun qsa (context selector)
   "Alias of document.querySelectorAll"
@@ -55,6 +44,7 @@
 (defun create-hint-element (link hint)
   (let ((rect (chain link (get-bounding-client-rect)))
 	(el (chain document (create-element "span"))))
+    ;; @todo set position absolute and top/left values
     (setf (@ el text-content) hint)
     el))
 
@@ -62,6 +52,6 @@
   "Adds a global handler to select to correct hint"
   nil)
 
-(defun go ()
+(defun run ()
   "Initializes the link hints"
   (add-hints-handler window (add-hints (find-links window document))))
