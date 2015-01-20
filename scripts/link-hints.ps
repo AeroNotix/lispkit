@@ -4,7 +4,7 @@
   "Alias of document.querySelectorAll"
   (chain context (query-selector-all selector)))
 
-(defun remove-if (predicate sequence)
+(defun remove-if-not (predicate sequence)
   "Small reimplementation of remove-if"
   (loop for el in sequence
        when (funcall predicate el)
@@ -23,14 +23,14 @@
 
 (defun find-links (window document)
   "Finds all the links within the viewport"
-  (remove-if #'is-in-viewport (qsa document "a")))
+  (remove-if-not #'is-in-viewport (qsa document "a")))
 
 (defun add-hints (links)
   "Adds hints on links"
   (let* ((links-length (length links))
 	 (hints (generate-hints links-length)))
     (loop for i from 0 to links-length
-	 do (add-hint (elt links i) (elt hints i)))))
+	 collect (add-hint (elt links i) (elt hints i)))))
 
 (defun generate-hints (length)
   "Generates hints that will appear on the links"
@@ -39,19 +39,23 @@
 (defun add-hint (link hint)
   "Adds a hint on a single link"
   (let ((hint-element (create-hint-element link hint)))
-    (chain document (append-child hint-element))))
+    (chain document (append-child hint-element))
+    hint-element))
 
 (defun create-hint-element (link hint)
   (let ((rect (chain link (get-bounding-client-rect)))
 	(el (chain document (create-element "span"))))
     ;; @todo set position absolute and top/left values
+    ;; for this, use `rect` and window.innerStuff... I guess
     (setf (@ el text-content) hint)
     el))
 
 (defun add-hints-handler (window hints)
   "Adds a global handler to select to correct hint"
-  nil)
+  (let ((remaining-hints))
+    (lambda ())))
 
 (defun run ()
   "Initializes the link hints"
-  (add-hints-handler window (add-hints (find-links window document))))
+  ;; add-hints-handler needs a closure
+  ((add-hints-handler window (add-hints (find-links window document)))))
