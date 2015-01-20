@@ -20,6 +20,8 @@
 (defpackage #:lispkit.dhtml-missing-methods
   (:documentation "Missing functions used in lispkit source code.")
   (:export
+   #:-string
+   #:from-char-code
    #:query-selector-all
    #:inner-width
    #:inner-height
