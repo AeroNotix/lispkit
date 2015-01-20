@@ -49,8 +49,7 @@
       (setf *default-browser* browser)
       (gtk-widget-hide entry)
       (gtk:gtk-container-add c-area lbl)
-      (dolist (widget (list window frame view ib lbl))
-        (gtk-widget-show widget))
+      (mapcar #'gtk-widget-show (list window frame view ib lbl))
       (gtk-window-maximize window)
       (ensure-cookies-folder-exists *cookie-path-dir*)
       ;; TODO - Add error handling to this.

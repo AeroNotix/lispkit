@@ -14,3 +14,6 @@
            #:keymaps
            #:handle-key
            #:defcommand))
+
+(defpackage lispkit.link-hints
+  (:use :parenscript :common-lisp))

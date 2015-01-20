@@ -241,20 +241,23 @@
     (when-let ((command (command-p command-name)))
       (funcall (impl command) browser))))
 
-(defcommand eval-in-page-cl (browser)
+(defcommand eval-in-page-cl (browser &optional input)
   "Evaluates parenscript expressions in the context of the current browser."
-  (with-browser-input browser expr
-    (let ((expr (read-from-string expr))
-          (wv (webview browser))
-          (np (cffi:null-pointer)))
-      (webkit2:webkit-web-view-run-javascript wv (eval `(ps:ps ,expr)) np np np))))
+  (let ((wv (webview browser))
+	(np (cffi:null-pointer)))
+    (unless input
+      (with-browser-input browser expr
+	(setf input (read-from-string expr))))
+    (webkit2:webkit-web-view-run-javascript wv (eval `(ps:ps ,input)) np np np)))
 
-(defcommand eval-in-page-js (browser)
+(defcommand eval-in-page-js (browser &optional input)
   "Evaluates Javascript in the context of the current browser."
-  (with-browser-input browser expr
-    (let ((wv (webview browser))
-          (np (cffi:null-pointer)))
-      (webkit2:webkit-web-view-run-javascript wv expr np np np))))
+  (let ((wv (webview browser))
+	(np (cffi:null-pointer)))
+    (unless input
+      (with-browser-input browser expr
+	(setf input expr)))
+    (webkit2:webkit-web-view-run-javascript wv input np np np)))
 
 (defcommand i-search (browser) "Executes a search on the current webview."
   (with-browser-input browser search-term
@@ -295,3 +298,15 @@
   "Quits the browser."
   (declare (ignore browser))
   (leave-gtk-main))
+
+(defparameter *link-hints-ps* (concatenate
+			       'string
+			       ";(function(){"
+			       (ps:ps-compile-file
+				(asdf:system-relative-pathname :lispkit "scripts/link-hints.ps"))
+			       "}());"))
+
+(defcommand link-hints (browser)
+  "Starts the link hints."
+  (eval-in-page-js browser *link-hints-ps*)
+  (eval-in-page-js browser (ps:ps (chain *lispkit-link-hints* (go)))))

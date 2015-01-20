@@ -1,0 +1,67 @@
+(in-package #:lispkit.link-hints)
+
+(defmacro defjspackage (name)
+  "Defines a package a la Lisp, except it uses JS namespaces."
+  `(setf (getprop window ',name) (or (getprop window ',name) (create))))
+
+(defmacro jspackage-export (package name value)
+  "Defines an exported value in a package."
+  `(setf (getprop (getprop window ',package) ,name) ,value))
+
+(defjspackage *lispkit-link-hints*)
+(jspackage-export *lispkit-link-hints* 'go #'go)
+
+(defun qsa (context selector)
+  "Alias of document.querySelectorAll"
+  (chain context (query-selector-all selector)))
+
+(defun filter (function array)
+  "Reimplementation of Array.prototype.filter"
+  (loop for el in array
+       when (funcall function el)
+       collect el))
+
+(defun is-in-viewport (el)
+  "Finds out if an element is in the viewport"
+  (let ((rect (chain el (get-bounding-client-rect))))
+    (and
+     (>= (@ rect top) 0)
+     (>= (@ rect left) 0)
+     (<= (@ rect bottom) (or (@ window inner-height)
+			     (@ document document-element client-height)))
+     (<= (@ rect right) (or (@ window inner-width)
+			    (@ document document-element client-width))))))
+
+(defun find-links (window document)
+  "Finds all the links within the viewport"
+  (filter #'is-in-viewport (qsa document "a")))
+
+(defun add-hints (links)
+  "Adds hints on links"
+  (let* ((links-length (length links))
+	 (hints (generate-hints links-length)))
+    (loop for i from 0 to links-length
+	 do (add-hint (elt links i) (elt hints i)))))
+
+(defun generate-hints (length)
+  "Generates hints that will appear on the links"
+  nil)
+
+(defun add-hint (link hint)
+  "Adds a hint on a single link"
+  (let ((hint-element (create-hint-element link hint)))
+    (chain document (append-child hint-element))))
+
+(defun create-hint-element (link hint)
+  (let ((rect (chain link (get-bounding-client-rect)))
+	(el (chain document (create-element "span"))))
+    (setf (@ el text-content) hint)
+    el))
+
+(defun add-hints-handler (window hints)
+  "Adds a global handler to select to correct hint"
+  nil)
+
+(defun go ()
+  "Initializes the link hints"
+  (add-hints-handler window (add-hints (find-links window document))))
