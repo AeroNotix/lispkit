@@ -4,6 +4,14 @@
   "Alias of document.querySelectorAll"
   (chain context (query-selector-all selector)))
 
+(defun floor (n)
+  "Alias of Math.floor"
+  (chain -math (floor n)))
+
+(defun code-char (n)
+  "Alias of String.fromCharCode"
+  (chain -string (from-char-code n)))
+
 (defun remove-if-not (predicate sequence)
   "Small reimplementation of remove-if"
   (loop for el in sequence
@@ -44,12 +52,20 @@
 	 do (incf i))
     i))
 
+
 (defun generate-strings (length chars-length)
   "Generates strings of specified length"
-  ;; ASCII table for uppercase chars starts at 65 and ends at 90
-  (loop for i from 0 to length
-       ;; @todo
-       collect (chain -string (from-char-code 65))))
+  (let ((minimum (floor (/ length 26))))
+    (loop for i from minimum to (+ minimum length)
+       collect (generate-string i))))
+
+(defun generate-string (n)
+  "Generates a string from a number"
+  (if (- (- n) 1)
+      (generate-string (+ (floor (- (/ n 26) 1))
+			  (code-char (+ 65
+					(% n 26)))))
+      ""))
 
 (defun add-hint (link hint)
   "Adds a hint on a single link"
