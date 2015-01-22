@@ -38,7 +38,7 @@
   (let* ((links-length (length links))
 	 (hints (generate-hints links-length)))
     (loop for i from 0 to links-length
-	 collect (hint-add (elt links i) (elt hints i)))))
+	 collect (create :link (elt links i) :hint (hint-add (elt links i) (elt hints i))))))
 
 (defun hints-generate (length)
   "Generates hints that will appear on the links"
@@ -88,17 +88,32 @@
     (setf (@ el text-content) hint)
     el))
 
+(defun hint-matches (hint letter index)
+  "Determines if a hint matches the letter"
+  (= (elt (@ hint :hint) index) letter))
+
 (defun hints-add-handler (window hints)
   "Adds a global handler to select the correct hint"
-  (let ((remaining-hints hints))
+  (let ((hints-left hints)
+	(index 0))
     (lambda ()
-      (flet ((handler (e)
-	       nil)
-	     (remove-handler ()
+      (flet ((remove-handler ()
 	       (chain window (remove-event-listener "keypress" #'handler))
 	       ;; Also remove itself
 	       (chain window (remove-event-listener "click" #'remove-handler))
-	       (chain window (remove-event-listener "scroll" #'remove-handler))))
+	       (chain window (remove-event-listener "scroll" #'remove-handler)))
+	     (handler (e)
+	       (setf hints-left (remove-if-not #'(lambda (hint)
+						   (hint-matches hint (char-code (@ e key-code)) index))
+					       hints-left))
+	       (incf index)
+	       (when (= (length hints-left) 0)
+		 ;; User screwed up, let's stop everything
+		 (return (remove-handler)))
+	       (when (= (length hints-left) 1)
+		 ;; Win!
+		 ;; We don't try to clean up, we're moving to the next page
+		 (return (chain hints-left 0 :link (click))))))
 	(chain window (add-event-listener "keypress" #'handler))
 	(chain window (add-event-listener "click" #'remove-handler))
 	(chain window (add-event-listener "scroll" #'remove-handler))))))

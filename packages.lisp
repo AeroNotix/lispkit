@@ -29,6 +29,7 @@
    #:top
    #:left
    #:add-event-listener
+   #:key-code
    #:query-selector-all
    #:inner-width
    #:inner-height
