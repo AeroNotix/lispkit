@@ -37,7 +37,7 @@
   "Adds hints on links"
   (let* ((links-length (length links))
 	 (hints (hints-generate links-length)))
-    (loop for i from 0 to links-length
+    (loop for i from 0 to (- links-length 1)
 	 collect (create :link (elt links i) :hint (hint-add (elt links i) (elt hints i))))))
 
 (defun hints-generate (length)
@@ -69,7 +69,7 @@
 (defun hint-add (link hint)
   "Adds a hint on a single link"
   (let ((hint-element (hint-create-element link hint)))
-    (chain document (append-child hint-element))
+    (chain document body (append-child hint-element))
     hint-element))
 
 (defun hint-determine-position (rect)

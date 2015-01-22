@@ -306,6 +306,4 @@
 (defcommand link-hints (browser)
   "Starts the link hints."
   (eval-in-page-js browser *link-hints-ps*)
-  (eval-in-page-js browser (ps:ps
-			     (in-package :lispkit.link-hints)
-			     (run))))
+  (eval-in-page-js browser "_lispkit_link_hints_run();"))
