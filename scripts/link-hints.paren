@@ -16,7 +16,11 @@
   "Small reimplementation of remove-if"
   (loop for el in sequence
        when (predicate el)
-	 collect el))
+     collect el))
+
+(defun remove (el)
+  "Removes an element"
+  (chain el parent-node (remove-child el)))
 
 (defun string-upcase (string)
   "Alias of String.prototype.toUpperCase"
@@ -103,9 +107,9 @@
     (setf (@ el text-content) hint)
     el))
 
-(defun hint-matches (hint letter index)
+(defun hint-matches (hint letter)
   "Determines if a hint matches the letter"
-  (= (string-downcase (elt (@ hint :hint text-content) index)) (string-downcase letter)))
+  (= (string-downcase (elt (@ hint :hint text-content) 0)) (string-downcase letter)))
 
 (defun remove-first-char (string)
   "Removes the first char of a string"
@@ -113,8 +117,7 @@
 
 (defun hints-add-handler (window hints)
   "Adds a global handler to select the correct hint"
-  (let ((hints-left hints)
-	(index 0))
+  (let ((hints-left hints))
     (lambda ()
       (flet ((remove-handler ()
 	       (chain window (remove-event-listener "keypress" #'handler))
@@ -129,13 +132,11 @@
 							   (hint-matches
 							    hint
 							    (code-char
-							     (@ e key-code))
-							    index)))
+							     (@ e key-code)))))
 						     (unless matches
-						       (chain hint (remove)))
+						       (remove (@ hint :hint)))
 						     matches))
 					       hints-left))
-	       (incf index)
 	       (when (= (length hints-left) 0)
 		 ;; User screwed up, let's stop everything
 		 (return (remove-handler)))
@@ -146,7 +147,8 @@
 		 (return (remove-handler)))
 	       ;; If we're here, it means we found one, and need to remove the first letter
 	       (dolist (hint hints-left)
-		 (setf (@ hint text-content) (remove-first-char (@ hint text-content))))))
+		 (let ((el (@ hint :hint)))
+		   (setf (@ el text-content) (remove-first-char (@ el text-content)))))))
 	(chain window (add-event-listener "keypress" #'handler))
 	(chain window (add-event-listener "scroll" #'remove-handler))))))
 
