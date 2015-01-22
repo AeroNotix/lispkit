@@ -22,6 +22,13 @@
   (:export
    #:-string
    #:from-char-code
+   #:-math
+   #:pow
+   #:style
+   #:position
+   #:top
+   #:left
+   #:add-event-listener
    #:query-selector-all
    #:inner-width
    #:inner-height
@@ -31,5 +38,5 @@
 (ps::re-export-symbols '#:lispkit.dhtml-missing-methods '#:ps-dhtml-symbols)
 
 (defpackage lispkit.link-hints
-  (:use :parenscript :common-lisp :ps-dhtml-symbols))
+  (:use :parenscript :ps-dhtml-symbols))
 (setf (ps:ps-package-prefix :lispkit.link-hints) "_lispkit_link_hints_")
