@@ -16,7 +16,15 @@
   "Small reimplementation of remove-if"
   (loop for el in sequence
        when (predicate el)
-       collect el))
+	 collect el))
+
+(defun string-upcase (string)
+  "Alias of String.prototype.toUpperCase"
+  (chain string (to-upper-case)))
+
+(defun string-downcase (string)
+  "Alias of String.prototype.toLowerCase"
+  (chain string (to-lower-case)))
 
 (defun is-in-viewport (el)
   "Finds out if an element is in the viewport"
@@ -75,13 +83,14 @@
 (defun hint-determine-position (rect)
   "Determines the position of a hint according to the link"
   (create :top (@ rect top)
-	  :left (- (@ rect left) 10)))
+	  :left (- (@ rect left) 20)))
 
 (defun hint-create-element (link hint)
   "Creates a DOM element to be used as a hint"
   (let* ((rect (chain link (get-bounding-client-rect)))
 	 (position (hint-determine-position rect))
 	 (el (chain document (create-element "span"))))
+    (setf (@ el class-name) "lispkit-link-hints")
     (setf (@ el style position) "absolute")
     (setf (@ el style left) (+ (@ position left) "px"))
     (setf (@ el style top) (+ (@ position top) "px"))
@@ -90,7 +99,7 @@
 
 (defun hint-matches (hint letter index)
   "Determines if a hint matches the letter"
-  (= (elt (@ hint :hint) index) letter))
+  (= (string-downcase (elt (@ hint :hint text-content) index)) (string-downcase letter)))
 
 (defun hints-add-handler (window hints)
   "Adds a global handler to select the correct hint"
@@ -101,10 +110,12 @@
 	       (chain window (remove-event-listener "keypress" #'handler))
 	       ;; Also remove itself
 	       (chain window (remove-event-listener "click" #'remove-handler))
-	       (chain window (remove-event-listener "scroll" #'remove-handler)))
+	       (chain window (remove-event-listener "scroll" #'remove-handler))
+	       (dolist (el (qsa document ".lispkit-link-hints"))
+		 (chain el (remove))))
 	     (handler (e)
 	       (setf hints-left (remove-if-not #'(lambda (hint)
-						   (hint-matches hint (char-code (@ e key-code)) index))
+						   (hint-matches hint (code-char (@ e key-code)) index))
 					       hints-left))
 	       (incf index)
 	       (when (= (length hints-left) 0)

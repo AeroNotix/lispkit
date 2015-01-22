@@ -24,6 +24,8 @@
    #:from-char-code
    #:-math
    #:pow
+   #:to-upper-case
+   #:to-lower-case
    #:style
    #:position
    #:top

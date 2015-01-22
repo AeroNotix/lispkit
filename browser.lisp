@@ -301,7 +301,7 @@
 
 (defparameter *link-hints-ps*
   (ps:ps-compile-file
-   (asdf:system-relative-pathname :lispkit "scripts/link-hints.ps")))
+   (asdf:system-relative-pathname :lispkit "scripts/link-hints.paren")))
 
 (defcommand link-hints (browser)
   "Starts the link hints."
