@@ -89,6 +89,7 @@
 (define-key *top-map* "C-minus" "unzoom")
 (define-key *top-map* "C-colon" "eval-in-page")
 (define-key *top-map* "F12" "inspector-toggle")
+(define-key *top-map* "f" "link-hints")
 
 (define-key *emacs-c-c-map* "C-x" "quit")
 
