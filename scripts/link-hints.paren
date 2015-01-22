@@ -107,6 +107,10 @@
   "Determines if a hint matches the letter"
   (= (string-downcase (elt (@ hint :hint text-content) index)) (string-downcase letter)))
 
+(defun remove-first-char (string)
+  "Removes the first char of a string"
+  (chain string (slice 1)))
+
 (defun hints-add-handler (window hints)
   "Adds a global handler to select the correct hint"
   (let ((hints-left hints)
@@ -121,7 +125,15 @@
 		 (chain el (remove))))
 	     (handler (e)
 	       (setf hints-left (remove-if-not #'(lambda (hint)
-						   (hint-matches hint (code-char (@ e key-code)) index))
+						   (let ((matches
+							   (hint-matches
+							    hint
+							    (code-char
+							     (@ e key-code))
+							    index)))
+						     (unless matches
+						       (chain hint (remove)))
+						     matches))
 					       hints-left))
 	       (incf index)
 	       (when (= (length hints-left) 0)
@@ -129,8 +141,12 @@
 		 (return (remove-handler)))
 	       (when (= (length hints-left) 1)
 		 ;; Win!
-		 ;; We don't try to clean up, we're moving to the next page
-		 (return (chain hints-left 0 :link (click))))))
+		 (chain hints-left 0 :link (click))
+		 ;; We clean up anyway in case the link is an anchor
+		 (return (remove-handler)))
+	       ;; If we're here, it means we found one, and need to remove the first letter
+	       (dolist (hint hints-left)
+		 (setf (@ hint text-content) (remove-first-char (@ hint text-content))))))
 	(chain window (add-event-listener "keypress" #'handler))
 	(chain window (add-event-listener "scroll" #'remove-handler))))))
 
