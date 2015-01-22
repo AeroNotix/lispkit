@@ -72,12 +72,19 @@
     (chain document (append-child hint-element))
     hint-element))
 
+(defun hint-determine-position (rect)
+  "Determines the position of a hint according to the link"
+  (create :top (@ rect top)
+	  :left (- (@ rect left) 10)))
+
 (defun create-hint-element (link hint)
   "Creates a DOM element to be used as a hint"
-  (let ((rect (chain link (get-bounding-client-rect)))
-	(el (chain document (create-element "span"))))
-    ;; @todo set position absolute and top/left values
-    ;; for this, use `rect` and window.innerStuff... I guess
+  (let* ((rect (chain link (get-bounding-client-rect)))
+	 (position (hint-determine-position rect))
+	 (el (chain document (create-element "span"))))
+    (setf (@ el style position) "absolute")
+    (setf (@ el style left) (+ (@ position left) "px"))
+    (setf (@ el style top) (+ (@ position top) "px"))
     (setf (@ el text-content) hint)
     el))
 
