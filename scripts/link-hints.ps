@@ -29,22 +29,22 @@
      (<= (@ rect right) (or (@ window inner-width)
 			    (@ document document-element client-width))))))
 
-(defun find-links (window document)
+(defun links-find (window document)
   "Finds all the links within the viewport"
   (remove-if-not #'is-in-viewport (qsa document "a")))
 
-(defun add-hints (links)
+(defun hints-add (links)
   "Adds hints on links"
   (let* ((links-length (length links))
 	 (hints (generate-hints links-length)))
     (loop for i from 0 to links-length
-	 collect (add-hint (elt links i) (elt hints i)))))
+	 collect (hint-add (elt links i) (elt hints i)))))
 
-(defun generate-hints (length)
+(defun hints-generate (length)
   "Generates hints that will appear on the links"
-  (generate-strings length (determine-chars-length length)))
+  (strings-generate length (hints-determine-chars-length length)))
 
-(defun determine-chars-length (length)
+(defun hints-determine-chars-length (length)
   "Finds out how many chars long the hints must be"
   (let ((i 1))
     ;; 26 chars in alphabet
@@ -52,23 +52,23 @@
 	 do (incf i))
     i))
 
-(defun generate-strings (length chars-length)
+(defun strings-generate (length chars-length)
   "Generates strings of specified length"
   (let ((minimum (1+ (chain -math (pow 26 (- chars-length 1))))))
     (loop for i from minimum to (+ minimum length)
-       collect (generate-string i))))
+       collect (string-generate i))))
 
-(defun generate-string (n)
+(defun string-generate (n)
   "Generates a string from a number"
   (if (>= n 0)
-      (+ (generate-string (floor (- (/ n 26) 1)))
+      (+ (string-generate (floor (- (/ n 26) 1)))
 	 (code-char (+ 65
 		       (rem n 26))))
       ""))
 
-(defun add-hint (link hint)
+(defun hint-add (link hint)
   "Adds a hint on a single link"
-  (let ((hint-element (create-hint-element link hint)))
+  (let ((hint-element (hint-create-element link hint)))
     (chain document (append-child hint-element))
     hint-element))
 
@@ -77,7 +77,7 @@
   (create :top (@ rect top)
 	  :left (- (@ rect left) 10)))
 
-(defun create-hint-element (link hint)
+(defun hint-create-element (link hint)
   "Creates a DOM element to be used as a hint"
   (let* ((rect (chain link (get-bounding-client-rect)))
 	 (position (hint-determine-position rect))
@@ -88,22 +88,22 @@
     (setf (@ el text-content) hint)
     el))
 
-(defun add-hints-handler (window hints)
+(defun hints-add-handler (window hints)
   "Adds a global handler to select the correct hint"
   (let ((remaining-hints hints))
     (lambda ()
       (flet ((handler (e)
 	       nil)
 	     (remove-handler ()
-	       (chain document (remove-event-listener "keypress" #'handler))
+	       (chain window (remove-event-listener "keypress" #'handler))
 	       ;; Also remove itself
-	       (chain document (remove-event-listener "click" #'remove-handler))
-	       (chain document (remove-event-listener "scroll" #'remove-handler))))
-	(chain document (add-event-listener "keypress" #'handler))
-	(chain document (add-event-listener "click" #'remove-handler))
-	(chain document (add-event-listener "scroll" #'remove-handler))))))
+	       (chain window (remove-event-listener "click" #'remove-handler))
+	       (chain window (remove-event-listener "scroll" #'remove-handler))))
+	(chain window (add-event-listener "keypress" #'handler))
+	(chain window (add-event-listener "click" #'remove-handler))
+	(chain window (add-event-listener "scroll" #'remove-handler))))))
 
 (defun run ()
   "Initializes the link hints"
-  ;; add-hints-handler needs a closure
-  ((add-hints-handler window (add-hints (find-links window document)))))
+  ;; hints-add-handler needs a closure
+  ((hints-add-handler window (hints-add (links-find window document)))))
