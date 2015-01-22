@@ -126,7 +126,6 @@
 		 ;; We don't try to clean up, we're moving to the next page
 		 (return (chain hints-left 0 :link (click))))))
 	(chain window (add-event-listener "keypress" #'handler))
-	(chain window (add-event-listener "click" #'remove-handler))
 	(chain window (add-event-listener "scroll" #'remove-handler))))))
 
 (defun run ()
