@@ -127,16 +127,19 @@
 	       (dolist (el (qsa document ".lispkit-link-hints"))
 		 (chain el (remove))))
 	     (handler (e)
-	       (setf hints-left (remove-if-not #'(lambda (hint)
-						   (let ((matches
-							   (hint-matches
-							    hint
-							    (code-char
-							     (@ e key-code)))))
-						     (unless matches
-						       (remove (@ hint :hint)))
-						     matches))
-					       hints-left))
+	       (setf
+		hints-left
+		(remove-if-not
+		 #'(lambda (hint)
+		     (let ((matches
+			    (hint-matches
+			     hint
+			     (code-char
+			      (@ e key-code)))))
+		       (unless matches
+			 (remove (@ hint :hint)))
+		       matches))
+		 hints-left))
 	       (when (= (length hints-left) 0)
 		 ;; User screwed up, let's stop everything
 		 (return (remove-handler)))

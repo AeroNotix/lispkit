@@ -41,5 +41,7 @@
 (ps::re-export-symbols '#:lispkit.dhtml-missing-methods '#:ps-dhtml-symbols)
 
 (defpackage lispkit.link-hints
-  (:use :parenscript :ps-dhtml-symbols))
+  (:use :parenscript :ps-dhtml-symbols)
+  (:shadowing-import-from :common-lisp :length)
+  (:shadowing-import-from :ps-dom1-symbols :label :size))
 (setf (ps:ps-package-prefix :lispkit.link-hints) "_lispkit_link_hints_")
