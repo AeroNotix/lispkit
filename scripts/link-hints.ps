@@ -15,7 +15,7 @@
 (defun remove-if-not (predicate sequence)
   "Small reimplementation of remove-if"
   (loop for el in sequence
-       when (funcall predicate el)
+       when (predicate el)
        collect el))
 
 (defun is-in-viewport (el)
@@ -36,7 +36,7 @@
 (defun hints-add (links)
   "Adds hints on links"
   (let* ((links-length (length links))
-	 (hints (generate-hints links-length)))
+	 (hints (hints-generate links-length)))
     (loop for i from 0 to links-length
 	 collect (create :link (elt links i) :hint (hint-add (elt links i) (elt hints i))))))
 
