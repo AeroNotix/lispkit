@@ -89,9 +89,19 @@
     el))
 
 (defun add-hints-handler (window hints)
-  "Adds a global handler to select to correct hint"
-  (let ((remaining-hints))
-    (lambda ())))
+  "Adds a global handler to select the correct hint"
+  (let ((remaining-hints hints))
+    (lambda ()
+      (flet ((handler (e)
+	       nil)
+	     (remove-handler ()
+	       (chain document (remove-event-listener "keypress" #'handler))
+	       ;; Also remove itself
+	       (chain document (remove-event-listener "click" #'remove-handler))
+	       (chain document (remove-event-listener "scroll" #'remove-handler))))
+	(chain document (add-event-listener "keypress" #'handler))
+	(chain document (add-event-listener "click" #'remove-handler))
+	(chain document (add-event-listener "scroll" #'remove-handler))))))
 
 (defun run ()
   "Initializes the link hints"
