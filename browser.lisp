@@ -299,9 +299,13 @@
   (declare (ignore browser))
   (leave-gtk-main))
 
-(defparameter *link-hints-ps*
-  (ps:ps-compile-file
-   (asdf:system-relative-pathname :lispkit "scripts/link-hints.paren")))
+(defparameter *link-hints-ps* nil)
+
+(defun setup-link-hints ()
+  (setf
+   *link-hints-ps*
+   (ps:ps-compile-file
+    (asdf:system-relative-pathname :lispkit "scripts/link-hints.paren"))))
 
 (defcommand link-hints (browser)
   "Starts the link hints."

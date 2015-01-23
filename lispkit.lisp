@@ -52,6 +52,7 @@
       (mapcar #'gtk-widget-show (list window frame view ib lbl))
       (gtk-window-maximize window)
       (ensure-cookies-folder-exists *cookie-path-dir*)
+      (setup-link-hints)
       ;; TODO - Add error handling to this.
       (load-rc-file))))
 
