@@ -102,6 +102,8 @@
     (setf (@ el style background) "yellow")
     (setf (@ el style border) "1px solid #ccc")
     (setf (@ el style position) "absolute")
+    (setf (@ el style min-width) "10px")
+    (setf (@ el style text-align) "center")
     (setf (@ el style left) (+ (@ position left) "px"))
     (setf (@ el style top) (+ (@ position top) "px"))
     (setf (@ el text-content) hint)
