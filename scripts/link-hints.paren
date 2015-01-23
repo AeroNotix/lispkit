@@ -117,6 +117,18 @@
   "Removes the first char of a string"
   (chain string (slice 1)))
 
+(defun hints-remove-all ()
+  "Removes all the links"
+  (dolist (el (qsa document ".lispkit-link-hints"))
+    (chain el (remove))))
+
+(defun hint-matches-key-code (hint key-code)
+  "Checks if a hint matches a specific key code"
+  (let ((matches (hint-matches hint (code-char key-code))))
+    (unless matches
+      (remove (@ hint :hint)))
+    matches))
+
 (defun hints-add-handler (window hints)
   "Adds a global handler to select the correct hint"
   (let ((hints-left hints))
@@ -124,24 +136,12 @@
       (flet ((remove-handler ()
 	       (chain window (remove-event-listener "keypress" #'handler))
 	       ;; Also remove itself
-	       (chain window (remove-event-listener "click" #'remove-handler))
 	       (chain window (remove-event-listener "scroll" #'remove-handler))
-	       (dolist (el (qsa document ".lispkit-link-hints"))
-		 (chain el (remove))))
+	       (hints-remove-all))
 	     (handler (e)
-	       (setf
-		hints-left
-		(remove-if-not
-		 #'(lambda (hint)
-		     (let ((matches
-			    (hint-matches
-			     hint
-			     (code-char
-			      (@ e key-code)))))
-		       (unless matches
-			 (remove (@ hint :hint)))
-		       matches))
-		 hints-left))
+	       (setf hints-left	(remove-if-not #'(lambda (hint)
+						   (hint-matches-key-code hint (@ e key-code)))
+					       hints-left))
 	       (when (= (length hints-left) 0)
 		 ;; User screwed up, let's stop everything
 		 (return (remove-handler)))
