@@ -15,6 +15,7 @@
                (:file "events")
                (:file "browser")
                (:file "keys")
+	       (:file "ui")
                (:file "lispkit"))
   :depends-on (:asdf
                :alexandria
