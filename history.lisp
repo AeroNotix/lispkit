@@ -64,6 +64,9 @@
 (defgeneric add-entry (appender entry)
   (:documentation "Adds a history entry to the appender"))
 
+(defgeneric to-list (appender)
+  (:documentation "Returns a list representation of the appender's history"))
+
 (defmethod hydrate ((a base-history-appender))
   (let ((history (remove-duplicates
                   (with-open-file (stream (output-path a) :if-does-not-exist nil)
@@ -83,3 +86,6 @@
 
 (defmethod add-entry ((a base-history-appender) (e string))
   (push (create-entry e) (history a)))
+
+(defmethod to-list ((a base-history-appender))
+  (mapcar #'entry-to-string (history a)))

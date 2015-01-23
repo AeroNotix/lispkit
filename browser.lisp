@@ -15,8 +15,6 @@
     :accessor webview
     :initarg :webview
     :initform (error "Cannot instantiate a browser without a webview object"))
-   (url-bar
-    :initarg :url-bar)
    (history
     :initarg :history
     :accessor history)
@@ -139,6 +137,23 @@
   (webkit2:webkit-web-view-load-uri (webview browser) url)
   (add-entry (history browser) url))
 
+(defun attach-completion (browser completion-list)
+  (let ((completion (gtk:gtk-entry-completion-new))
+        (lstore (make-instance 'gtk-list-store
+                               :column-types
+                               '("gchararray"))))
+    (loop for entry in completion-list
+       for i from 0 do
+         (gtk-list-store-set
+          lstore (gtk-list-store-append lstore) entry))
+    (setf (gtk:gtk-entry-completion-model completion) lstore)
+    (setf (gtk:gtk-entry-completion
+           (get-widget browser "entry_box")) completion)))
+
+(defun attach-uri-completion (browser)
+  (let ((hist (to-list (history browser))))
+    (attach-completion browser hist)))
+
 (defcommand reload-page (browser)
   "Reload the current page."
   (webkit2:webkit-web-view-reload (webview browser)))
@@ -166,6 +181,7 @@
 
 (defcommand browse-url (browser)
   "Browse the the named URL."
+  (attach-uri-completion browser)
   (with-browser-input browser url
     (or (apply-jumps url browser)
         (if (purl:url-p url)
