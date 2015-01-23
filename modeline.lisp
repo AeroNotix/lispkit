@@ -8,10 +8,9 @@
 (defparameter *modeline-expander*
   (lambda (browser modeline-state)
     (declare (ignore modeline-state))
-    (let* ((lbl (get-widget browser "message-area"))
-           (url (current-uri browser))
+    (let* ((url (current-uri browser))
            (rendered-modeline (cl-ppcre:regex-replace-all "~url" *modeline-format* url)))
-      (gtk:gtk-label-set-text lbl (format nil "~A" rendered-modeline)))))
+      (ui-set-text browser "message-area" (format nil "~A" rendered-modeline)))))
 
 (defun try-pop-queue (queue)
   (when (lparallel.queue:peek-queue queue)
@@ -22,7 +21,7 @@
 
 (defcommand start-modeline (browser)
   "Starts and displays the modeline"
-  (gtk:gtk-widget-show (get-widget browser "infobar1"))
+  (ui-show browser "infobar1")
   (let ((queue    (lparallel.queue:make-queue))
         (ml-state (make-hash-table :test #'equalp)))
     (push (bordeaux-threads:make-thread
@@ -40,5 +39,5 @@
 (defcommand stop-modeline (browser)
   "Stops and destroys the modeline"
   (setf *modeline-quit* t)
-  (gtk:gtk-widget-hide (get-widget browser "infobar1"))
+  (ui-hide browser "infobar1")
   (mapcar #'bordeaux-threads:join-thread *modeline-workers*))
