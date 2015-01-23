@@ -103,6 +103,7 @@
 (define-key *emacs-c-x-map* "s" "i-search")
 (define-key *emacs-c-x-map* "w" "close-tab")
 (define-key *emacs-c-x-map* "i" *emacs-c-x-i-map*)
+(define-key *emacs-c-x-map* "f" "link-hints")
 
 (define-key *emacs-c-x-i-map* "o" "inspector-open")
 (define-key *emacs-c-x-i-map* "c" "inspector-close")

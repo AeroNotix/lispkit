@@ -1,0 +1,163 @@
+(in-package :lispkit.link-hints)
+
+(defun qsa (context selector)
+  "Alias of document.querySelectorAll"
+  (chain context (query-selector-all selector)))
+
+(defun floor (n)
+  "Alias of Math.floor"
+  (chain -math (floor n)))
+
+(defun code-char (n)
+  "Alias of String.fromCharCode"
+  (chain -string (from-char-code n)))
+
+(defun remove-if-not (predicate sequence)
+  "Small reimplementation of remove-if"
+  (loop for el in sequence
+       when (predicate el)
+     collect el))
+
+(defun remove (el)
+  "Removes an element"
+  (chain el parent-node (remove-child el)))
+
+(defun string-upcase (string)
+  "Alias of String.prototype.toUpperCase"
+  (chain string (to-upper-case)))
+
+(defun string-downcase (string)
+  "Alias of String.prototype.toLowerCase"
+  (chain string (to-lower-case)))
+
+(defun is-in-viewport (el)
+  "Finds out if an element is in the viewport"
+  (let ((rect (chain el (get-bounding-client-rect))))
+    (and
+     (>= (@ rect top) 0)
+     (>= (@ rect left) 0)
+     (<= (@ rect bottom) (or (@ window inner-height)
+			     (@ document document-element client-height)))
+     (<= (@ rect right) (or (@ window inner-width)
+			    (@ document document-element client-width))))))
+
+(defun links-find (window document)
+  "Finds all the links within the viewport"
+  (remove-if-not #'is-in-viewport (qsa document "a")))
+
+(defun hints-add (links)
+  "Adds hints on links"
+  (let* ((links-length (length links))
+	 (hints (hints-generate links-length)))
+    (loop for i from 0 to (- links-length 1)
+	 collect (create :link (elt links i) :hint (hint-add (elt links i) (elt hints i))))))
+
+(defun hints-generate (length)
+  "Generates hints that will appear on the links"
+  (strings-generate length (hints-determine-chars-length length)))
+
+(defun hints-determine-chars-length (length)
+  "Finds out how many chars long the hints must be"
+  (let ((i 1))
+    ;; 26 chars in alphabet
+    (loop while (> length (expt 26 i))
+	 do (incf i))
+    i))
+
+(defun strings-generate (length chars-length)
+  "Generates strings of specified length"
+  (let ((minimum (1+ (chain -math (pow 26 (- chars-length 1))))))
+    (loop for i from minimum to (+ minimum length)
+       collect (string-generate i))))
+
+(defun string-generate (n)
+  "Generates a string from a number"
+  (if (>= n 0)
+      (+ (string-generate (floor (- (/ n 26) 1)))
+	 (code-char (+ 65
+		       (rem n 26))))
+      ""))
+
+(defun hint-add (link hint)
+  "Adds a hint on a single link"
+  (let ((hint-element (hint-create-element link hint)))
+    (chain document body (append-child hint-element))
+    hint-element))
+
+(defun hint-determine-position (rect)
+  "Determines the position of a hint according to the link"
+  (create :top (@ rect top)
+	  :left (- (@ rect left) 20)))
+
+(defun hint-create-element (link hint)
+  "Creates a DOM element to be used as a hint"
+  (let* ((rect (chain link (get-bounding-client-rect)))
+	 (position (hint-determine-position rect))
+	 (el (chain document (create-element "span"))))
+    (when (< (@ position left) 0)
+      (setf (@ position left) (+ (@ position left) 20)))
+    (when (< (@ position top) 0)
+      (setf (@ position top) (+ (@ position top) 20)))
+    (setf (@ el class-name) "lispkit-link-hints")
+    (setf (@ el style background) "yellow")
+    (setf (@ el style border) "1px solid #ccc")
+    (setf (@ el style position) "absolute")
+    (setf (@ el style min-width) "10px")
+    (setf (@ el style text-align) "center")
+    (setf (@ el style left) (+ (@ position left) "px"))
+    (setf (@ el style top) (+ (@ position top) "px"))
+    (setf (@ el text-content) hint)
+    el))
+
+(defun hint-matches (hint letter)
+  "Determines if a hint matches the letter"
+  (= (string-downcase (elt (@ hint :hint text-content) 0)) (string-downcase letter)))
+
+(defun remove-first-char (string)
+  "Removes the first char of a string"
+  (chain string (slice 1)))
+
+(defun hints-add-handler (window hints)
+  "Adds a global handler to select the correct hint"
+  (let ((hints-left hints))
+    (lambda ()
+      (flet ((remove-handler ()
+	       (chain window (remove-event-listener "keypress" #'handler))
+	       ;; Also remove itself
+	       (chain window (remove-event-listener "click" #'remove-handler))
+	       (chain window (remove-event-listener "scroll" #'remove-handler))
+	       (dolist (el (qsa document ".lispkit-link-hints"))
+		 (chain el (remove))))
+	     (handler (e)
+	       (setf
+		hints-left
+		(remove-if-not
+		 #'(lambda (hint)
+		     (let ((matches
+			    (hint-matches
+			     hint
+			     (code-char
+			      (@ e key-code)))))
+		       (unless matches
+			 (remove (@ hint :hint)))
+		       matches))
+		 hints-left))
+	       (when (= (length hints-left) 0)
+		 ;; User screwed up, let's stop everything
+		 (return (remove-handler)))
+	       (when (= (length hints-left) 1)
+		 ;; Win!
+		 (chain hints-left 0 :link (click))
+		 ;; We clean up anyway in case the link is an anchor
+		 (return (remove-handler)))
+	       ;; If we're here, it means we found one, and need to remove the first letter
+	       (dolist (hint hints-left)
+		 (let ((el (@ hint :hint)))
+		   (setf (@ el text-content) (remove-first-char (@ el text-content)))))))
+	(chain window (add-event-listener "keypress" #'handler))
+	(chain window (add-event-listener "scroll" #'remove-handler))))))
+
+(defun run ()
+  "Initializes the link hints"
+  ;; hints-add-handler needs a closure
+  ((hints-add-handler window (hints-add (links-find window document)))))
