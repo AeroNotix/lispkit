@@ -44,3 +44,15 @@
 (defun ui-start-loop ()
   "Starts the UI loop."
   (join-gtk-main))
+
+(defun ui-set-text (browser id text)
+  "Sets the text on a label."
+  (gtk:gtk-label-set-text (get-widget browser id) text))
+
+(defun ui-show (browser id)
+  "Shows a widget."
+  (gtk:gtk-widget-show (get-widget browser id)))
+
+(defun ui-hide (browser id)
+  "Hides a widget."
+  (gtk:gtk-widget-hide (get-widget browser id)))
