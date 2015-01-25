@@ -82,7 +82,7 @@ bin/buildapp: bin $(QL_LOCAL)/setup.lisp
 	$(MAKE) DESTDIR=$(PWD) install
 
 $(APP_OUT): $(SOURCES) bin/buildapp $(QL_LOCAL)/setup.lisp clones install-deps
-	@buildapp --logfile /tmp/build.log \
+	@$(BUILDAPP) --logfile /tmp/build.log \
 			--sbcl sbcl \
 			--asdf-path . \
 			--asdf-tree $(QL_LOCAL)/local-projects \
