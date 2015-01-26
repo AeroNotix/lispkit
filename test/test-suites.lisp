@@ -4,3 +4,4 @@
 (in-package #:lispkit-test)
 
 (5am:def-suite main)
+(5am:def-suite commands)

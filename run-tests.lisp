@@ -16,6 +16,7 @@
 (in-package :lispkit-test)
 
 (fiveam:run! 'main)
+(fiveam:run! 'commands)
 
 ;; Everything went fine
 (uiop:quit 0)

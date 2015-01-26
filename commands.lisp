@@ -59,7 +59,10 @@
     (equalp name name?)))
 
 (defun command-p (name)
-  (gethash name *available-commands*))
+  (multiple-value-bind (_ presencep)
+      (gethash name *available-commands*)
+    (declare (ignore _))
+    presencep))
 
 (defun run-named-command (name browser)
   (let ((command (command-p name)))

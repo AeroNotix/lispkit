@@ -37,5 +37,6 @@
   :components ((:module "test"
                         :components
                         ((:file "test-suites")
+			 (:file "commands")
 			 (:file "main"))))
   :depends-on (:lispkit :fiveam :alexandria))
