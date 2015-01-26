@@ -36,11 +36,6 @@
   :licence "BSD"
   :components ((:module "test"
                         :components
-                        ((:file "packages")
-			 (:file "test-suites")
+                        ((:file "test-suites")
 			 (:file "main"))))
-  :depends-on (:lispkit :fiveam :alexandria)
-  :perform (test-op (o s)
-                    ;; FIVEAM:RUN-ALL-TESTS is a macro, so it can't be called
-                    ;; like a function.
-                    (fiveam:run 'main)))
+  :depends-on (:lispkit :fiveam :alexandria))

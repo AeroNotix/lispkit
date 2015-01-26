@@ -37,7 +37,7 @@
 (5am:test key-map-functional-call
     (let* ((top-map (make-keymap))
            (browser (make-browser (make-ui-builder) (make-webview) (list top-map))))
-      (5am:is-true pressed?)
+      (5am:is-false pressed?)
       (define-key top-map "C-x" "foobar")
       (handle-key browser "C-x")
       (5am:is-true pressed?)))
