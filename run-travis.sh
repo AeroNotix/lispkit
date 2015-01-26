@@ -54,4 +54,4 @@ git clone https://github.com/joachifm/cl-webkit.git ${LOCAL_LISP_TREE}/cl-webkit
 
 #### run
 
-sbcl --load "${QL_HOME}/setup.lisp" --eval '(ql:quickload :lispkit)' --quit
+sbcl --load "${QL_HOME}/setup.lisp" --load run-tests.lisp

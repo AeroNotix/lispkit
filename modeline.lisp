@@ -9,7 +9,7 @@
   (lambda (browser modeline-state)
     (declare (ignore modeline-state))
     (let* ((url (current-uri browser))
-           (rendered-modeline (cl-ppcre:regex-replace-all "~url" *modeline-format* url)))
+           (rendered-modeline (cl-ppcre:regex-replace-all "~url" *modeline-format* (or url ""))))
       (ui-set-text browser "message-area" (format nil "~A" rendered-modeline)))))
 
 (defun try-pop-queue (queue)
