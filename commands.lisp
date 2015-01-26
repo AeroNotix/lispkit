@@ -54,15 +54,8 @@
 (defmethod initialize-instance :after ((command command) &key)
   (setf (gethash (name command) *available-commands*) command))
 
-(defun command-match (name? command)
-  (with-slots (name) command
-    (equalp name name?)))
-
 (defun command-p (name)
-  (multiple-value-bind (_ presencep)
-      (gethash name *available-commands*)
-    (declare (ignore _))
-    presencep))
+  (gethash name *available-commands*))
 
 (defun run-named-command (name browser)
   (let ((command (command-p name)))
