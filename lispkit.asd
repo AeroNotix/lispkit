@@ -36,10 +36,11 @@
   :licence "BSD"
   :components ((:module "test"
                         :components
-                        ((:file "tests"))))
-  :depends-on (:lispkit :lisp-unit :alexandria)
+                        ((:file "packages")
+			 (:file "test-suites")
+			 (:file "main"))))
+  :depends-on (:lispkit :fiveam :alexandria)
   :perform (test-op (o s)
-                    ;; LISP-UNIT:RUN-ALL-TESTS is a macro, so it can't be called
+                    ;; FIVEAM:RUN-ALL-TESTS is a macro, so it can't be called
                     ;; like a function.
-                    (eval `(,(intern "RUN-ALL-TESTS" :lisp-unit)
-                            :lispkit-test))))
+                    (fiveam:run 'main)))

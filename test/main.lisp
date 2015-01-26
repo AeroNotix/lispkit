@@ -1,21 +1,20 @@
-(defpackage #:lispkit-test
-  (:use :cl :lispkit :lisp-unit))
-
 (in-package #:lispkit-test)
 
-(define-test test-lookup-jumps
+(5am:in-suite main)
+
+(5am:test test-lookup-jumps
   (let* ((jumps (make-hash-table :test #'equal))
          (prefix "g")
          (url    "http://google.com/search?=~a"))
     (defjump jumps prefix url)
-    (assert-equal 1 (hash-table-count jumps))
-    (assert-equal url (lookup-jump prefix jumps))))
+    (5am:is (equal 1 (hash-table-count jumps)))
+    (5am:is (equal url (lookup-jump prefix jumps)))))
 
-(define-test make-simple-browser
+(5am:test make-simple-browser
     (let ((browser (make-browser (make-ui-builder) (make-webview))))
-      browser))
+      (5am:is (equal (type-of browser) 'lispkit::browser))))
 
-(define-test key-map-traversal
+(5am:test key-map-traversal
     (let ((top-map (make-keymap))
           (second-map (make-keymap))
           (third-map (make-keymap)))
@@ -23,11 +22,11 @@
       (define-key second-map "C-x" third-map)
       (let ((browser (make-browser (make-ui-builder) (make-webview) (list top-map))))
         (handle-key browser "C-x")
-        (assert-equal (keymaps browser) (list second-map))
+        (5am:is (equal (keymaps browser) (list second-map)))
         (handle-key browser "C-x")
-        (assert-equal (keymaps browser) (list third-map))
+        (5am:is (equal (keymaps browser) (list third-map)))
         (handle-key browser "oops")
-        (assert-equal (keymaps browser) (list top-map)))))
+        (5am:is (equal (keymaps browser) (list top-map))))))
 
 (defparameter pressed? nil)
 (defcommand foobar (_)
@@ -35,10 +34,10 @@
   (declare (ignore _))
   (setf pressed? t))
 
-(define-test key-map-functional-call
+(5am:test key-map-functional-call
     (let* ((top-map (make-keymap))
            (browser (make-browser (make-ui-builder) (make-webview) (list top-map))))
-      (assert-false pressed?)
+      (5am:is-true pressed?)
       (define-key top-map "C-x" "foobar")
       (handle-key browser "C-x")
-      (assert-true pressed?)))
+      (5am:is-true pressed?)))
