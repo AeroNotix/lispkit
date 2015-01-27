@@ -19,6 +19,9 @@
 (5am:run! 'commands)
 (5am:run! 'events)
 (5am:run! 'jumps)
+(5am:run! 'keys)
+(5am:run! 'settings)
+(5am:run! 'user)
 
 ;; Everything went fine
 (uiop:quit 0)
