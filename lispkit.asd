@@ -41,7 +41,5 @@
 			 (:file "events")
 			 (:file "jumps")
 			 (:file "keys")
-			 (:file "settings")
-			 (:file "user")
 			 (:file "main"))))
   :depends-on (:lispkit :fiveam :alexandria))
