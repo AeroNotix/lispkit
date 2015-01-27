@@ -39,5 +39,6 @@
                         ((:file "test-suites")
 			 (:file "commands")
 			 (:file "events")
+			 (:file "jumps")
 			 (:file "main"))))
   :depends-on (:lispkit :fiveam :alexandria))

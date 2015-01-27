@@ -18,6 +18,7 @@
 (5am:run! 'main)
 (5am:run! 'commands)
 (5am:run! 'events)
+(5am:run! 'jumps)
 
 ;; Everything went fine
 (uiop:quit 0)
