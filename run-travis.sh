@@ -32,9 +32,9 @@ alias sbcl='sbcl --noinform --no-sysinit --no-userinit --disable-debugger'
 #### install system deps
 
 sudo apt-get install python-software-properties
-sudo add-apt-repository "deb http://archive.ubuntu.com/ubuntu vivid main universe" -y
+sudo add-apt-repository "deb http://archive.ubuntu.com/ubuntu utopic main universe" -y
 sudo apt-get update -yy
-sudo apt-get install libgtk-3.0 libwebkit2gtk-4.0-dev
+sudo apt-get install libgtk-3.0 libwebkit2gtk-3.0-dev
 
 #### bootstrap SBCL
 
@@ -51,6 +51,9 @@ sbcl --load ./quicklisp.lisp --eval '(quicklisp-quickstart:install)' --quit
 
 mkdir -p "$LOCAL_LISP_TREE"
 git clone https://github.com/joachifm/cl-webkit.git ${LOCAL_LISP_TREE}/cl-webkit
+cd ${LOCAL_LISP_TREE}/cl-webkit
+git checkout c0c0a4
+cd -
 
 #### run
 
