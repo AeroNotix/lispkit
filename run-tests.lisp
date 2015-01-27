@@ -15,8 +15,9 @@
 ;; Run tests
 (in-package :lispkit-test)
 
-(fiveam:run! 'main)
-(fiveam:run! 'commands)
+(5am:run! 'main)
+(5am:run! 'commands)
+(5am:run! 'events)
 
 ;; Everything went fine
 (uiop:quit 0)
