@@ -42,7 +42,7 @@ $(QL_LOCAL)/local-projects/cl-xkeysym:
 	git clone https://github.com/AeroNotix/cl-xkeysym.git $@
 
 $(QL_LOCAL)/local-projects/cl-webkit:
-	git clone https://github.com/joachifm/cl-webkit $@
+	git clone https://github.com/joachifm/cl-webkit $@ && cd $@ && git checkout c0c0a4 && cd -
 
 deploy: $(APP_NAME).tar.gz
 	@rsync -a $< $(SCP_DEPLOY)
