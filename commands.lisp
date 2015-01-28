@@ -54,10 +54,6 @@
 (defmethod initialize-instance :after ((command command) &key)
   (setf (gethash (name command) *available-commands*) command))
 
-(defun command-match (name? command)
-  (with-slots (name) command
-    (equalp name name?)))
-
 (defun command-p (name)
   (gethash name *available-commands*))
 
