@@ -13,13 +13,4 @@
 	(uiop:quit -1)))
 
 ;; Run tests
-(in-package :lispkit-test)
-
-(5am:run! 'main)
-(5am:run! 'commands)
-(5am:run! 'events)
-(5am:run! 'jumps)
-(5am:run! 'keys)
-
-;; Everything went fine
-(uiop:quit 0)
+(asdf:test-system :lispkit)
