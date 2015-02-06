@@ -56,5 +56,4 @@ git checkout c0c0a4
 cd -
 
 #### run
-
-sbcl --load "${QL_HOME}/setup.lisp" --load run-tests.lisp
+make test

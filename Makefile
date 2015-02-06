@@ -20,7 +20,7 @@ QL_OPTS=--load $(QL_LOCAL)/setup.lisp
 sbcl_BUILD_OPTS=--load ./make-image.lisp
 sbcl_BUILD_OPTS-local=$(LOCAL_OPTS) $(QL_OPTS) --load ./make-image.lisp
 clisp_BUILD_OPTS=-on-error exit < ./make-image.lisp
-sbcl_TEST_OPTS=--noinform --disable-debugger --quit --load ./run-tests.lisp
+sbcl_TEST_OPTS=--noinform --disable-debugger --load $(QL_LOCAL)/setup.lisp --load ./run-tests.lisp --quit
 
 
 .PHONY: deploy clean deb-package aur-package test printvars
@@ -93,7 +93,7 @@ $(APP_OUT): $(SOURCES) bin/buildapp $(QL_LOCAL)/setup.lisp clones install-deps
 			--compress-core \
 			--output $(APP_OUT)
 
-test:
+test: $(QL_LOCAL)/setup.lisp clones install-deps
 	@$(LISP) $($(LISP)_TEST_OPTS)
 
 tar: $(APP_NAME).tar.gz
