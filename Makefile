@@ -21,6 +21,7 @@ sbcl_BUILD_OPTS=--load ./make-image.lisp
 sbcl_BUILD_OPTS-local=$(LOCAL_OPTS) $(QL_OPTS) --load ./make-image.lisp
 clisp_BUILD_OPTS=-on-error exit < ./make-image.lisp
 sbcl_TEST_OPTS=--noinform --disable-debugger --load $(QL_LOCAL)/setup.lisp --load ./run-tests.lisp --quit
+DISTRO_ID=$(shell source /etc/os-release && echo $$ID)
 
 
 .PHONY: deploy clean deb-package aur-package test printvars
@@ -42,7 +43,11 @@ $(QL_LOCAL)/local-projects/cl-xkeysym:
 	git clone https://github.com/AeroNotix/cl-xkeysym.git $@
 
 $(QL_LOCAL)/local-projects/cl-webkit:
+ifeq ($(DISTRO_ID),arch)
+	git clone https://github.com/joachifm/cl-webkit $@
+else
 	git clone https://github.com/joachifm/cl-webkit $@ && cd $@ && git checkout c0c0a4 && cd -
+endif
 
 deploy: $(APP_NAME).tar.gz
 	@rsync -a $< $(SCP_DEPLOY)
