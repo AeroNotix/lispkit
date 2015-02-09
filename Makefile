@@ -32,7 +32,7 @@ bin:
 	@mkdir bin
 
 clean:
-	@-yes | rm -r $(QL_LOCAL)
+	@-rm -rf $(QL_LOCAL)
 	@-rm $(APP_NAME)
 	@-rm deps
 
