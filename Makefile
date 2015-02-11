@@ -24,7 +24,7 @@ sbcl_TEST_OPTS=--noinform --disable-debugger --load $(QL_LOCAL)/setup.lisp --loa
 DISTRO_ID=$(shell source /etc/os-release && echo $$ID)
 
 
-.PHONY: deploy clean deb-package aur-package test printvars
+.PHONY: deploy clean deb-package aur-package test printvars aergia-create-container aergia-run
 
 all: $(APP_OUT)
 
@@ -113,3 +113,15 @@ $(APP_NAME)_debian.tar.gz: $(APP_OUT)
 
 printvars:
 	@$(foreach V,$(sort $(.VARIABLES)), $(if $(filter-out environment% default automatic, $(origin $V)),$(warning $V=$($V) ($(value $V)))))
+
+aergia-create-container:
+ifndef SSHKEY
+	$(error SSHKEY needs to be provided. It must be the path to the public SSH key.)
+endif
+	@lxc-create --name lispkit \
+		--template ubuntu -- \
+		-S $(SSHKEY) \
+		--packages make,sbcl,libglib2.0-0,libwebkit2gtk-3.0-dev,xvfb
+
+aergia-run:
+	@aergia --clone lispkit --username ubuntu --prefix common-lisp --command "xvfb-run make test"
