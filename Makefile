@@ -115,9 +115,12 @@ printvars:
 	@$(foreach V,$(sort $(.VARIABLES)), $(if $(filter-out environment% default automatic, $(origin $V)),$(warning $V=$($V) ($(value $V)))))
 
 aergia-create-container:
+ifndef SSHKEY
+	$(error SSHKEY needs to be provided. It must be the path to the public SSH key.)
+endif
 	@lxc-create --name lispkit \
 		--template ubuntu -- \
-		-S ~/.ssh/id_rsa.pub \
+		-S $(SSHKEY) \
 		--packages make,sbcl,libglib2.0-0,libwebkit2gtk-3.0-dev,xvfb
 
 aergia-run:
