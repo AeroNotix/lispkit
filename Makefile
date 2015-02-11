@@ -121,7 +121,8 @@ endif
 	@lxc-create --name lispkit \
 		--template ubuntu -- \
 		-S $(SSHKEY) \
-		--packages make,sbcl,libglib2.0-0,libwebkit2gtk-3.0-dev,xvfb
+		--packages make,sbcl,libglib2.0-0,libwebkit2gtk-3.0-dev,xvfb \
+		--release utopic
 
 aergia-run:
 	@aergia --clone lispkit --username ubuntu --prefix common-lisp --command "xvfb-run make test"
