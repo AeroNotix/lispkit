@@ -125,4 +125,7 @@ endif
 		--release utopic
 
 aergia-run:
-	@aergia --clone lispkit --username ubuntu --prefix common-lisp --command "xvfb-run make test"
+ifndef SSHKEY
+	$(error SSHKEY needs to be provided. It must be the path of the private SSH key.)
+endif
+	@aergia --clone lispkit --username ubuntu --prefix common-lisp --command "xvfb-run make test" --ssh-identity $(SSHKEY)
