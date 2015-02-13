@@ -4,25 +4,24 @@
 (plan 6)
 
 (let ((keymap (lispkit::make-keymap)))
-  (ok (eq 'lispkit::keymap (type-of keymap)))
-  (ok (eq 'hash-table (type-of (lispkit::bindings keymap)))))
+  (is-type keymap 'lispkit::keymap)
+  (is-type (lispkit::bindings keymap) 'hash-table))
 
 (let ((keybind (lispkit::keymap->keydesc* nil "foo" nil)))
-  (ok (eq 'lispkit::keybind (type-of keybind)))
-  (ok (string= "foo" (lispkit::key keybind))))
-(ok (string= "foo foo"
-             (lispkit::key
-              (car
-               (let ((keymap (make-instance 'lispkit::keymap)))
-                 (setf (gethash
-                        "foo"
-                        (lispkit::bindings keymap))
-                       "bar")
-                 (lispkit::keymap->keydesc* nil "foo" keymap))))))
+  (is-type keybind 'lispkit::keybind)
+  (is "foo" (lispkit::key keybind)))
+(is "foo foo"
+    (lispkit::key
+     (car
+      (let ((keymap (make-instance 'lispkit::keymap)))
+        (setf (gethash
+               "foo"
+               (lispkit::bindings keymap))
+              "bar")
+        (lispkit::keymap->keydesc* nil "foo" keymap)))))
 
 (let ((map (make-instance 'lispkit::keymap)))
   (lispkit::define-key map "foo" "bar")
-  (ok (string= "bar"
-               (gethash "foo" (lispkit::bindings map)))))
+  (is "bar" (gethash "foo" (lispkit::bindings map))))
 
 (finalize)

@@ -10,20 +10,20 @@
 (multiple-value-bind (value presentp)
     (lispkit::command-p "test-command")
   (declare (ignore value))
-  (ok (eq presentp t)))
+  (ok presentp))
 
-(ok (eq (lispkit::run-named-command "test-command" "fixture") t))
+(ok (lispkit::run-named-command "test-command" "fixture"))
 
 ;; Create the ~/.lispkitrc file
 (open (merge-pathnames (user-homedir-pathname) #p".lispkitrc") :direction :probe :if-does-not-exist :create)
-(ok (eq (lispkit::load-rc-file) t))
+(ok (lispkit::load-rc-file))
 
 ;; Create the ~/.lispkitrc file
 (open (merge-pathnames (user-homedir-pathname) #p".lispkitrc") :direction :probe :if-does-not-exist :create)
 (multiple-value-bind (value presentp)
     (gethash "reload-config" lispkit::*available-commands*)
   (declare (ignore value))
-  (ok (eq presentp t))
-  (ok (eq (lispkit::reload-config nil) t)))
+  (ok presentp)
+  (ok (lispkit::reload-config nil)))
 
 (finalize)
