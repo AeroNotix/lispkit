@@ -28,5 +28,6 @@
                :purl
                :split-sequence
                :lparallel
+               :bordeaux-threads
                :usocket)
   :in-order-to ((test-op (test-op :lispkit-test))))
