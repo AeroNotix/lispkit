@@ -28,6 +28,7 @@ ifeq ($(wildcard .has_image_compression),)
 else
 	SBCL_COMPRESSION_OPT := --compress-core
 endif
+CONTAINER_ROOTFS ?= /var/lib/lxc/lispkit/rootfs
 
 
 .PHONY: deploy clean deb-package aur-package test printvars aergia-create-container aergia-run
@@ -78,9 +79,9 @@ $(QL_LOCAL)/setup.lisp:
 
 deps:
 	@sbcl $(LOCAL_OPTS) $(QL_OPTS) \
-             --eval '(push "$(PWD)/" asdf:*central-registry*)' \
-             --eval '(ql:quickload :lispkit)' \
-             --eval '(quit)'
+	     --eval '(push "$(PWD)/" asdf:*central-registry*)' \
+	     --eval '(ql:quickload :lispkit)' \
+	     --eval '(quit)'
 	@touch $@
 
 install-deps: $(QL_LOCAL)/setup.lisp clones deps
@@ -128,11 +129,12 @@ endif
 	@lxc-create --name lispkit \
 		--template ubuntu -- \
 		-S $(SSHKEY) \
-		--packages make,sbcl,libglib2.0-0,libwebkit2gtk-3.0-dev,xvfb \
+		--packages make,sbcl,libglib2.0-0,xvfb,software-properties-common,python-software-properties,python,zlib1g-dev,libxml2-dev,libxml2,linux-libc-dev,pkg-config,patch,libxrandr-dev,libxrandr2,libxslt1.1,xml-core,systemd,systemd-shim,libgtk-3-bin,libgtk-3-common,git \
 		--release utopic
+	@echo "ubuntu ALL=(ALL) NOPASSWD:ALL" >> $(CONTAINER_ROOTFS)/etc/sudoers
 
 aergia-run:
 ifndef SSHKEY
 	$(error SSHKEY needs to be provided. It must be the path of the private SSH key.)
 endif
-	@aergia --clone lispkit --username ubuntu --prefix common-lisp --command "xvfb-run make test" --ssh-identity $(SSHKEY)
+	@aergia --clone lispkit --username ubuntu --prefix common-lisp --command "xvfb-run ./run-travis.sh" --ssh-identity $(SSHKEY)
