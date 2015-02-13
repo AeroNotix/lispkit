@@ -152,7 +152,29 @@
   "Move backwards a page."
   (webkit2:webkit-web-view-go-back (webview browser)))
 
+;; 20150212 - MDC - Fixes issue with unavailable default scheme when opening url
+(defun port-available? (url port)
+  "Check if a port exists before assuming https can be used (otherwise
+fallback to http)."
+  (handler-case
+      (let ((sock (usocket:socket-connect url port :timeout .5)))
+        (when sock (usocket:socket-close sock) t))
+    (usocket:timeout-error () nil)))
+
 (defparameter *default-scheme* "https://")
+(defparameter *fallback-scheme* "http://")
+
+(defparameter *scheme-ports*
+  '(("https://" . 443)
+    ("http://" . 80)
+    ("sftp://" . 22)
+    ("ftp://" . 20)))
+
+(defun safe-scheme (url)
+  "Check the default-scheme port is available before returning
+a connection to it.  if it is not available, drop to the fallback-scheme."
+  (let ((port (cdr (assoc *default-scheme* *scheme-ports* :test #'equal))))
+    (if (port-available? url port) *default-scheme* *fallback-scheme*)))
 
 (defcommand browse-url (browser)
   "Browse the the named URL."
@@ -160,7 +182,7 @@
     (or (apply-jumps url browser)
         (if (purl:url-p url)
             (load-url url browser)
-            (load-url (format nil "~A~A" *default-scheme* url) browser)))))
+            (load-url (format nil "~A~A" (safe-scheme url) url) browser)))))
 
 (defcommand current-uri (browser)
   "Find the current URI."

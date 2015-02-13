@@ -27,5 +27,6 @@
                :parenscript
                :purl
                :split-sequence
-               :lparallel)
+               :lparallel
+               :usocket)
   :in-order-to ((test-op (test-op :lispkit-test))))
