@@ -244,19 +244,19 @@
 (defcommand eval-in-page-cl (browser &optional input)
   "Evaluates parenscript expressions in the context of the current browser."
   (let ((wv (webview browser))
-	(np (cffi:null-pointer)))
+        (np (cffi:null-pointer)))
     (unless input
       (with-browser-input browser expr
-	(setf input (read-from-string expr))))
+        (setf input (read-from-string expr))))
     (webkit2:webkit-web-view-run-javascript wv (eval `(ps:ps ,input)) np np np)))
 
 (defcommand eval-in-page-js (browser &optional input)
   "Evaluates Javascript in the context of the current browser."
   (let ((wv (webview browser))
-	(np (cffi:null-pointer)))
+        (np (cffi:null-pointer)))
     (unless input
       (with-browser-input browser expr
-	(setf input expr)))
+        (setf input expr)))
     (webkit2:webkit-web-view-run-javascript wv input np np np)))
 
 (defcommand i-search (browser) "Executes a search on the current webview."
