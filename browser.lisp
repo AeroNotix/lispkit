@@ -152,7 +152,39 @@
   "Move backwards a page."
   (webkit2:webkit-web-view-go-back (webview browser)))
 
+(defparameter *fallback-timeout* .2)
+
+;; 20150212 - MDC - Fixes issue with unavailable default scheme when opening url
+(defun port-available? (url port)
+  "Check if a port exists before assuming https can be used (otherwise
+fallback to http)."
+  (bordeaux-threads:make-thread
+   (lambda ()
+     (handler-case
+         (let ((sock (usocket:socket-connect url port :timeout *fallback-timeout*)))
+           (when sock (usocket:socket-close sock)
+                 (setf *active-scheme* *default-scheme*)))
+       (usocket:timeout-error () (setf *active-scheme* *fallback-scheme*))))
+   :name "port-available-check"))
+
 (defparameter *default-scheme* "https://")
+(defparameter *fallback-scheme* "http://")
+(defparameter *active-scheme* *default-scheme*)
+
+(defparameter *scheme-ports*
+  '(("https://" . 443)
+    ("http://" . 80)
+    ("sftp://" . 22)
+    ("ftp://" . 20)))
+
+(defun safe-scheme (url)
+  "Check the default-scheme port is available before returning
+a connection to it.  if it is not available, drop to the fallback-scheme."
+  (let ((port (cdr (assoc *default-scheme* *scheme-ports* :test #'equal))))
+    (setf *active-scheme* *fallback-scheme*) ;; Gets around timeout issue
+    (port-available? url port) ;; Will set to default if we hit a connection
+    (sleep (+ *fallback-timeout* .1))
+    *active-scheme*))
 
 (defcommand browse-url (browser)
   "Browse the the named URL."
@@ -160,7 +192,7 @@
     (or (apply-jumps url browser)
         (if (purl:url-p url)
             (load-url url browser)
-            (load-url (format nil "~A~A" *default-scheme* url) browser)))))
+            (load-url (format nil "~A~A" (safe-scheme url) url) browser)))))
 
 (defcommand current-uri (browser)
   "Find the current URI."
