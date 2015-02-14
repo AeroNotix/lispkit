@@ -152,7 +152,7 @@
   "Move backwards a page."
   (webkit2:webkit-web-view-go-back (webview browser)))
 
-(defparameter *default-scheme* "https://")
+(defparameter *default-scheme* "http://")
 
 (defcommand browse-url (browser)
   "Browse the the named URL."
