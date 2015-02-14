@@ -310,4 +310,6 @@
 (defcommand link-hints (browser)
   "Starts the link hints."
   (eval-in-page-js browser *link-hints-ps*)
-  (eval-in-page-js browser "_lispkit_link_hints_run();"))
+  (eval-in-page-js browser "_lispkit_link_hints_run();")
+  (gtk:gtk-window-set-focus
+   (get-widget browser "mainwindow") (webview browser)))
