@@ -41,6 +41,7 @@ clean:
 	@-rm -rf $(QL_LOCAL)
 	@-rm $(APP_NAME)
 	@-rm deps
+	@-rm .has_image_compression
 
 clones: $(QL_LOCAL)/local-projects/cl-xkeysym $(QL_LOCAL)/local-projects/cl-webkit
 	@touch $@
