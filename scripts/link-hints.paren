@@ -1,3 +1,4 @@
+;; -*- mode: common-lisp -*-
 (in-package :lispkit.link-hints)
 
 (defun qsa (context selector)
