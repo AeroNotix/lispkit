@@ -20,3 +20,4 @@ quicklisp.lisp
 /bin/
 /install-deps
 /clones
+/.has_image_compression

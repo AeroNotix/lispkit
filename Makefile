@@ -22,6 +22,12 @@ sbcl_BUILD_OPTS-local=$(LOCAL_OPTS) $(QL_OPTS) --load ./make-image.lisp
 clisp_BUILD_OPTS=-on-error exit < ./make-image.lisp
 sbcl_TEST_OPTS=--noinform --disable-debugger --load $(QL_LOCAL)/setup.lisp --load ./run-tests.lisp --quit
 DISTRO_ID=$(shell source /etc/os-release && echo $$ID)
+SBCL_COMPRESSION := $(shell sbcl --noinform --eval "(when (member :sb-core-compression cl:*features*) (open \".has_image_compression\" :direction :probe :if-does-not-exist :create))" --quit)
+ifeq ($(wildcard .has_image_compression),)
+	SBCL_COMPRESSION_OPT =
+else
+	SBCL_COMPRESSION_OPT := --compress-core
+endif
 
 
 .PHONY: deploy clean deb-package aur-package test printvars aergia-create-container aergia-run
@@ -95,7 +101,7 @@ $(APP_OUT): $(SOURCES) bin/buildapp $(QL_LOCAL)/setup.lisp clones install-deps
 			--asdf-path . \
 			--load-system $(APP_NAME) \
 			--entry $(APP_NAME):do-main \
-			--compress-core \
+			$(SBCL_COMPRESS_OPT) \
 			--output $(APP_OUT)
 
 test: $(QL_LOCAL)/setup.lisp clones install-deps
