@@ -20,7 +20,7 @@ QL_OPTS=--load $(QL_LOCAL)/setup.lisp
 sbcl_BUILD_OPTS=--load ./make-image.lisp
 sbcl_BUILD_OPTS-local=$(LOCAL_OPTS) $(QL_OPTS) --load ./make-image.lisp
 clisp_BUILD_OPTS=-on-error exit < ./make-image.lisp
-sbcl_TEST_OPTS=--noinform --disable-debugger --load $(QL_LOCAL)/setup.lisp --load ./run-tests.lisp --quit
+sbcl_TEST_OPTS=--noinform --disable-debugger --load $(QL_LOCAL)/setup.lisp --eval '(ql:quickload :prove)' --eval '(or (prove:run :lispkit-test) (uiop:quit -1))' --quit
 DISTRO_ID=$(shell source /etc/os-release && echo $$ID)
 SBCL_COMPRESSION := $(shell sbcl --noinform --eval "(when (member :sb-core-compression cl:*features*) (open \".has_image_compression\" :direction :probe :if-does-not-exist :create))" --quit)
 ifeq ($(wildcard .has_image_compression),)
