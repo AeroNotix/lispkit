@@ -4,15 +4,15 @@
 (defun ui-build-browser (destroy?)
   "Builds the browser UI."
   (let* ((ui      (ui-load-from-string +ui-builder-file+))
-	 (window  (gtk:gtk-builder-get-object ui "mainwindow"))
-	 (frame   (gtk:gtk-builder-get-object ui "scrolledwindow"))
-	 (entry   (gtk:gtk-builder-get-object ui "entry_box"))
-	 (ib      (gtk:gtk-builder-get-object ui "infobar1"))
-	 (c-area  (gtk:gtk-info-bar-get-content-area ib))
-	 (view    (make-webview))
-	 (nb      (gtk:gtk-builder-get-object ui "webviewcontainer"))
-	 (lbl     (gtk:gtk-builder-get-object ui "message-area"))
-	 (browser (make-browser ui view)))
+         (window  (gtk:gtk-builder-get-object ui "mainwindow"))
+         (frame   (gtk:gtk-builder-get-object ui "scrolledwindow"))
+         (entry   (gtk:gtk-builder-get-object ui "entry_box"))
+         (ib      (gtk:gtk-builder-get-object ui "infobar1"))
+         (c-area  (gtk:gtk-info-bar-get-content-area ib))
+         (view    (make-webview))
+         (nb      (gtk:gtk-builder-get-object ui "webviewcontainer"))
+         (lbl     (gtk:gtk-builder-get-object ui "message-area"))
+         (browser (make-browser ui view)))
     (setf (gtk:gtk-notebook-show-tabs nb) nil)
     (gtk-container-add frame view)
     (gtk-widget-hide entry)
@@ -25,15 +25,15 @@
 (defun ui-connect-signals (destroy? browser window nb)
   "Connects the UI signals."
   (g-signal-connect window "key_press_event"
-		    (make-key-dispatcher browser))
+                    (make-key-dispatcher browser))
   (g-signal-connect nb "switch-page"
-		    (make-page-listener browser))
+                    (make-page-listener browser))
   (when destroy?
     (g-signal-connect window "destroy"
-		      (lambda (widget)
-			(declare (ignore widget))
-			(stop-modeline browser)
-			(leave-gtk-main)))))
+                      (lambda (widget)
+                        (declare (ignore widget))
+                        (stop-modeline browser)
+                        (leave-gtk-main)))))
 
 (defun ui-load-from-string (contents)
   "Loads the UI from a string template."
