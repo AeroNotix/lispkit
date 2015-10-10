@@ -36,13 +36,13 @@ make
 Cheatsheet
 ------
 
-Manual C-h m
-Browse Url C-x C-f
-Link Hints C-x F
-New Tab C-x k
-Next Tab C-x n
-Prev Tab C-x p
-Quit C-c C-x
+Manual C-h m  
+Browse Url C-x C-f  
+Link Hints C-x F  
+New Tab C-x k  
+Next Tab C-x n  
+Prev Tab C-x p  
+Quit C-c C-x  
 
 Status
 ------
