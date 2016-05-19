@@ -76,7 +76,7 @@ $(QL_LOCAL)/setup.lisp:
 		--eval '(quicklisp-quickstart:install :path "$(QL_LOCAL)")' \
 		--eval '(quit)'
 
-deps:
+deps: $(QL_LOCAL)/setup.lisp
 	@sbcl $(LOCAL_OPTS) $(QL_OPTS) \
              --eval '(push "$(PWD)/" asdf:*central-registry*)' \
              --eval '(ql:quickload :lispkit)' \
