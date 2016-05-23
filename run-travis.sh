@@ -16,7 +16,14 @@ set -ev
 
 export SBCL_HOME="${HOME}/lib/sbcl"
 export PATH="${HOME}/bin${PATH:+:}${PATH}"
-export CL_SOURCE_REGISTRY="${TRAVIS_BUILD_DIR}//:${LOCAL_LISP_TREE}//:${CL_SOURCE_REGISTRY}"
+
+# aergia or travis? If aergia, can't pass env vars via xvfb-run.
+# And the /etc/init.d/xvfb script turning around on internet seems shitty.
+if [ -n "$TRAVIS_BUILD_DIR" ]; then
+    export CL_SOURCE_REGISTRY="${TRAVIS_BUILD_DIR}//:${LOCAL_LISP_TREE}//:${CL_SOURCE_REGISTRY}"
+else
+    export CL_SOURCE_REGISTRY="${LOCAL_LISP_TREE}//:${CL_SOURCE_REGISTRY}"
+fi
 
 export XDG_DATA_HOME="${HOME}/.local/share"
 export XDG_CONFIG_HOME="${HOME}/.config"
@@ -31,10 +38,10 @@ alias sbcl='sbcl --noinform --no-sysinit --no-userinit --disable-debugger'
 
 #### install system deps
 
-sudo apt-get install python-software-properties
+sudo apt-get install python-software-properties -y
 sudo add-apt-repository "deb http://archive.ubuntu.com/ubuntu utopic main universe" -y
-sudo apt-get update -yy
-sudo apt-get install libgtk-3.0 libwebkit2gtk-3.0-dev
+sudo apt-get update -y
+sudo apt-get install libgtk-3.0 libwebkit2gtk-3.0-dev -y
 
 #### bootstrap SBCL
 
